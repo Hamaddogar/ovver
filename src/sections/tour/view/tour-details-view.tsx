@@ -67,7 +67,7 @@ export default function TourDetailsView({ id }: Props) {
   );
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <TourDetailsToolbar
         backLink={paths.dashboard.tour.root}
         editLink={paths.dashboard.tour.edit(`${currentTour?.id}`)}

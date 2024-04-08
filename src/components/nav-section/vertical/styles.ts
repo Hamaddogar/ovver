@@ -99,7 +99,7 @@ export const StyledDotIcon = styled('span')<StyledDotIconProps>(({ active, theme
   }),
   ...(active && {
     transform: 'scale(2)',
-    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.primary.main,
   }),
 }));
 

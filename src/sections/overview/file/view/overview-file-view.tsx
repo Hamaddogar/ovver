@@ -118,7 +118,7 @@ export default function OverviewFileView() {
 
   return (
     <>
-      <Container maxWidth={false}>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
           {smDown && <Grid xs={12}>{renderStorageOverview}</Grid>}
 

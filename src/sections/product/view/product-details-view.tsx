@@ -29,10 +29,6 @@ import ProductDetailsSummary from '../product-details-summary';
 import ProductDetailsToolbar from '../product-details-toolbar';
 import ProductDetailsCarousel from '../product-details-carousel';
 import ProductDetailsDescription from '../product-details-description';
-import { useSelector } from 'react-redux';
-import { fetchOneProduct } from 'src/redux/store/thunks/products';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'src/redux/store/store';
 
 // ----------------------------------------------------------------------
 
@@ -61,13 +57,7 @@ type Props = {
 };
 
 export default function ProductDetailsView({ id }: Props) {
-  const {
-    product,
-    loading: productLoading,
-    error: productError,
-  } = useSelector((state: any) => state.products);
-  // const { product, productLoading, productError } = useGetProduct(id);
-  console.log('product', product);
+  const { product, productLoading, productError } = useGetProduct(id);
 
   const settings = useSettingsContext();
 
@@ -75,10 +65,6 @@ export default function ProductDetailsView({ id }: Props) {
 
   const [publish, setPublish] = useState('');
 
-  const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-    dispatch(fetchOneProduct(id));
-  }, []);
   useEffect(() => {
     if (product) {
       setPublish(product?.publish);
@@ -102,7 +88,7 @@ export default function ProductDetailsView({ id }: Props) {
       action={
         <Button
           component={RouterLink}
-          href={paths.dashboard.products.root}
+          href={paths.dashboard.product.root}
           startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
           sx={{ mt: 3 }}
         >
@@ -116,9 +102,9 @@ export default function ProductDetailsView({ id }: Props) {
   const renderProduct = product && (
     <>
       <ProductDetailsToolbar
-        backLink={paths.dashboard.products.root}
-        editLink={paths.dashboard.products.edit(`${product?.id}`)}
-        liveLink={paths.dashboard.products.details(`${product?.id}`)}
+        backLink={paths.dashboard.product.root}
+        editLink={paths.dashboard.product.edit(`${product?.id}`)}
+        liveLink={paths.product.details(`${product?.id}`)}
         publish={publish || ''}
         onChangePublish={handleChangePublish}
         publishOptions={PRODUCT_PUBLISH_OPTIONS}
@@ -174,7 +160,7 @@ export default function ProductDetailsView({ id }: Props) {
             },
             {
               value: 'reviews',
-              label: `Reviews (${product?.reviews?.length})`,
+              label: `Reviews (${product.reviews.length})`,
             },
           ].map((tab) => (
             <Tab key={tab.value} value={tab.value} label={tab.label} />
@@ -198,7 +184,7 @@ export default function ProductDetailsView({ id }: Props) {
   );
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       {productLoading && renderSkeleton}
 
       {productError && renderError}

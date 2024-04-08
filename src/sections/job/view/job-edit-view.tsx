@@ -24,7 +24,7 @@ export default function JobEditView({ id }: Props) {
   const currentJob = _jobs.find((job) => job.id === id);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Edit"
         links={[

@@ -15,7 +15,6 @@ const ROOTS = {
 };
 
 // ----------------------------------------------------------------------
-
 // drcode-paths
 export const paths = {
   comingSoon: '/coming-soon',
@@ -66,7 +65,6 @@ export const paths = {
       verify: `${ROOTS.AUTH}/jwt/verify`,
       forgotPassword: `${ROOTS.AUTH}/jwt/forgot-password`,
       newPassword: `${ROOTS.AUTH}/jwt/new-password`,
-      checkUser: `${ROOTS.AUTH}/jwt/check-user`,
     },
     firebase: {
       login: `${ROOTS.AUTH}/firebase/login`,
@@ -120,12 +118,9 @@ export const paths = {
       ecommerce: `${ROOTS.DASHBOARD}/ecommerce`,
       analytics: `${ROOTS.DASHBOARD}/analytics`,
       bestSelling: `${ROOTS.DASHBOARD}/best-selling`,
-      delivery: `${ROOTS.DASHBOARD}/analytics/delivery`,
       banking: `${ROOTS.DASHBOARD}/banking`,
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
-      products: `${ROOTS.DASHBOARD}/products/varients`,
-      order: `${ROOTS.DASHBOARD}/order`,
     },
     user: {
       root: `${ROOTS.DASHBOARD}/user`,
@@ -143,7 +138,7 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/product`,
       new: `${ROOTS.DASHBOARD}/product/new`,
       details: (id: string) => `${ROOTS.DASHBOARD}/product/${id}`,
-      edit: (id: string) => `${ROOTS.DASHBOARD}/product/edit/${id}`,
+      edit: (id: string) => `${ROOTS.DASHBOARD}/product/${id}/edit`,
       demo: {
         details: `${ROOTS.DASHBOARD}/product/${MOCK_ID}`,
         edit: `${ROOTS.DASHBOARD}/product/${MOCK_ID}/edit`,
@@ -152,17 +147,6 @@ export const paths = {
     products: {
       root: `${ROOTS.DASHBOARD}/products`,
       new: `${ROOTS.DASHBOARD}/products/new`,
-      details: (id: string) => `${ROOTS.DASHBOARD}/products/${id}`,
-      edit: (id: string) => `${ROOTS.DASHBOARD}/products/edit/${id}`,
-      variants: `${ROOTS.DASHBOARD}/products/variants`,
-      modifiers: `${ROOTS.DASHBOARD}/products/modifiers`,
-    },
-    // TODO: edit paths when working on analytics pages
-    analytics: {
-      root: `${ROOTS.DASHBOARD}/analytics`,
-      sales_analytics: `${ROOTS.DASHBOARD}/analytics`,
-      best_selling: `${ROOTS.DASHBOARD}/analytics`,
-      branch: `${ROOTS.DASHBOARD}/analytics`,
     },
     invoice: {
       root: `${ROOTS.DASHBOARD}/invoice`,
@@ -280,104 +264,3 @@ export const paths = {
     },
   },
 };
-
-// nav links paths
-export const navLinks = [
-  {
-    subheader: 'overview',
-    items: [
-      {
-        title: 'home',
-        path: paths.dashboard.root,
-        icon: 'fluent:home-20-filled',
-      },
-      {
-        title: 'orders',
-        path: paths.dashboard.orders.root,
-        icon: 'icon-park-solid:mall-bag',
-        permissions: ['GET_ORDERS'],
-      },
-      {
-        title: 'categories',
-        path: paths.dashboard.categories.root,
-        icon: 'fa6-solid:shapes',
-        permissions: ['GET_CATEGORYS'],
-      },
-      {
-        title: 'brand',
-        path: paths.dashboard.brands.root,
-        icon: 'basil:bag-solid',
-        permissions: ['GET_BRANDS'],
-      },
-      {
-        title: 'products',
-        path: paths.dashboard.products.root,
-        icon: 'fa6-solid:box',
-        permissions: ['GET_PRODUCTS'],
-        children: [
-          { title: 'variants', path: paths.dashboard.products.variants },
-          { title: 'modifiers', path: paths.dashboard.products.modifiers },
-        ],
-      },
-      {
-        title: 'customers',
-        path: paths.dashboard.customers.root,
-        icon: 'fa6-solid:user-group',
-        permissions: ['GET_CUSTOMERS'],
-      },
-      {
-        title: 'analytics',
-        path: paths.dashboard.analytics.root,
-        icon: 'fa6-solid:chart-pie',
-        permissions: ['GET_ORDERS'],
-        children: [
-          { title: 'sales_analytics', path: paths.dashboard.general.analytics },
-          { title: 'best_selling', path: paths.dashboard.general.bestSelling },
-          { title: 'branch', path: `${ROOTS.DASHBOARD}/analytics/delivery` },
-        ],
-      },
-      {
-        title: 'payment',
-        path: paths.dashboard.payments.root,
-        icon: 'fa6-solid:sack-dollar',
-        permissions: ['GET_PAYMENTS'],
-      },
-      {
-        title: 'vouchers',
-        path: paths.dashboard.vouchers.root,
-        icon: 'flowbite:ticket-solid',
-        permissions: ['GET_VOUCHERS'],
-      },
-      {
-        title: 'settings',
-        path: paths.dashboard.accountsettings.root,
-        icon: 'fa6-solid:gear',
-      },
-      {
-        title: 'delivery',
-        path: paths.dashboard.deliveryPickup.root,
-        icon: 'fa-solid:map-marked-alt',
-      },
-      {
-        title: 'integrations',
-        path: paths.dashboard.integrations.root,
-        icon: 'raphael:jigsaw',
-      },
-      {
-        title: 'design',
-        path: paths.dashboard.design.root,
-        icon: 'oi:brush',
-      },
-      {
-        title: 'domain',
-        path: paths.dashboard.domain.root,
-        icon: 'prime:link',
-      },
-      {
-        title: 'roles',
-        path: paths.dashboard.roles.root,
-        icon: 'basil:bag-solid',
-      },
-    ],
-  },
-];

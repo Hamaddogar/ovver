@@ -59,12 +59,10 @@ import { LoadingButton } from '@mui/lab';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'src/redux/store/store';
 import { useSnackbar } from 'notistack';
-import {
-  createLocation,
-  createWorkingHours,
-  fetchLocationsList,
-} from 'src/redux/store/thunks/location';
+import { createLocation, createWorkingHours, fetchLocationsList } from 'src/redux/store/thunks/location';
 import { createDeliveryZone } from 'src/redux/store/thunks/deliveryZone';
+
+
 
 const MapDraggableMarkers = dynamic(
   () => import('../../_examples/extra/map-view/draggable-markers')
@@ -93,6 +91,8 @@ const StyledMapContainer = styled('div')(({ theme }) => ({
   },
 }));
 
+
+
 // ----------------------------------------------------------------------
 
 export default function AccountView() {
@@ -112,19 +112,25 @@ export default function AccountView() {
     property: null,
   });
 
-  const [branchData, setBranchData] = useState<any>(null);
+
+
+  const [branchData, setBranchData] = useState<any>(null)
   // const [locationV, setLocationV] = useState<any>({
   //   latitude: 31.53208528429136,
   //   longitude: 74.34418413749019
   // });
   const [locationV, setLocationV] = useState<any>({
     latitude: 0,
-    longitude: 0,
+    longitude: 0
   });
+
+
+
 
   useEffect(() => {
     markCurrentLocation();
   }, []);
+
 
   const markCurrentLocation = () => {
     getLocation()
@@ -132,30 +138,32 @@ export default function AccountView() {
         setLocationV({
           latitude: location.latitude,
           longitude: location.longitude,
-        });
+        })
       })
       .catch((err) => {
-        console.error('Error:', err);
+        console.error("Error:", err);
       });
-  };
+  }
 
-  const getLocation = () =>
-    new Promise((resolve, reject) => {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude } = position.coords;
-            const { longitude } = position.coords;
-            resolve({ latitude, longitude });
-          },
-          (err: any) => {
-            reject(err.message);
-          }
-        );
-      } else {
-        console.log('Geolocation is not supported by your browser');
-      }
-    });
+
+  const getLocation = () => new Promise((resolve, reject) => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude } = position.coords;
+          const { longitude } = position.coords;
+          resolve({ latitude, longitude });
+        },
+        (err: any) => {
+          reject(err.message);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by your browser");
+    }
+  });
+
+
 
   // --------------------------------------------------------
   const [workingHours, setWorkingHours] = useState<any>([
@@ -208,10 +216,12 @@ export default function AccountView() {
     );
   };
 
+
   // --------------------------------------------------------
   const [deliveryZoneData, setDeliveryZoneData] = useState<any>(null);
   const [deliveryZoneList, setdeliveryZoneList] = useState<any>([]);
-  const [deliveryEditId, setDeliveryEditId] = useState<any>(null);
+  const [deliveryEditId, setDeliveryEditId] = useState<any>(null)
+
 
   // ----------------------------------------------------------------------------------
   // const validateWorkingHours = (workingHoursArray: any) => {
@@ -252,6 +262,7 @@ export default function AccountView() {
   const { isSubmitting } = formState;
 
   const onSubmit = handleSubmit(async (submitData: any) => {
+
     if (!customValidations()) {
       return false;
     }
@@ -267,29 +278,19 @@ export default function AccountView() {
       busy: false,
       scheduleStatus: true,
       scheduleDayNO: 2,
-    };
+    }
 
-    const WorkingHoursFormData = workingHours
-      .filter((dayObj: any) => dayObj.status === true)
-      .map((dayObj: any) => ({
-        day: dayObj.day,
-        from: new Date(dayObj.start).toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-        to: new Date(dayObj.end).toLocaleTimeString('en-US', {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      }));
+    const WorkingHoursFormData = workingHours.filter((dayObj: any) => dayObj.status === true).map((dayObj: any) => ({
+      day: dayObj.day,
+      from: new Date(dayObj.start).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
+      to: new Date(dayObj.end).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
+    }))
     // console.log(WorkingHoursFormData);
     const DeliveryZones = deliveryZoneList.map((dzObj: any) => ({
       government: dzObj.government,
       zoneName: {
         en: dzObj.zoneName.en,
-        ar: dzObj.zoneName.ar,
+        ar: dzObj.zoneName.ar
       },
       deliveryFees: Number(dzObj.deliveryFees),
       minOrder: Number(dzObj.minOrder),
@@ -301,6 +302,7 @@ export default function AccountView() {
     }));
     // console.log(DeliveryZones);
 
+
     // create branch
     dispatch(createLocation(FormValues)).then((response: any) => {
       console.log(response);
@@ -309,7 +311,7 @@ export default function AccountView() {
         methods.reset();
         const branchId = response.payload._id;
         createWorkingHoursFun(branchId, WorkingHoursFormData);
-        createDeliveryZoneFun(branchId, DeliveryZones);
+        createDeliveryZoneFun(branchId, DeliveryZones)
         dispatch(fetchLocationsList(error));
         enqueueSnackbar('Successfully Created!', { variant: 'success' });
         router.push(paths.dashboard.deliveryPickup.root);
@@ -317,6 +319,8 @@ export default function AccountView() {
         enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
       }
     });
+
+
   });
 
   // create working hours
@@ -325,16 +329,18 @@ export default function AccountView() {
       dispatch(createWorkingHours({ id: branchId, data: WH_obj })).then((response: any) => {
         console.log(response);
       });
-    });
-  };
-  // create Delivery Zone
+    })
+  }
+  // create Delivery Zone 
   const createDeliveryZoneFun = (branchId: any, DeliveryZones: any) => {
     DeliveryZones.map((DZ_obj: any) => {
       dispatch(createDeliveryZone({ id: branchId, data: DZ_obj })).then((response: any) => {
         console.log(response);
       });
-    });
-  };
+    })
+  }
+
+
 
   const handleNestedBranchData = (e: any, targetEl: any) => {
     const { name, value } = e.target;
@@ -358,6 +364,7 @@ export default function AccountView() {
 
   // ---------------------------------------------------------------- Delivery Zone -----------------------
 
+
   const deliveryZoneSchema = Yup.object().shape({
     government: Yup.string().required('Field is required'),
     zoneName: Yup.object().shape({
@@ -375,38 +382,32 @@ export default function AccountView() {
   });
 
   const onDZSubmitFun = DZMethods.handleSubmit(async (submitData: any) => {
+
     if (deliveryEditId) {
-      setdeliveryZoneList((prev: any) =>
-        prev.map((itemData: any) => {
-          if (itemData._id === deliveryEditId) {
-            return {
-              ...deliveryZoneData,
-              _id: deliveryEditId,
-              isPublished: deliveryZoneData?.isPublished || false,
-              allowCashOnDelivery: deliveryZoneData?.allowCashOnDelivery || false,
-              deliveryTimeUnit: deliveryZoneData?.deliveryTimeUnit || 'Minute',
-              country:
-                typeof deliveryZoneData?.country === 'object'
-                  ? deliveryZoneData?.country.code
-                  : deliveryZoneData?.country,
-            };
+      setdeliveryZoneList((prev: any) => prev.map((itemData: any) => {
+        if (itemData._id === deliveryEditId) {
+          return {
+            ...deliveryZoneData,
+            _id: deliveryEditId,
+            isPublished: deliveryZoneData?.isPublished || false,
+            allowCashOnDelivery: deliveryZoneData?.allowCashOnDelivery || false,
+            deliveryTimeUnit: deliveryZoneData?.deliveryTimeUnit || "Minute",
+            country: typeof deliveryZoneData?.country === 'object' ? deliveryZoneData?.country.code : deliveryZoneData?.country,
           }
-          return itemData;
-        })
-      );
+        }
+        return itemData;
+      }));
     } else {
       const newDeliveryZone = {
         ...deliveryZoneData,
         _id: Math.random(),
         isPublished: deliveryZoneData?.isPublished || false,
         allowCashOnDelivery: deliveryZoneData?.allowCashOnDelivery || false,
-        deliveryTimeUnit: deliveryZoneData?.deliveryTimeUnit || 'Minute',
-        country:
-          typeof deliveryZoneData?.country === 'object'
-            ? deliveryZoneData?.country.code
-            : deliveryZoneData?.country,
-      };
+        deliveryTimeUnit: deliveryZoneData?.deliveryTimeUnit || "Minute",
+        country: typeof deliveryZoneData?.country === 'object' ? deliveryZoneData?.country.code : deliveryZoneData?.country,
+      }
       setdeliveryZoneList([...deliveryZoneList, newDeliveryZone]);
+
     }
     DZMethods.reset();
     setOpenDetails(false);
@@ -434,6 +435,7 @@ export default function AccountView() {
   };
 
   const handleEditDZ = (locationObj: any) => {
+
     setOpenDetails(true);
     setDeliveryEditId(locationObj._id);
 
@@ -449,19 +451,19 @@ export default function AccountView() {
 
   const handleRemoveDZ = (removeId: any) => {
     setdeliveryZoneList((prev: any) => prev.filter((itemObj: any) => itemObj._id !== removeId));
-  };
+  }
 
   // Custom Validations
   const customValidations = () => {
     // Working Hours
     const inValidHours = workingHours.filter((dayObj: any) => {
       if (dayObj.status === true) {
-        if (dayObj.start === '' || dayObj.end === '') {
+        if (dayObj.start === "" || dayObj.end === "") {
           return true;
         }
-        return false;
+        return false
       }
-      return false;
+      return false
     });
 
     if (inValidHours.length > 0) {
@@ -469,7 +471,8 @@ export default function AccountView() {
       return false;
     }
     return true;
-  };
+  }
+
 
   // ----------------------------------------------------------------------------------
   const handleChangeSection =
@@ -499,15 +502,15 @@ export default function AccountView() {
     const isExist = list.find((li: any) => li === value?.code);
     if (!isExist) {
       list.push(value?.code);
-      setBranchData({ ...branchData, availableCountryForDelivery: list });
+      setBranchData({ ...branchData, availableCountryForDelivery: list })
     }
-  };
+  }
 
   const handleRemoveCountries = (value: any) => {
     const list = branchData?.availableCountryForDelivery || [];
     const filteredList = list.filter((li: any) => li !== value);
-    setBranchData({ ...branchData, availableCountryForDelivery: filteredList });
-  };
+    setBranchData({ ...branchData, availableCountryForDelivery: filteredList })
+  }
 
   return (
     <Box>
@@ -538,18 +541,18 @@ export default function AccountView() {
                 sx={
                   activeSection === 'Location Info'
                     ? {
-                        borderRadius: '12px',
-                        color: '#0F1349',
-                        backgroundColor: '#FFFFFF',
-                        boxShadow: '0px 6px 20px #00000033',
-                        '&:hover': { backgroundColor: '#FFFFFF' },
-                      }
+                      borderRadius: '12px',
+                      color: '#0F1349',
+                      backgroundColor: '#FFFFFF',
+                      boxShadow: '0px 6px 20px #00000033',
+                      '&:hover': { backgroundColor: '#FFFFFF' },
+                    }
                     : {
-                        borderRadius: '12px',
-                        color: '#8688A3',
-                        backgroundColor: 'background.neutral',
-                        '&:hover': { backgroundColor: 'background.neutral' },
-                      }
+                      borderRadius: '12px',
+                      color: '#8688A3',
+                      backgroundColor: 'background.neutral',
+                      '&:hover': { backgroundColor: 'background.neutral' },
+                    }
                 }
               >
                 {' '}
@@ -564,18 +567,18 @@ export default function AccountView() {
                 sx={
                   activeSection === 'Delivery Zones'
                     ? {
-                        borderRadius: '12px',
-                        color: '#0F1349',
-                        backgroundColor: '#FFFFFF',
-                        boxShadow: '0px 6px 20px #00000033',
-                        '&:hover': { backgroundColor: '#FFFFFF' },
-                      }
+                      borderRadius: '12px',
+                      color: '#0F1349',
+                      backgroundColor: '#FFFFFF',
+                      boxShadow: '0px 6px 20px #00000033',
+                      '&:hover': { backgroundColor: '#FFFFFF' },
+                    }
                     : {
-                        borderRadius: '12px',
-                        color: '#8688A3',
-                        backgroundColor: 'background.neutral',
-                        '&:hover': { backgroundColor: '#FFFFFF' },
-                      }
+                      borderRadius: '12px',
+                      color: '#8688A3',
+                      backgroundColor: 'background.neutral',
+                      '&:hover': { backgroundColor: '#FFFFFF' },
+                    }
                 }
               >
                 {' '}
@@ -622,10 +625,10 @@ export default function AccountView() {
       </Box>
 
       {/* body */}
-      <Container maxWidth={false} sx={{ mt: '30px' }}>
+      <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ mt: '30px' }}>
         {activeSection === 'Location Info' && (
           <Box>
-            <FormProvider methods={methods} onSubmit={onSubmit}>
+            <FormProvider methods={methods} onSubmit={onSubmit} >
               <Box sx={{ maxWidth: '700px', width: '100%' }}>
                 <Typography variant="h5" component="h5" mb="30px">
                   Details
@@ -647,11 +650,10 @@ export default function AccountView() {
                     >
                       Branch Name (English)
                     </Typography>
-                    <RHFTextField
-                      fullWidth
+                    <RHFTextField fullWidth
                       variant="filled"
-                      value={branchData?.name?.en || ''}
-                      settingStateValue={(e: any) => handleNestedBranchData(e, 'name')}
+                      value={branchData?.name?.en || ""}
+                      settingStateValue={(e: any) => handleNestedBranchData(e, "name")}
                       name="name.en"
                     />
                   </Grid>
@@ -665,13 +667,7 @@ export default function AccountView() {
                     >
                       Branch Name (Arabic)
                     </Typography>
-                    <RHFTextField
-                      fullWidth
-                      variant="filled"
-                      value={branchData?.name?.ar || ''}
-                      settingStateValue={(e: any) => handleNestedBranchData(e, 'name')}
-                      name="name.ar"
-                    />
+                    <RHFTextField fullWidth variant="filled" value={branchData?.name?.ar || ""} settingStateValue={(e: any) => handleNestedBranchData(e, "name")} name="name.ar" />
                   </Grid>
 
                   <Grid xs={12} md={6}>
@@ -688,21 +684,15 @@ export default function AccountView() {
                       name="availableCountryForDelivery"
                       variant="filled"
                       // value={branchData?.country || ''}
-                      value=""
+                      value=''
                       onChange={(event: any, value: any) =>
                         // setBranchData({ ...branchData, country: value?.code || '' })
                         handleAddCountries(value)
                       }
                     />
-                    <Box display="flex" sx={{ flexWrap: 'wrap' }} gap={2}>
+                    <Box display='flex' sx={{ flexWrap: "wrap" }} gap={2} >
                       {branchData?.availableCountryForDelivery?.map((country: any, ind: any) => (
-                        <Chip
-                          variant="outlined"
-                          key={ind}
-                          label={country}
-                          color="info"
-                          onDelete={() => handleRemoveCountries(country)}
-                        />
+                        <Chip variant="outlined" key={ind} label={country} color="info" onDelete={() => handleRemoveCountries(country)} />
                       ))}
                     </Box>
                     {/* <RHFTextField
@@ -747,9 +737,9 @@ export default function AccountView() {
                         variant="filled"
                         id="demo-simple-select"
                         name="currency"
-                        value={branchData?.currency || ''}
+                        value={branchData?.currency || ""}
                         settingStateValue={handleBranchData}
-                        // labelId="demo-simple-select-label"
+                      // labelId="demo-simple-select-label"
                       >
                         <MenuItem value="KWD">KWD</MenuItem>
                       </RHFSelect>
@@ -779,29 +769,29 @@ export default function AccountView() {
                     <RHFTextField
                       fullWidth
                       variant="filled"
-                      value={branchData?.phoneNumber || ''}
+                      value={branchData?.phoneNumber || ""}
                       settingStateValue={handleBranchData}
                       name="phoneNumber"
-                      // sx={{
-                      //   '& .MuiInputAdornment-root': {
-                      //     marginTop: '0px !important',
-                      //     // paddingLeft: '10px'
-                      //   },
-                      //   '& input': {
-                      //     paddingLeft: '2px !important',
-                      //   },
-                      // }}
-                      // InputProps={{
-                      //   startAdornment: (
-                      //     <InputAdornment position="start">
-                      //       <Stack direction="row" alignItems="center" spacing="8px">
-                      //         <Iconify icon="mingcute:down-fill" width={43} />
-                      //         <Box component="img" src="/raw/flagN.png" />
-                      //         <Divider orientation="vertical" variant="middle" flexItem />
-                      //       </Stack>
-                      //     </InputAdornment>
-                      //   ),
-                      // }}
+                    // sx={{
+                    //   '& .MuiInputAdornment-root': {
+                    //     marginTop: '0px !important',
+                    //     // paddingLeft: '10px'
+                    //   },
+                    //   '& input': {
+                    //     paddingLeft: '2px !important',
+                    //   },
+                    // }}
+                    // InputProps={{
+                    //   startAdornment: (
+                    //     <InputAdornment position="start">
+                    //       <Stack direction="row" alignItems="center" spacing="8px">
+                    //         <Iconify icon="mingcute:down-fill" width={43} />
+                    //         <Box component="img" src="/raw/flagN.png" />
+                    //         <Divider orientation="vertical" variant="middle" flexItem />
+                    //       </Stack>
+                    //     </InputAdornment>
+                    //   ),
+                    // }}
                     />
                   </Grid>
                 </Grid>
@@ -821,11 +811,7 @@ export default function AccountView() {
                       Location On Map
                     </Typography>
                     <Typography variant="caption" component="p" color="#8688A3">
-                      Selected Location:
-                      <b>
-                        {' '}
-                        {locationV?.longitude || ''} - {locationV?.latitude || ''}
-                      </b>
+                      Selected Location:<b> {locationV?.longitude || ""} -  {locationV?.latitude || ""}</b>
                     </Typography>
                   </Box>
                   <Box>
@@ -856,17 +842,11 @@ export default function AccountView() {
                     {/* <Box sx={{ minHeight: '150px', backgroundColor: '#CFCFCF', borderRadius: '16px' }} /> */}
                     <Box sx={{ minHeight: '150px', borderRadius: '16px' }}>
                       <StyledMapContainer>
-                        <MapDraggableMarkers
-                          {...baseSettings}
-                          mapStyle={THEMES.light}
+                        <MapDraggableMarkers {...baseSettings} mapStyle={THEMES.light}
                           defaultMarker={locationV}
                           onMarkerChange={(event: any) => {
-                            setLocationV({
-                              longitude: event.lngLat.lng,
-                              latitude: event.lngLat.lat,
-                            });
-                          }}
-                        />
+                            setLocationV({ longitude: event.lngLat.lng, latitude: event.lngLat.lat })
+                          }} />
                       </StyledMapContainer>
                     </Box>
                   </Grid>
@@ -882,13 +862,7 @@ export default function AccountView() {
                       >
                         Address (English)
                       </Typography>
-                      <RHFTextField
-                        fullWidth
-                        variant="filled"
-                        value={branchData?.address?.en || ''}
-                        settingStateValue={(e: any) => handleNestedBranchData(e, 'address')}
-                        name="address.en"
-                      />
+                      <RHFTextField fullWidth variant="filled" value={branchData?.address?.en || ""} settingStateValue={(e: any) => handleNestedBranchData(e, "address")} name="address.en" />
                     </FormControl>
                   </Grid>
                   <Grid xs={12} md={6}>
@@ -901,16 +875,11 @@ export default function AccountView() {
                     >
                       Address (Arabic)
                     </Typography>
-                    <RHFTextField
-                      fullWidth
-                      variant="filled"
-                      value={branchData?.address?.ar || ''}
-                      settingStateValue={(e: any) => handleNestedBranchData(e, 'address')}
-                      name="address.ar"
-                    />
+                    <RHFTextField fullWidth variant="filled" value={branchData?.address?.ar || ""} settingStateValue={(e: any) => handleNestedBranchData(e, "address")} name="address.ar" />
                   </Grid>
                 </Grid>
               </Box>
+
             </FormProvider>
 
             <Box sx={{ my: '20px' }}>
@@ -932,17 +901,10 @@ export default function AccountView() {
                 <Grid xs={12}>
                   <FormControlLabel
                     // control={<Switch color="primary" size="medium" defaultChecked />}
-                    control={
-                      <Switch
-                        color="primary"
-                        size="medium"
-                        name="allowPickUpOrders"
-                        checked={branchData?.allowPickUpOrders || false}
-                        onChange={(e: any) => {
-                          setBranchData({ ...branchData, allowPickUpOrders: e.target.checked });
-                        }}
-                      />
-                    }
+                    control={<Switch color="primary" size="medium" name='allowPickUpOrders' checked={branchData?.allowPickUpOrders || false}
+                      onChange={(e: any) => {
+                        setBranchData({ ...branchData, allowPickUpOrders: e.target.checked })
+                      }} />}
                     label="Allow Pick Up Orders"
                     labelPlacement="end"
                     sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
@@ -950,17 +912,10 @@ export default function AccountView() {
                 </Grid>
                 <Grid xs={12}>
                   <FormControlLabel
-                    control={
-                      <Switch
-                        color="primary"
-                        size="medium"
-                        name="allowDeliveryOrders"
-                        checked={branchData?.allowDeliveryOrders || false}
-                        onChange={(e: any) => {
-                          setBranchData({ ...branchData, allowDeliveryOrders: e.target.checked });
-                        }}
-                      />
-                    }
+                    control={<Switch color="primary" size="medium" name='allowDeliveryOrders' checked={branchData?.allowDeliveryOrders || false}
+                      onChange={(e: any) => {
+                        setBranchData({ ...branchData, allowDeliveryOrders: e.target.checked })
+                      }} />}
                     label="Allow Delivery Orders"
                     labelPlacement="end"
                     sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
@@ -1060,12 +1015,7 @@ export default function AccountView() {
                                 setTimerDialogOpen(true);
                               }}
                             >
-                              {dataObj?.start
-                                ? dataObj?.start.toLocaleTimeString([], {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                  })
-                                : 'hh:mm A'}{' '}
+                              {dataObj?.start ? dataObj?.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'hh:mm A'}{' '}
                               <Iconify icon="material-symbols:keyboard-arrow-down-rounded" />{' '}
                             </Typography>
                           </Stack>
@@ -1088,12 +1038,7 @@ export default function AccountView() {
                               }}
                             >
                               {' '}
-                              {dataObj?.end
-                                ? dataObj?.end.toLocaleTimeString([], {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                  })
-                                : 'hh:mm A'}{' '}
+                              {dataObj?.end ? dataObj?.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'hh:mm A'}{' '}
                               <Iconify icon="material-symbols:keyboard-arrow-down-rounded" />{' '}
                             </Typography>
                           </Stack>
@@ -1134,15 +1079,12 @@ export default function AccountView() {
                   /> */}
                   <Box sx={{ minHeight: '140px', borderRadius: '16px', pointerEvents: 'none' }}>
                     <StyledMapContainer>
-                      <MapDraggableMarkers
-                        {...baseSettings}
-                        mapStyle={THEMES.light}
+                      <MapDraggableMarkers {...baseSettings} mapStyle={THEMES.light}
                         defaultMarker={locationV}
                         draggable={false}
                         onMarkerChange={(event: any) => {
-                          setLocationV({ longitude: event.lngLat.lng, latitude: event.lngLat.lat });
-                        }}
-                      />
+                          setLocationV({ longitude: event.lngLat.lng, latitude: event.lngLat.lat })
+                        }} />
                     </StyledMapContainer>
                   </Box>
                 </Grid>
@@ -1178,7 +1120,7 @@ export default function AccountView() {
                 </Grid>
 
                 {deliveryZoneList.map((locationObj: any, indx: any) => (
-                  <Grid xs={12} key={indx}>
+                  <Grid xs={12} key={indx} >
                     <Box
                       component={Card}
                       sx={{
@@ -1199,7 +1141,7 @@ export default function AccountView() {
                         <Stack direction="row" alignItems="center" columnGap="15px">
                           <Box
                             onClick={() => {
-                              handleEditDZ(locationObj);
+                              handleEditDZ(locationObj)
                             }}
                             sx={{
                               height: '36px',
@@ -1277,7 +1219,7 @@ export default function AccountView() {
       <DetailsNavBar
         open={openDetails}
         onClose={handleDrawerCloseCommon('new')}
-        title={deliveryEditId !== null ? 'Edit Delivery Zone' : 'Add Delivery Zone'}
+        title={deliveryEditId !== null ? "Edit Delivery Zone" : "Add Delivery Zone"}
         actions={
           <Stack alignItems="center" justifyContent="center" spacing="10px">
             <LoadingButton
@@ -1309,17 +1251,15 @@ export default function AccountView() {
             </Typography>
             <Box sx={{ minHeight: '140px', borderRadius: '16px', pointerEvents: 'none' }}>
               <StyledMapContainer>
-                <MapDraggableMarkers
-                  {...baseSettings}
-                  mapStyle={THEMES.light}
+                <MapDraggableMarkers {...baseSettings} mapStyle={THEMES.light}
                   defaultMarker={locationV}
                   draggable={false}
                   onMarkerChange={(event: any) => {
-                    setLocationV({ longitude: event.lngLat.lng, latitude: event.lngLat.lat });
-                  }}
-                />
+                    setLocationV({ longitude: event.lngLat.lng, latitude: event.lngLat.lat })
+                  }} />
               </StyledMapContainer>
             </Box>
+
 
             <Typography
               mt="20px"
@@ -1333,14 +1273,9 @@ export default function AccountView() {
             </Typography>
 
             <FormControl fullWidth>
-              <RHFTextField
-                fullWidth
-                variant="filled"
-                value={deliveryZoneData?.government || ''}
-                settingStateValue={(e: any) => handleDeliveryZoneData(e)}
-                name="government"
-              />
+              <RHFTextField fullWidth variant="filled" value={deliveryZoneData?.government || ""} settingStateValue={(e: any) => handleDeliveryZoneData(e)} name="government" />
             </FormControl>
+
 
             <Typography
               mt="20px"
@@ -1354,13 +1289,7 @@ export default function AccountView() {
             </Typography>
 
             <FormControl fullWidth>
-              <RHFTextField
-                fullWidth
-                variant="filled"
-                value={deliveryZoneData?.zoneName?.en || ''}
-                settingStateValue={(e: any) => handleNestedDeliveryZoneData(e)}
-                name="zoneName.en"
-              />
+              <RHFTextField fullWidth variant="filled" value={deliveryZoneData?.zoneName?.en || ""} settingStateValue={(e: any) => handleNestedDeliveryZoneData(e)} name="zoneName.en" />
             </FormControl>
             <Typography
               mt="20px"
@@ -1374,13 +1303,7 @@ export default function AccountView() {
             </Typography>
 
             <FormControl fullWidth>
-              <RHFTextField
-                fullWidth
-                variant="filled"
-                value={deliveryZoneData?.zoneName?.ar || ''}
-                settingStateValue={(e: any) => handleNestedDeliveryZoneData(e)}
-                name="zoneName.ar"
-              />
+              <RHFTextField fullWidth variant="filled" value={deliveryZoneData?.zoneName?.ar || ""} settingStateValue={(e: any) => handleNestedDeliveryZoneData(e)} name="zoneName.ar" />
             </FormControl>
 
             <Typography
@@ -1398,8 +1321,11 @@ export default function AccountView() {
               variant="filled"
               value={deliveryZoneData?.country || ''}
               onChange={(event: any, value: any) => {
-                setDeliveryZoneData({ ...deliveryZoneData, country: value.code || '' });
-              }}
+
+                setDeliveryZoneData({ ...deliveryZoneData, country: value.code || '' })
+
+              }
+              }
             />
             {/* <Typography
               mt="20px"
@@ -1427,10 +1353,9 @@ export default function AccountView() {
                 >
                   Delivery Fees
                 </Typography>
-                <RHFTextField
-                  fullWidth
+                <RHFTextField fullWidth
                   variant="filled"
-                  value={deliveryZoneData?.deliveryFees || ''}
+                  value={deliveryZoneData?.deliveryFees || ""}
                   settingStateValue={(e: any) => handleDeliveryZoneData(e)}
                   name="deliveryFees"
                   sx={{
@@ -1450,8 +1375,7 @@ export default function AccountView() {
                         </Stack>
                       </InputAdornment>
                     ),
-                  }}
-                />
+                  }} />
               </Grid>
               <Grid xs={12} sm={6}>
                 <Typography
@@ -1464,10 +1388,9 @@ export default function AccountView() {
                 >
                   Min Order
                 </Typography>
-                <RHFTextField
-                  fullWidth
+                <RHFTextField fullWidth
                   variant="filled"
-                  value={deliveryZoneData?.minOrder || ''}
+                  value={deliveryZoneData?.minOrder || ""}
                   settingStateValue={(e: any) => handleDeliveryZoneData(e)}
                   name="minOrder"
                 />
@@ -1486,10 +1409,9 @@ export default function AccountView() {
             </Typography>
 
             <FormControl fullWidth>
-              <RHFTextField
-                fullWidth
+              <RHFTextField fullWidth
                 variant="filled"
-                value={deliveryZoneData?.deliveryTime || ''}
+                value={deliveryZoneData?.deliveryTime || ""}
                 settingStateValue={(e: any) => handleDeliveryZoneData(e)}
                 name="deliveryTime"
                 sx={{
@@ -1509,63 +1431,49 @@ export default function AccountView() {
                         <Select
                           variant="standard"
                           name="deliveryTimeUnit"
-                          value={deliveryZoneData?.deliveryTimeUnit || 'Minute'}
+                          value={deliveryZoneData?.deliveryTimeUnit || "Minute"}
                           onChange={(e: any) => handleDeliveryZoneData(e)}
                           sx={{
-                            backgroundColor: 'transparent',
-                            boxShadow: 'none',
-                            '&::before': {
-                              display: 'none',
-                            },
+                            backgroundColor: "transparent",
+                            boxShadow: "none",
+                            "&::before": {
+                              display: "none",
+                            }
                           }}
                         >
                           <MenuItem value="Minute">Minutes</MenuItem>
                           <MenuItem value="Hour">Hours</MenuItem>
                         </Select>
+
                       </Stack>
                     </InputAdornment>
                   ),
-                }}
-              />
+                }} />
             </FormControl>
 
             <FormControlLabel
-              control={
-                <Switch
-                  color="primary"
-                  size="medium"
-                  name="isPublished"
-                  checked={deliveryZoneData?.isPublished || false}
-                  onChange={(e: any) => {
-                    setDeliveryZoneData({ ...deliveryZoneData, isPublished: e.target.checked });
-                  }}
-                />
-              }
+
+              control={<Switch color="primary" size="medium" name='isPublished' checked={deliveryZoneData?.isPublished || false}
+                onChange={(e: any) => {
+                  setDeliveryZoneData({ ...deliveryZoneData, isPublished: e.target.checked })
+                }} />}
               label="Published"
               labelPlacement="end"
-              name="isPublished"
+              name='isPublished'
               sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
             />
             <FormControlLabel
-              control={
-                <Switch
-                  color="primary"
-                  size="medium"
-                  name="allowCashOnDelivery"
-                  checked={deliveryZoneData?.allowCashOnDelivery || false}
-                  onChange={(e: any) => {
-                    setDeliveryZoneData({
-                      ...deliveryZoneData,
-                      allowCashOnDelivery: e.target.checked,
-                    });
-                  }}
-                />
-              }
+
+              control={<Switch color="primary" size="medium" name='allowCashOnDelivery' checked={deliveryZoneData?.allowCashOnDelivery || false}
+                onChange={(e: any) => {
+                  setDeliveryZoneData({ ...deliveryZoneData, allowCashOnDelivery: e.target.checked })
+                }} />}
               label="Allow Cash On Delivery"
               labelPlacement="end"
-              name="allowCashOnDelivery"
+              name='allowCashOnDelivery'
               sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
             />
+
           </Box>
         </FormProvider>
       </DetailsNavBar>
@@ -1588,26 +1496,28 @@ const ShowTimerDialog = ({ index, prevData, property, updateWorkingHours, closeD
 
   useEffect(() => {
     const errorObj = {
-      start: '',
-      end: '',
+      start: "",
+      end: ""
     };
     if (selectedTime) {
-      if (!selectedTime.start || selectedTime.start === '') {
-        errorObj.start = 'Start Time is Required!';
+      if (!selectedTime.start || selectedTime.start === "") {
+        errorObj.start = "Start Time is Required!";
       }
-      if (!selectedTime.end || selectedTime.end === '') {
-        errorObj.end = 'End Time is Required!';
+      if (!selectedTime.end || selectedTime.end === "") {
+        errorObj.end = "End Time is Required!";
       }
-      setError(errorObj);
+      setError(errorObj)
     }
-  }, [selectedTime]);
+  }, [selectedTime])
+
 
   const submitData = () => {
-    if (error.start === '' && error.end === '') {
+    if (error.start === "" && error.end === "") {
       updateWorkingHours(index, { ...prevData, ...selectedTime });
       closeDialog();
     }
-  };
+  }
+
 
   return (
     <Dialog maxWidth="xs" open>
@@ -1622,10 +1532,7 @@ const ShowTimerDialog = ({ index, prevData, property, updateWorkingHours, closeD
         >
           Start Time
         </Typography>
-        <TimePicker
-          defaultValue={selectedTime?.start}
-          onChange={(e) => setSelectedTime({ ...selectedTime, start: e })}
-        />
+        <TimePicker defaultValue={selectedTime?.start} onChange={(e) => setSelectedTime({ ...selectedTime, start: e })} />
         <Typography
           component="p"
           noWrap
@@ -1646,10 +1553,7 @@ const ShowTimerDialog = ({ index, prevData, property, updateWorkingHours, closeD
         >
           End Time
         </Typography>
-        <TimePicker
-          defaultValue={selectedTime?.end}
-          onChange={(e) => setSelectedTime({ ...selectedTime, end: e })}
-        />
+        <TimePicker defaultValue={selectedTime?.end} onChange={(e) => setSelectedTime({ ...selectedTime, end: e })} />
         <Typography
           component="p"
           noWrap
@@ -1664,7 +1568,10 @@ const ShowTimerDialog = ({ index, prevData, property, updateWorkingHours, closeD
         <Button onClick={closeDialog} color="primary">
           Cancel
         </Button>
-        <Button onClick={submitData} color="primary">
+        <Button
+          onClick={submitData}
+          color="primary"
+        >
           Ok
         </Button>
       </DialogActions>

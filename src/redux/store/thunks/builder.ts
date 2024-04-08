@@ -116,6 +116,151 @@ export const builderSetObjectInDesign = createAsyncThunk(
   }
 );
 
+// home Section
+// Topbar > create ad appbar slider
+export const createAdAppbarSlider = createAsyncThunk(
+  'builder/createAdAppbarSlider',
+  async ({ builderId, url, data }: any) => {
+    if (url && builderId) {
+      if (url.startsWith('https://')) {
+        url = url.replace(/^https?:\/\//, '');
+      }
+      let headersObj = defaultConfig();
+      headersObj.headers['x-tenant-id'] = url;
+      headersObj.headers['Content-Type'] = 'multipart/form-data';
+      const response = await postRequest(
+        `${endpoints.builder.home.adAppBar.createSlider}/${builderId}`,
+        data,
+        headersObj
+      );
+      return response.data;
+    }
+  }
+);
+
+// Topbar > remove ad appbar slider
+export const removeAdAppbarSlider = createAsyncThunk(
+  'builder/removeAdAppbarSlider',
+  async ({ builderId, url, data, itemId }: any) => {
+    if (url && builderId) {
+      if (url.startsWith('https://')) {
+        url = url.replace(/^https?:\/\//, '');
+      }
+      let headersObj = defaultConfig();
+      headersObj.headers['x-tenant-id'] = url;
+      headersObj.headers['x-path'] = data?.path;
+
+      const response = await deleteRequest(
+        `${endpoints.builder.home.adAppBar.removeSlider}/${builderId}/lists/${itemId}`,
+        headersObj
+      );
+      return response.data;
+    }
+  }
+);
+export const updateBasicAdAppbar = createAsyncThunk(
+  'builder/updateBasicAdAppbar',
+  async ({ builderId, url, data }: any) => {
+    if (url && builderId) {
+      if (url.startsWith('https://')) {
+        url = url.replace(/^https?:\/\//, '');
+      }
+      let headersObj = defaultConfig();
+      headersObj.headers['x-tenant-id'] = url;
+      // headersObj.headers['Content-Type'] = 'multipart/form-data';
+      const response = await putRequest(
+        `${endpoints.builder.home.adAppBar.updateBasicSlider}/${builderId}`,
+        data,
+        headersObj
+      );
+      return response.data;
+    }
+  }
+);
+export const updateBasicAppbar = createAsyncThunk(
+  'builder/updateBasicAppbar',
+  async ({ builderId, url, data }: any) => {
+    console.log('headersObj', builderId, url, data);
+    if (url && builderId) {
+      if (url.startsWith('https://')) {
+        url = url.replace(/^https?:\/\//, '');
+      }
+      let headersObj = defaultConfig();
+      headersObj.headers['x-tenant-id'] = url;
+      headersObj.headers['Content-Type'] = 'multipart/form-data';
+
+      console.log('headersObj', headersObj);
+
+      const response = await putRequest(
+        `${endpoints.builder.home.adAppBar.updateBasicAppBar}/${builderId}`,
+        data,
+        headersObj
+      );
+      return response.data;
+    }
+  }
+);
+export const updateWebsiteLogo = createAsyncThunk(
+  'builder/updateWebsiteLogo',
+  async ({ builderId, url, data }: any) => {
+    console.log('headersObj', builderId, url, data);
+    if (url && builderId) {
+      if (url.startsWith('https://')) {
+        url = url.replace(/^https?:\/\//, '');
+      }
+      let headersObj = defaultConfig();
+      headersObj.headers['x-tenant-id'] = url;
+      headersObj.headers['Content-Type'] = 'multipart/form-data';
+
+      console.log('headersObj', headersObj);
+
+      const response = await putRequest(
+        `${endpoints.builder.home.updateWebsiteLogo}/${builderId}`,
+        data,
+        headersObj
+      );
+      return response.data;
+    }
+  }
+);
+export const getBuilderDetails = createAsyncThunk(
+  'builder/getBuilderDetails',
+  async ({ builderId, url }: any) => {
+    if (url && builderId) {
+      if (url.startsWith('https://')) {
+        url = url.replace(/^https?:\/\//, '');
+      }
+      let headersObj = defaultConfig();
+      headersObj.headers['x-tenant-id'] = url;
+      headersObj.headers['Content-Type'] = 'multipart/form-data';
+      const response = await getRequest(
+        `${endpoints.builder.design}?domain=${url}&type=temporary`,
+        headersObj
+      );
+      return response.data;
+    }
+  }
+);
+export const updateAdAppbarSlider = createAsyncThunk(
+  'builder/updateAdAppbarSlider',
+  async ({ builderId, url, data, itemId }: any) => {
+    if (url && builderId) {
+      if (url.startsWith('https://')) {
+        url = url.replace(/^https?:\/\//, '');
+      }
+      let headersObj = defaultConfig();
+      headersObj.headers['x-tenant-id'] = url;
+      headersObj.headers['Content-Type'] = 'multipart/form-data';
+      const response = await postRequest(
+        `${endpoints.builder.home.adAppBar.updateSlider}/${builderId}/ad_app_bar/${itemId}`,
+        data,
+        headersObj
+      );
+      return response.data;
+    }
+  }
+);
+
 const builderSlice = createSlice({
   name: 'builder',
   initialState: {
@@ -124,6 +269,7 @@ const builderSlice = createSlice({
     loading: false,
     error: null as string | null,
     status: 'idle',
+    builderDetails: null as any,
   },
   reducers: {
     setBuilder: (state, action: PayloadAction<any>) => {
@@ -202,11 +348,21 @@ const builderSlice = createSlice({
       .addCase(builderActivateApplication.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message !== undefined ? action.error.message : null;
+      })
+
+      .addCase(getBuilderDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message !== undefined ? action.error.message : null;
+      })
+      .addCase(getBuilderDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getBuilderDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.builderDetails = action.payload;
       });
   },
 });
-
-export const selectCurrentBuilder = (state: any): any => state.builder.builder;
-
 export const { setBuilder } = builderSlice.actions;
 export default builderSlice.reducer;

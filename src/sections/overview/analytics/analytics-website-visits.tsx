@@ -1,14 +1,18 @@
 import { ApexOptions } from 'apexcharts';
+// @mui
 import Box from '@mui/material/Box';
 import CardHeader from '@mui/material/CardHeader';
 import Card, { CardProps } from '@mui/material/Card';
+// components
 import Chart, { useChart } from 'src/components/chart';
+
+// ----------------------------------------------------------------------
 
 interface Props extends CardProps {
   title?: string;
   subheader?: string;
   chart: {
-    labels: string[]; // Updated to include labels prop
+    labels: string[];
     colors?: string[];
     series: {
       name: string;
@@ -33,9 +37,9 @@ export default function AnalyticsWebsiteVisits({ title, subheader, chart, ...oth
     fill: {
       type: series.map((i) => i.fill) as string[],
     },
-    labels, // Pass labels directly
+    labels,
     xaxis: {
-      type: 'category', // Use category type for x-axis
+      type: 'datetime',
     },
     tooltip: {
       shared: true,

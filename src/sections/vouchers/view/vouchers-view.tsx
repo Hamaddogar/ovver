@@ -228,8 +228,7 @@ export default function OrdersListView() {
 
   useEffect(() => {
     if (productsState.status === 'idle') {
-      // dispatch(fetchProductsList(productsState.error)).then((response: any) => {
-      dispatch(fetchProductsList()).then((response: any) => {
+      dispatch(fetchProductsList(productsState.error)).then((response: any) => {
         console.log(response?.data?.data);
         // setProductList(response.data.data)
       });
@@ -425,20 +424,20 @@ export default function OrdersListView() {
 
   const toggleDrawerCommon =
     (state: string, id: any = null) =>
-    (event: React.SyntheticEvent | React.MouseEvent) => {
-      if (state === 'new') {
-        setOpenCreateVoucher((pv) => !pv);
-        setEditId(id);
-        if (id) {
-          dispatch(fetchOneVoucher(id));
-        } else {
-          setVoucherData({});
-          dispatch(setVoucher({}));
-        }
-      } else if (state === 'delete') {
-        setOpenDelete((pv) => !pv);
-      } else if (state === 'details') setOpenDetails((pv) => !pv);
-    };
+      (event: React.SyntheticEvent | React.MouseEvent) => {
+        if (state === 'new') {
+          setOpenCreateVoucher((pv) => !pv);
+          setEditId(id);
+          if (id) {
+            dispatch(fetchOneVoucher(id));
+          } else {
+            setVoucherData({});
+            dispatch(setVoucher({}));
+          }
+        } else if (state === 'delete') {
+          setOpenDelete((pv) => !pv);
+        } else if (state === 'details') setOpenDetails((pv) => !pv);
+      };
 
   const handleDrawerCloseCommon =
     (state: string) => (event: React.SyntheticEvent | React.KeyboardEvent) => {
@@ -503,7 +502,7 @@ export default function OrdersListView() {
   }, []);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <RoleBasedGuard hasContent permission="GET_VOUCHERS">
         <Grid
           container
@@ -636,7 +635,7 @@ export default function OrdersListView() {
                                   item
                                   xs={12}
                                 >
-                                  <Paper elevation={4}>
+                                  <Paper elevation={4} >
                                     <Grid
                                       container
                                       item
@@ -706,9 +705,7 @@ export default function OrdersListView() {
                                           {voucher.type === 'FIXED_AMOUNT'
                                             ? `${voucher.discountAmount} KWD`
                                             : `${voucher.discountPercentage}%`}{' '}
-                                          <span style={{ fontSize: '.7rem' }}>
-                                            ({voucher.type})
-                                          </span>{' '}
+                                          <span style={{ fontSize: '.7rem' }}>({voucher.type})</span>{' '}
                                         </Typography>
                                       </Grid>
                                       <Grid item xs={6} md="auto">
@@ -724,11 +721,7 @@ export default function OrdersListView() {
 
                                       <Grid item xs={6} md="auto">
                                         <Box
-                                          sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '13px',
-                                          }}
+                                          sx={{ display: 'flex', alignItems: 'center', gap: '13px' }}
                                         >
                                           <Box
                                             sx={{
@@ -1044,7 +1037,7 @@ export default function OrdersListView() {
                             fontWeight: 900,
                           }}
                           onChange={handleChangeMySubCat}
-                          // endAdornment={<div style={{ fontSize: '12px', marginRight: '20px', marginTop: '3px' }}>KWD</div>}
+                        // endAdornment={<div style={{ fontSize: '12px', marginRight: '20px', marginTop: '3px' }}>KWD</div>}
                         >
                           <MenuItem value="All Products">All Products</MenuItem>
                           <MenuItem value="Laptops">Laptops</MenuItem>

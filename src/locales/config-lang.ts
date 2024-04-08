@@ -1,5 +1,5 @@
 // @mui
-import { enUS, frFR, arSA, esES, trTR, deDE } from '@mui/material/locale';
+import { enUS, frFR, zhCN, viVN, arSA } from '@mui/material/locale';
 
 // PLEASE REMOVE `LOCAL STORAGE` WHEN YOU CHANGE SETTINGS.
 // ----------------------------------------------------------------------
@@ -12,38 +12,30 @@ export const allLangs = [
     icon: 'flagpack:gb-nir',
   },
   {
-    label: 'العربية',
-    value: 'ar',
-    systemValue: arSA,
-    icon: 'flagpack:sa',
-  },
-  {
-    label: 'Türkçe',
-    value: 'tr',
-    systemValue: trTR,
-    icon: 'flagpack:tr',
-  },
-  {
-    label: 'española',
-    value: 'es',
-    systemValue: esES,
-    icon: 'flagpack:es',
-  },
-  {
-    label: 'deutsche',
-    value: 'de',
-    systemValue: deDE,
-    icon: 'flagpack:de',
-  },
-  {
-    label: 'française',
+    label: 'French',
     value: 'fr',
     systemValue: frFR,
     icon: 'flagpack:fr',
   },
+  {
+    label: 'Vietnamese',
+    value: 'vi',
+    systemValue: viVN,
+    icon: 'flagpack:vn',
+  },
+  {
+    label: 'Chinese',
+    value: 'cn',
+    systemValue: zhCN,
+    icon: 'flagpack:cn',
+  },
+  {
+    label: 'Arabic',
+    value: 'ar',
+    systemValue: arSA,
+    icon: 'flagpack:sa',
+  },
 ];
-
-export const appLocales = allLangs.map((item) => item.value); // [en, ar, tr, ....]
 
 export const defaultLang = allLangs[0]; // English
 

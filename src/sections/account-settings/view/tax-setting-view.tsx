@@ -127,7 +127,7 @@ export default function TaxSetting() {
   const [openDialog, setOpenDialog] = useState(false);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Box>
         <CustomCrumbs
           heading="Tax Settings"

@@ -1,14 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { getBuilderDomain, getLocale } from 'src/auth/context/jwt/utils';
+import { getBuilderDomain } from 'src/auth/context/jwt/utils';
 // config
 import { HOST_API } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
 const axiosInstance = axios.create({
-  baseURL: 'https://www.overzaki.io/api',
-
-  // baseURL: HOST_API,
+  baseURL: HOST_API,
   // headers: {
   //   'x-tenant-id': 'stuffystallion2635.overzaki.info',
   // },
@@ -95,19 +93,6 @@ export const endpoints = {
     forgotPassword: '/code/forgot_password_otp',
     forgotPasswordVerity: '/auth/forgot_password',
     loutout: '/auth/logout',
-    checkUser: '/auth/checker',
-  },
-
-  analytics: {
-    root: '/analytics',
-    globalAnalytics: '/analytics/global-analytics',
-    mostSellingProduct: '/analytics/mostselling_product',
-  },
-  users: {
-    root: '/users',
-    me: '/users/me',
-    resetPassword: '/users/reset_password',
-    deleteAccount: '/users/delete_account',
   },
   mail: {
     list: '/mail/list',
@@ -128,6 +113,7 @@ export const endpoints = {
     rows: '/rows',
   },
   builder: {
+    design: '/design/config',
     list: '/builder',
     save: '/design/save',
     logo: '/design/logo_image',
@@ -135,11 +121,20 @@ export const endpoints = {
     get: '/builder?type=website',
     search: '/builder/search',
     setObject: '/home-design/lists',
+    home: {
+      adAppBar: {
+        updateBasicSlider: '/appbar-design/adappbar_basic',
+        createSlider: '/appbar-design/ad_app_bar',
+        removeSlider: '/home-design',
+        updateSlider: '/appbar-design',
+        updateBasicAppBar: '/appbar-design/basic_info',
+      },
+      updateWebsiteLogo: '/general-design/website_logo',
+    },
   },
   customer: {
-    root: '/customers',
-    list: '/customers/all',
-    analytics: '/customers/analytics',
+    list: '/customers',
+    search: '/customers/search',
   },
   paymentMethod: {
     list: '/payment-methods',
@@ -148,16 +143,13 @@ export const endpoints = {
   brand: {
     list: '/brand/all',
     search: '/brand',
-    sort: '/brand/sortIndex',
   },
-
   analytic: {
-    chart: '/analytics/chart_data?type=monthly&filter=last-week&withpervious=0&withperviousYear=1',
+    chart: '/analytics/chart_data?type=monthly&filter=last-month&withpervious=0&withperviousYear=1',
     global: '/analytics/global-analytics?filter=last-week',
     order: '/analytics/order-analytics?filter=last-week',
-    modules: '/analytics/modules',
     bestSellingItems: '/analytics/best-selling-items?filter=last-month',
-    bestSellingCategories: '/analytics/best-selling-categories?filter=last-month',
+    bestSellingCategories: '/analytics/best-selling-categories?filter=last-week',
     bestSellingBranches: '/analytics/best-selling-branches?filter=last-month',
     summary: '',
     customers: '',
@@ -185,13 +177,11 @@ export const endpoints = {
     _list: '/categories',
     list: '/categories/all',
     search: '/category/search',
-    sortIndex: '/categories/sortIndex',
   },
   subCategory: {
     create: '/sub-categories',
     _list: '/sub-categories',
     list: '/sub-categories/all',
-    sortIndexSub: '/sub-categories/sortIndex',
   },
   icon: {
     create: '/icon-category',
@@ -262,17 +252,12 @@ export const endpoints = {
     list: '/taxSettings/',
     search: '/taxSettings/',
   },
-  countries: {
-    list: '/country/all',
-  },
 };
 
 export const defaultConfig = () => {
-  const locale = getLocale();
   const tanentId = getBuilderDomain() || '';
   let headersObj: any = {
     'Content-Type': 'application/json',
-    'x-lang': locale,
   };
   if (tanentId) {
     headersObj = {

@@ -9,21 +9,11 @@ import { localStorageGetItem } from 'src/utils/storage-available';
 import { defaultLang } from './config-lang';
 //
 import translationEn from './langs/en.json';
-import translationAr from './langs/ar.json';
-import translationTr from './langs/tr.json';
-import translationEs from './langs/es.json';
-import translationDe from './langs/de.json';
 import translationFr from './langs/fr.json';
+import translationVi from './langs/vi.json';
+import translationCn from './langs/cn.json';
+import translationAr from './langs/ar.json';
 
-const resources = {
-  ar: { translations: translationAr },
-  en: { translations: translationEn },
-  tr: { translations: translationTr },
-  es: { translations: translationEs },
-  de: { translations: translationDe },
-  fr: { translations: translationFr },
-  // ... other languages
-};
 // ----------------------------------------------------------------------
 
 const lng = localStorageGetItem('i18nextLng', defaultLang.value);
@@ -32,7 +22,13 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources,
+    resources: {
+      en: { translations: translationEn },
+      fr: { translations: translationFr },
+      vi: { translations: translationVi },
+      cn: { translations: translationCn },
+      ar: { translations: translationAr },
+    },
     lng,
     fallbackLng: lng,
     debug: false,

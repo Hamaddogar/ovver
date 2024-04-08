@@ -19,52 +19,32 @@ import { useAuthContext } from 'src/auth/hooks';
 import { varHover } from 'src/components/animate';
 import { useSnackbar } from 'src/components/snackbar';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import Iconify from 'src/components/iconify';
-import { useLocales } from 'src/locales';
-import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { fetchMyUser } from 'src/redux/store/thunks/user';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'src/redux/store/store';
 
 // ----------------------------------------------------------------------
+
+const OPTIONS = [
+  {
+    label: 'Home',
+    linkTo: '/',
+  },
+  {
+    label: 'Profile',
+    linkTo: paths.dashboard.user.profile,
+  },
+  {
+    label: 'Settings',
+    linkTo: paths.dashboard.user.account,
+  },
+];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-  const { t } = useLocales();
-
-  const OPTIONS = [
-    {
-      label: t('common.account.home'),
-      linkTo: paths.dashboard.root,
-    },
-    {
-      label: t('common.account.profile'),
-      linkTo: paths.dashboard.user.root,
-    },
-    {
-      label: t('common.account.settings'),
-      linkTo: paths.dashboard.user.account,
-    },
-  ];
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
 
-  const { user: mockUser } = useMockedUser();
+  const { user } = useMockedUser();
 
-  const { logout, user } = useAuthContext();
-  const { user: realUser } = useSelector((state: any) => state.user);
-  useEffect(() => {
-    dispatch(fetchMyUser());
-  }, []);
-
-  // TODO: remove mock data
-  const userData = {
-    name: realUser?.fullName || mockUser?.displayName,
-    email: realUser?.email || mockUser?.email,
-    img: realUser?.image || mockUser?.photoURL,
-  };
+  const { logout } = useAuthContext();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -90,53 +70,39 @@ export default function AccountPopover() {
     <>
       <IconButton
         component={m.button}
-        // whileTap="tap"
-        // whileHover="hover"
-        // variants={varHover(1.05)}
+        whileTap="tap"
+        whileHover="hover"
+        variants={varHover(1.05)}
         onClick={popover.onOpen}
         sx={{
-          color: 'text.primary',
-          borderRadius: '10000px',
+          width: 40,
+          height: 40,
+          background: (theme) => alpha(theme.palette.grey[500], 0.08),
+          ...(popover.open && {
+            background: (theme) =>
+              `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+          }),
         }}
       >
         <Avatar
-          src={userData.img}
-          alt={userData.name}
+          src={user?.photoURL}
+          alt={user?.displayName}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         />
-        <Typography
-          sx={{
-            px: 0.5,
-            fontWeight: '500',
-            textTransform: 'capitalize',
-            display: { xs: 'none', md: 'block' },
-          }}
-        >
-          {userData.name}
-        </Typography>
-        <Iconify icon="mingcute:down-fill" sx={{ color: 'text.secondary' }} />
       </IconButton>
 
-      <CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        sx={{ width: 200, p: 0, textTransform: 'capitalize' }}
-      >
+      <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {userData.name}
+            {user?.displayName}
           </Typography>
 
-          <Typography
-            variant="body2"
-            sx={{ color: 'text.secondary', textTransform: 'none' }}
-            noWrap
-          >
-            {userData.email}
+          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+            {user?.email}
           </Typography>
         </Box>
 
@@ -156,7 +122,7 @@ export default function AccountPopover() {
           onClick={handleLogout}
           sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
         >
-          {t('common.account.logout')}
+          Logout
         </MenuItem>
       </CustomPopover>
     </>

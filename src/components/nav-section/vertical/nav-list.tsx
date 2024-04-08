@@ -5,13 +5,13 @@ import Collapse from '@mui/material/Collapse';
 import { usePathname } from 'src/routes/hooks';
 import { useActiveLink } from 'src/routes/hooks/use-active-link';
 //
-import { NavListProps, NavConfigProps, CustomNavListProps } from '../types';
+import { NavListProps, NavConfigProps } from '../types';
 import NavItem from './nav-item';
 
 // ----------------------------------------------------------------------
 
 type NavListRootProps = {
-  data: CustomNavListProps;
+  data: NavListProps;
   depth: number;
   hasChild: boolean;
   config: NavConfigProps;
@@ -65,7 +65,7 @@ export default function NavList({ data, depth, hasChild, config }: NavListRootPr
 // ----------------------------------------------------------------------
 
 type NavListSubProps = {
-  data: CustomNavListProps[];
+  data: NavListProps[];
   depth: number;
   config: NavConfigProps;
 };

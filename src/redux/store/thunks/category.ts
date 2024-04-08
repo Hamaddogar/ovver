@@ -13,7 +13,6 @@ import {
 export interface ICategoryForm extends IRequest {
   name: string;
   balance?: number;
-  categoryId:number
   // examples
 }
 
@@ -29,34 +28,10 @@ export const fetchCategorysList = createAsyncThunk(
         `${endpoints.category.list}${searchQuery}`,
         defaultConfig()
       );
-      console.log('Response: ', response);
       return response;
     } catch (error) {
       return error;
     }
-  }
-);
-
-export const sortCategory = createAsyncThunk(
-  'categories/sortIndex',
-  async (payload: { categodyId: any; data: any }) => {
-    let headersObj = defaultConfig();
-    headersObj.headers['Content-Type'] = 'application/json';
-    const { categodyId, data } = payload;
-    const response = await putRequest(`${endpoints.category.sortIndex}/${categodyId}`, data, headersObj);
-
-    return response.data;
-  }
-);
-export const sortSubCategory = createAsyncThunk(
-  'sub-categories/sortIndex',
-  async (payload: { subCategoryId: any; data: any }) => {
-    let headersObj = defaultConfig();
-    headersObj.headers['Content-Type'] = 'application/json';
-    const { subCategoryId, data } = payload;
-    const response = await putRequest(`${endpoints.subCategory.sortIndexSub}/${subCategoryId}`, data, headersObj);
-
-    return response.data;
   }
 );
 
@@ -75,7 +50,10 @@ export const fetchSubCategorysList = createAsyncThunk(
 export const fetchOneCategory = createAsyncThunk(
   'category/fetchOne',
   async (categoryId: number) => {
-    const response = await getRequest(`${endpoints.category._list}/${categoryId}`, defaultConfig());
+    const response = await getRequest(
+      `${endpoints.category._list}/${categoryId}?lang=en`,
+      defaultConfig()
+    );
 
     return response.data;
   }

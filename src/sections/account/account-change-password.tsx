@@ -13,38 +13,25 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import Iconify from 'src/components/iconify';
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { useDispatch } from 'react-redux';
-import { editPassword } from 'src/redux/store/thunks/user';
-import { AppDispatch } from 'src/redux/store/store';
-import { useLocales } from 'src/locales';
-import { Tooltip } from '@mui/material';
-import { useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
 export default function AccountChangePassword() {
   const { enqueueSnackbar } = useSnackbar();
-  const { t } = useLocales();
-  const { loading } = useSelector((state: any) => state.user);
 
-  const passwordShown = useBoolean();
-  const newPasswordShown = useBoolean();
-  const confirmPasswordShown = useBoolean();
+  const password = useBoolean();
 
   const ChangePassWordSchema = Yup.object().shape({
-    oldPassword: Yup.string().required(t('userAccount.old_password_required')),
+    oldPassword: Yup.string().required('Old Password is required'),
     newPassword: Yup.string()
-      .required(t('userAccount.new_password_required'))
-      .min(8, t('userAccount.password_length', { var: 8 }))
+      .required('New Password is required')
+      .min(6, 'Password must be at least 6 characters')
       .test(
         'no-match',
-        t('userAccount.no_match'),
+        'New password must be different than old password',
         (value, { parent }) => value !== parent.oldPassword
       ),
-    confirmNewPassword: Yup.string().oneOf(
-      [Yup.ref('newPassword')],
-      t('userAccount.passwords_mismatch')
-    ),
+    confirmNewPassword: Yup.string().oneOf([Yup.ref('newPassword')], 'Passwords must match'),
   });
 
   const defaultValues = {
@@ -64,42 +51,30 @@ export default function AccountChangePassword() {
     formState: { isSubmitting },
   } = methods;
 
-  const dispatch = useDispatch<AppDispatch>();
   const onSubmit = handleSubmit(async (data) => {
-    dispatch(
-      editPassword({
-        data: {
-          oldPassword: data.oldPassword,
-          newPassword: data.newPassword,
-        },
-      })
-    ).then((response: any) => {
-      if (response.meta.requestStatus === 'fulfilled') {
-        enqueueSnackbar(t('userAccount.password_changed'), { variant: 'success' });
-        reset();
-      } else {
-        enqueueSnackbar(`${'common.error'} ${response.error.message}`, { variant: 'error' });
-      }
-    });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      reset();
+      enqueueSnackbar('Update success!');
+      console.info('DATA', data);
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
-      <Stack component={Card} spacing={3} sx={{ p: 3, '& label': { textTransform: 'capitalize' } }}>
+      <Stack component={Card} spacing={3} sx={{ p: 3 }}>
         <RHFTextField
           name="oldPassword"
-          type={passwordShown.value ? 'text' : 'password'}
-          label={t('userAccount.oldPassword')}
+          type={password.value ? 'text' : 'password'}
+          label="Old Password"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <Tooltip title={passwordShown.value ? t('common.show') : t('common.hide')}>
-                  <IconButton onClick={passwordShown.onToggle} edge="end">
-                    <Iconify
-                      icon={passwordShown.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
-                    />
-                  </IconButton>
-                </Tooltip>
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
               </InputAdornment>
             ),
           }}
@@ -107,56 +82,42 @@ export default function AccountChangePassword() {
 
         <RHFTextField
           name="newPassword"
-          label={t('userAccount.newPassword')}
-          type={newPasswordShown.value ? 'text' : 'password'}
+          label="New Password"
+          type={password.value ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <Tooltip title={newPasswordShown.value ? t('common.show') : t('common.hide')}>
-                  <IconButton onClick={newPasswordShown.onToggle} edge="end">
-                    <Iconify
-                      icon={newPasswordShown.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
-                    />
-                  </IconButton>
-                </Tooltip>
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
               </InputAdornment>
             ),
           }}
           helperText={
             <Stack component="span" direction="row" alignItems="center">
-              <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} />
-              {t('userAccount.password_length', { var: 8 })}
+              <Iconify icon="eva:info-fill" width={16} sx={{ mr: 0.5 }} /> Password must be minimum
+              6+
             </Stack>
           }
         />
 
         <RHFTextField
           name="confirmNewPassword"
-          type={confirmPasswordShown.value ? 'text' : 'password'}
-          label={t('userAccount.confirmPassword')}
+          type={password.value ? 'text' : 'password'}
+          label="Confirm New Password"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <Tooltip title={confirmPasswordShown.value ? t('common.show') : t('common.hide')}>
-                  <IconButton onClick={confirmPasswordShown.onToggle} edge="end">
-                    <Iconify
-                      icon={confirmPasswordShown.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
-                    />
-                  </IconButton>
-                </Tooltip>
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
               </InputAdornment>
             ),
           }}
         />
 
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          color={'primary'}
-          loading={loading.editPassword}
-          sx={{ ml: 'auto', textTransform: 'capitalize' }}
-        >
-          {t('userAccount.save_changes')}
+        <LoadingButton type="submit" variant="contained" loading={isSubmitting} sx={{ ml: 'auto' }}>
+          Save Changes
         </LoadingButton>
       </Stack>
     </FormProvider>

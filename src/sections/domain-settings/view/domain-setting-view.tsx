@@ -20,7 +20,7 @@ export default function DomainSettingsView() {
 
   return (
     <Container
-      maxWidth={false}
+      maxWidth={settings.themeStretch ? false : 'lg'}
       sx={{
         mt: 3,
         mb: 15,
@@ -28,62 +28,43 @@ export default function DomainSettingsView() {
     >
       <Box>
         <CustomCrumbs
-          heading="Domain Settings"
+          heading='Domain Settings'
           description="Control and link your website domain"
-          crums={false}
-        />
+          crums={false} />
       </Box>
 
-      <Stack
-        alignItems="center"
-        justifyContent="center"
-        rowGap="17px"
-        sx={{ mt: '100px', width: '100%' }}
-      >
-        <Box component="img" src="/raw/Nodomain.svg" alt="" />
 
-        <Typography variant="h5" color="#8688A3" component="h5">
+
+      <Stack alignItems='center' justifyContent='center' rowGap="17px" sx={{ mt: '100px', width: '100%' }}>
+
+        <Box component='img' src="/raw/Nodomain.svg" alt='' />
+
+        <Typography variant='h5' color="#8688A3" component='h5'>
           No domain yet!
         </Typography>
 
-        <Typography
-          variant="body2"
-          color="#8688A3"
-          component="p"
-          my={1}
-          maxWidth="286px"
-          textAlign="center"
-        >
+        <Typography variant='body2' color="#8688A3" component='p' my={1} maxWidth='286px' textAlign='center'>
           You need to Link your website with a domain to publish it.
         </Typography>
 
-        <Linker path={paths.dashboard.domain.new} width="100%" maxWidth="300px">
-          <Button
-            variant="contained"
-            fullWidth
-            size="large"
-            color="primary"
-            sx={{ borderRadius: '30px', color: '#0F1349', boxShadow: '0px 6px 20px #1BFCB633' }}
-          >
+
+        <Linker path={paths.dashboard.domain.new} width='100%' maxWidth="300px">
+          <Button variant='contained' fullWidth size='large' color='primary' sx={{ borderRadius: '30px', color: '#0F1349', boxShadow: '0px 6px 20px #1BFCB633' }} >
             Get New Domain
           </Button>
         </Linker>
 
-        <Linker path={paths.dashboard.domain.custom} width="100%" maxWidth="300px">
-          <Button
-            variant="contained"
-            fullWidth
-            size="large"
-            sx={{
-              borderRadius: '30px',
-              backgroundColor: '#0F1349',
-              boxShadow: '0px 6px 20px #0F134933',
-            }}
-          >
+
+        <Linker path={paths.dashboard.domain.custom} width='100%' maxWidth="300px">
+          <Button variant='contained' fullWidth size='large' sx={{ borderRadius: '30px', backgroundColor: '#0F1349', boxShadow: '0px 6px 20px #0F134933' }} >
             Use My Domain
           </Button>
         </Linker>
+
+
+
       </Stack>
+
     </Container>
   );
 }

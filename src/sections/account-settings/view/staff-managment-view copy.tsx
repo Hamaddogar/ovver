@@ -73,29 +73,29 @@ export default function StaffManagment() {
   const pageSize = 5;
   const toggleDrawerCommon =
     (state: string, id: any = null) =>
-    (event: React.SyntheticEvent | React.MouseEvent) => {
-      if (state === 'new') {
-        setOpenCreateStaff((pv) => !pv);
-        setEditId(id);
-        if (id) {
-          dispatch(fetchOneStaffManagement(id)).then((response: any) => {
-            const { user, adminName } = response.payload;
-            const { gender, email, location, phoneNumber, preferedLanguage, roles } = user;
-            delete adminName.localized;
-            const userObj = {
-              adminName,
-              gender,
-              email,
-              location,
-              phoneNumber,
-              preferedLanguage,
-              roles,
-            };
-            setUserData(userObj);
-          });
-        }
-      } else if (state === 'delstaff') setOpenDelStaff((pv) => !pv);
-    };
+      (event: React.SyntheticEvent | React.MouseEvent) => {
+        if (state === 'new') {
+          setOpenCreateStaff((pv) => !pv);
+          setEditId(id);
+          if (id) {
+            dispatch(fetchOneStaffManagement(id)).then((response: any) => {
+              const { user, adminName } = response.payload;
+              const { gender, email, location, phoneNumber, preferedLanguage, roles } = user;
+              delete adminName.localized;
+              const userObj = {
+                adminName,
+                gender,
+                email,
+                location,
+                phoneNumber,
+                preferedLanguage,
+                roles,
+              };
+              setUserData(userObj);
+            });
+          }
+        } else if (state === 'delstaff') setOpenDelStaff((pv) => !pv);
+      };
 
   const handleDrawerCloseCommon =
     (state: string) => (event: React.SyntheticEvent | React.KeyboardEvent) => {
@@ -300,7 +300,7 @@ export default function StaffManagment() {
   }, []);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Grid
         container
         justifyContent="space-between"
@@ -310,13 +310,12 @@ export default function StaffManagment() {
         <Grid item xs={12} md="auto">
           <CustomCrumbs
             heading="Staff Management"
-            description={`${
-              staffLength
-                ? staffLength === 1
-                  ? `${staffLength} Staff Member`
-                  : `${staffLength} Staff Members`
-                : `${0} Staff Members`
-            }`}
+            description={`${staffLength
+              ? staffLength === 1
+                ? `${staffLength} Staff Member`
+                : `${staffLength} Staff Members`
+              : `${0} Staff Members`
+              }`}
           />
         </Grid>
 

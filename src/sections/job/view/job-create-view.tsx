@@ -16,7 +16,7 @@ export default function JobCreateView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Create a new job"
         links={[

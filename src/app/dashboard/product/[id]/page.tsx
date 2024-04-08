@@ -1,13 +1,34 @@
+// utils
+import axios, { endpoints } from 'src/utils/axios';
 // sections
-
-import { VariantsView } from 'src/sections/products/view';
+import { ProductDetailsView } from 'src/sections/product/view';
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Dashboard: Products View',
+  title: 'Dashboard: Product Details',
 };
 
-export default function VariantsViewPage() {
-  return <VariantsView />;
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
+export default function ProductDetailsPage({ params }: Props) {
+  const { id } = params;
+
+  return <ProductDetailsView id={id} />;
+}
+
+export async function generateStaticParams() {
+  // const res = await axios.get(endpoints.product.list);
+
+  // return res.data.products.map((product: { id: string }) => ({
+  //   id: product.id,
+  // }));
+  const res = [{
+    id: "1"
+  }]
+  return res;
 }

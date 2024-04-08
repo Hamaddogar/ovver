@@ -10,7 +10,6 @@ import paymentMethodReducer from './thunks/paymentMethods';
 import builderReducer from './thunks/builder';
 import analyticsReducer from './thunks/analytics';
 import brandsReducer from './thunks/brand';
-import userReducer from './thunks/user';
 import iconsReducer from './thunks/icon';
 import stylesReducer from './thunks/style';
 import themesReducer from './thunks/theme';
@@ -29,7 +28,6 @@ const rootReducer = combineReducers({
   builder: builderReducer,
   analytics: analyticsReducer,
   brands: brandsReducer,
-  user: userReducer,
   selectedDomain: selectedDomainReducer,
   icons: iconsReducer,
   styles: stylesReducer,

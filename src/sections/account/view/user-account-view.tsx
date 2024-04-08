@@ -19,43 +19,41 @@ import AccountBilling from '../account-billing';
 import AccountSocialLinks from '../account-social-links';
 import AccountNotifications from '../account-notifications';
 import AccountChangePassword from '../account-change-password';
-import { useLocales } from 'src/locales';
 
 // ----------------------------------------------------------------------
+
+const TABS = [
+  {
+    value: 'general',
+    label: 'General',
+    icon: <Iconify icon="solar:user-id-bold" width={24} />,
+  },
+  {
+    value: 'billing',
+    label: 'Billing',
+    icon: <Iconify icon="solar:bill-list-bold" width={24} />,
+  },
+  {
+    value: 'notifications',
+    label: 'Notifications',
+    icon: <Iconify icon="solar:bell-bing-bold" width={24} />,
+  },
+  {
+    value: 'social',
+    label: 'Social links',
+    icon: <Iconify icon="solar:share-bold" width={24} />,
+  },
+  {
+    value: 'security',
+    label: 'Security',
+    icon: <Iconify icon="ic:round-vpn-key" width={24} />,
+  },
+];
 
 // ----------------------------------------------------------------------
 
 export default function AccountView() {
   const settings = useSettingsContext();
-  const { t } = useLocales();
-
-  const TABS = [
-    {
-      value: 'general',
-      label: t('userAccount.general'),
-      icon: <Iconify icon="solar:user-id-bold" width={24} />,
-    },
-    // {
-    //   value: 'billing',
-    //   label: t('userAccount.billing'),
-    //   icon: <Iconify icon="solar:bill-list-bold" width={24} />,
-    // },
-    // {
-    //   value: 'notifications',
-    //   label: t('userAccount.notifications'),
-    //   icon: <Iconify icon="solar:bell-bing-bold" width={24} />,
-    // },
-    // {
-    //   value: 'social',
-    //   label: t('userAccount.social_links'),
-    //   icon: <Iconify icon="solar:share-bold" width={24} />,
-    // },
-    {
-      value: 'security',
-      label: t('userAccount.security'),
-      icon: <Iconify icon="ic:round-vpn-key" width={24} />,
-    },
-  ];
 
   const [currentTab, setCurrentTab] = useState('general');
 
@@ -64,16 +62,15 @@ export default function AccountView() {
   }, []);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading={t('userAccount.account')}
+        heading="Account"
         links={[
-          { name: t('userAccount.dashboard'), href: paths.dashboard.root },
-          { name: t('userAccount.user'), href: paths.dashboard.user.root },
-          { name: t('userAccount.account') },
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'User', href: paths.dashboard.user.root },
+          { name: 'Account' },
         ]}
         sx={{
-          textTransform: 'capitalize',
           mb: { xs: 3, md: 5 },
         }}
       />
@@ -86,13 +83,7 @@ export default function AccountView() {
         }}
       >
         {TABS.map((tab) => (
-          <Tab
-            sx={{ textTransform: 'capitalize' }}
-            key={tab.value}
-            label={tab.label}
-            icon={tab.icon}
-            value={tab.value}
-          />
+          <Tab key={tab.value} label={tab.label} icon={tab.icon} value={tab.value} />
         ))}
       </Tabs>
 

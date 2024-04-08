@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 // routes
-import { navLinks, paths } from 'src/routes/paths';
+import { paths } from 'src/routes/paths';
 // locales
 import { useLocales } from 'src/locales';
 // components
@@ -69,7 +69,6 @@ export function useNavData() {
   const [navData, setNavData] = useState([
     // OVERVIEW
     // ----------------------------------------------------------------------
-    // TODO: ///
     {
       subheader: t('overview'),
       items: [
@@ -119,7 +118,7 @@ export function useNavData() {
           children: [
             { title: t('Sales Analytics'), path: paths.dashboard.general.analytics },
             { title: t('Best Selling'), path: paths.dashboard.general.bestSelling },
-            // { title: t('Branch'), path: paths.dashboard.general.analytics.delivery },
+            { title: t('Branch'), path: paths.dashboard.user.list },
           ],
           permissions: ['GET_ORDERS'],
         },
@@ -171,5 +170,5 @@ export function useNavData() {
   ]);
   // Add any other dependencies as needed
 
-  return { navData, navLinks };
+  return navData;
 }

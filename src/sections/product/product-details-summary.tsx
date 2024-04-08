@@ -48,10 +48,10 @@ export default function ProductDetailsSummary({
 
   const {
     id,
-    title: { localized: localizedName },
+    name,
     sizes,
-    sellPrice,
-    images,
+    price,
+    coverUrl,
     colors,
     newLabel,
     available,
@@ -71,12 +71,12 @@ export default function ProductDetailsSummary({
 
   const defaultValues = {
     id,
-    localizedName,
-    images,
+    name,
+    coverUrl,
     available,
-    sellPrice,
-    colors: colors?.[0],
-    size: sizes?.[4],
+    price,
+    colors: colors[0],
+    size: sizes[4],
     quantity: available < 1 ? 0 : 1,
   };
 
@@ -99,15 +99,9 @@ export default function ProductDetailsSummary({
     try {
       if (!existProduct) {
         onAddCart?.({
-          // ...data,
-          // colors: [values.colors],
-          // subTotal: data.sellPrice * data.quantity,
           ...data,
-          colors: ['#ff0000'],
-          subTotal: data.sellPrice * data.quantity,
-          name: '',
-          coverUrl: '',
-          price: 0,
+          colors: [values.colors],
+          subTotal: data.price * data.quantity,
         });
       }
       onGotoStep?.(0);
@@ -120,18 +114,9 @@ export default function ProductDetailsSummary({
   const handleAddCart = useCallback(() => {
     try {
       onAddCart?.({
-        // ...values,
-        // colors: [values.colors],
-        // subTotal: values.sellPrice * values.quantity,
-        id: '',
-        name: '',
-        coverUrl: '',
-        available: 0,
-        price: 0,
-        colors: [],
-        size: '',
-        quantity: 0,
-        subTotal: 0,
+        ...values,
+        colors: [values.colors],
+        subTotal: values.price * values.quantity,
       });
     } catch (error) {
       console.error(error);
@@ -153,7 +138,7 @@ export default function ProductDetailsSummary({
         </Box>
       )}
 
-      {fCurrency(sellPrice)}
+      {fCurrency(price)}
     </Box>
   );
 
@@ -208,10 +193,8 @@ export default function ProductDetailsSummary({
         control={control}
         render={({ field }) => (
           <ColorPicker
-            // colors={colors}
-            // selected={field.value}
-            colors={['#ff0000', '#00ff00', '#0000ff']}
-            selected={'#ff0000'}
+            colors={colors}
+            selected={field.value}
             onSelectColor={(color) => field.onChange(color as string)}
             limit={4}
           />
@@ -243,7 +226,7 @@ export default function ProductDetailsSummary({
           },
         }}
       >
-        {sizes?.map((size) => (
+        {sizes.map((size) => (
           <MenuItem key={size} value={size}>
             {size}
           </MenuItem>
@@ -316,7 +299,7 @@ export default function ProductDetailsSummary({
     </Stack>
   );
 
-  const renderLabels = (newLabel?.enabled || saleLabel?.enabled) && (
+  const renderLabels = (newLabel.enabled || saleLabel.enabled) && (
     <Stack direction="row" alignItems="center" spacing={1}>
       {newLabel.enabled && <Label color="info">{newLabel.content}</Label>}
       {saleLabel.enabled && <Label color="error">{saleLabel.content}</Label>}
@@ -346,7 +329,7 @@ export default function ProductDetailsSummary({
 
           {renderInventoryType}
 
-          <Typography variant="h5">{localizedName}</Typography>
+          <Typography variant="h5">{name}</Typography>
 
           {renderRating}
 

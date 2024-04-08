@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress from '@mui/material/LinearProgress';
 // utils
-import { fCurrency, fNumber } from 'src/utils/format-number';
+import { fCurrency } from 'src/utils/format-number';
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
 // components
@@ -22,10 +22,6 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // types
 import { IProductItem } from 'src/types/product';
-import { Chip, Stack, Switch, Tooltip } from '@mui/material';
-import { useLocales } from 'src/locales';
-import { RouterLink } from 'src/routes/components';
-import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -46,39 +42,33 @@ export default function ProductTableRow({
   onEditRow,
   onViewRow,
 }: Props) {
-  const { t } = useLocales();
   const {
-    id,
-    title: { localized: localizedName },
-    genre,
-    images,
-    sort,
-    sellPrice,
+    name,
+    price,
+    publish,
+    coverUrl,
+    category,
     quantity,
-    lowQuantity,
-    publish_app,
-    publish_website,
+    createdAt,
+    available,
+    inventoryType,
   } = row;
 
   const confirm = useBoolean();
 
-  // console.log('row: ', row);
+  const popover = usePopover();
 
   return (
     <>
       <TableRow hover selected={selected}>
-        {/* TODO: 
-            onViewRow();
-         */}
-        {/* <TableCell padding="checkbox">
+        <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell> */}
+        </TableCell>
 
-        {/* ========== IMAGE & NAME ========== */}
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
-            alt={localizedName}
-            src={images[0]}
+            alt={name}
+            src={coverUrl}
             variant="rounded"
             sx={{ width: 64, height: 64, mr: 2 }}
           />
@@ -93,80 +83,60 @@ export default function ProductTableRow({
                 onClick={onViewRow}
                 sx={{ cursor: 'pointer' }}
               >
-                {localizedName}
+                {name}
               </Link>
             }
             secondary={
               <Box component="div" sx={{ typography: 'body2', color: 'text.disabled' }}>
-                {genre}
+                {category}
               </Box>
             }
           />
         </TableCell>
 
-        {/* ========== PRICE ========== */}
-        {/* TODO: currency */}
-        <TableCell>{fNumber(sellPrice)} KWD</TableCell>
-
-        {/* ========== QUANTITY ========== */}
         <TableCell>
-          {fNumber(quantity)}{' '}
-          {quantity <= lowQuantity ||
-            (true && (
-              <Chip
-                label={t('products.low')} //TODO:
-                size="small"
-                sx={{ py: 0 }}
-                color={'error'}
-              />
-            ))}
+          <ListItemText
+            primary={format(new Date(createdAt), 'dd MMM yyyy')}
+            secondary={format(new Date(createdAt), 'p')}
+            primaryTypographyProps={{ typography: 'body2', noWrap: true }}
+            secondaryTypographyProps={{
+              mt: 0.5,
+              component: 'span',
+              typography: 'caption',
+            }}
+          />
         </TableCell>
 
-        {/* ========== SORTING ========== */}
-        <TableCell>{sort}</TableCell>
-
-        {/* ========== PUBLISH (WEB) ========== */}
-        <TableCell>
-          <Switch size="medium" value={publish_website} />
+        <TableCell sx={{ typography: 'caption', color: 'text.secondary' }}>
+          <LinearProgress
+            value={(available * 100) / quantity}
+            variant="determinate"
+            color={
+              (inventoryType === 'out of stock' && 'error') ||
+              (inventoryType === 'low stock' && 'warning') ||
+              'success'
+            }
+            sx={{ mb: 1, height: 6, maxWidth: 80 }}
+          />
+          {!!available && available} {inventoryType}
         </TableCell>
 
-        {/* ========== PUBLISH (MOBILE) ========== */}
+        <TableCell>{fCurrency(price)}</TableCell>
+
         <TableCell>
-          <Switch size="medium" value={publish_app} />
+          <Label variant="soft" color={(publish === 'published' && 'info') || 'default'}>
+            {publish}
+          </Label>
         </TableCell>
 
-        {/* ========== ACTIONS ========== */}
-        <TableCell>
-          <Stack direction="row">
-            {/* {allowAction.remove && ( */}
-            <Tooltip title={t('brand.delete_btn')}>
-              <IconButton
-                onClick={() => {
-                  confirm.onTrue();
-                  // setRemoveData(brand?._id);
-                  // confirm.onTrue();
-                }}
-              >
-                <Iconify color="text.secondary" icon="lucide:trash-2" width={25} />
-              </IconButton>
-            </Tooltip>
-            {/* )} */}
-            {/* {allowAction.edit && ( */}
-            <Tooltip title={t('brand.edit')}>
-              <IconButton
-                onClick={() => {
-                  onEditRow();
-                }}
-              >
-                <Iconify color="text.secondary" icon="lucide:edit" width={25} />
-              </IconButton>
-            </Tooltip>
-            {/* )} */}
-          </Stack>
+        <TableCell align="right">
+          <IconButton color={popover.open ? 'primary' : 'default'} onClick={popover.onOpen}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
         </TableCell>
       </TableRow>
 
-      {/* <CustomPopover
+      <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
@@ -202,9 +172,8 @@ export default function ProductTableRow({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
-      </CustomPopover> */}
+      </CustomPopover>
 
-      {/* ========== DELETE DIALOG ========== */}
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}

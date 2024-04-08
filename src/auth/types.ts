@@ -29,12 +29,8 @@ type CanRemove = {
   register?: (
     email: string,
     password: string,
-    fullName :string,
-    country : string,
-    countryCode : string,
-    phoneNumber : string,
-    
-
+    firstName: string,
+    lastName: string
   ) => Promise<void>;
   sendOtp?: (email: string) => Promise<void>;
   verifyOtp?: (email: string, otp: number) => Promise<void>;
@@ -51,9 +47,7 @@ type CanRemove = {
   resendCodeRegister?: (email: string) => Promise<void>;
   newPassword?: (email: string, code: string, password: string) => Promise<void>;
   verifyPermission?: (data: any) => any;
-  getBuilders?: any,
-  checkUser?: (email: string) =>Promise<any>, 
-  getCountries?: any,
+  getBuilders?: any;
 };
 
 export type JWTContextType = CanRemove & {
@@ -64,17 +58,14 @@ export type JWTContextType = CanRemove & {
   authenticated: boolean;
   unauthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, fullName:string ,country:string,countryCode:string ,phoneNumber:string ) => Promise<void>;
+  register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
   sendOtp: (email: string) => Promise<void>;
   verifyOtp: (email: string, otp: number) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
   newPassword?: (email: string, code: string, password: string) => Promise<void>;
   verifyPermission?: (data: any) => any;
-  getBuilders?: any,
-  checkUser?: (email: string) =>Promise<void>,
-  getCountries?: any;
-
+  getBuilders?: any;
 };
 
 export type FirebaseContextType = CanRemove & {
@@ -89,10 +80,7 @@ export type FirebaseContextType = CanRemove & {
   loginWithTwitter: () => Promise<void>;
   forgotPassword?: (email: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, fullName :string,
-    country : string,
-    countryCode : string,
-    phoneNumber : string,) => Promise<void>;
+  register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
 };
 
 export type AmplifyContextType = CanRemove & {
@@ -105,10 +93,8 @@ export type AmplifyContextType = CanRemove & {
   register: (
     email: string,
     password: string,
-   fullName :string,
-    country : string,
-    countryCode : string,
-    phoneNumber : string,
+    firstName: string,
+    lastName: string
   ) => Promise<unknown>;
   logout: () => Promise<unknown>;
   confirmRegister: (email: string, code: string) => Promise<void>;
@@ -128,5 +114,4 @@ export type Auth0ContextType = CanRemove & {
   loginWithPopup: (options?: PopupLoginOptions) => Promise<void>;
   loginWithRedirect: (options?: RedirectLoginOptions) => Promise<void>;
   logout: (options?: LogoutOptions) => Promise<void>;
-  
 };

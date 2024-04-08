@@ -13,10 +13,7 @@ import Switch from '@mui/material/Switch/Switch';
 import { useSettingsContext } from 'src/components/settings';
 import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
 import { useDispatch } from 'react-redux';
-import {
-  editNotificationsSettings,
-  fetchNotificationsSettingssList,
-} from 'src/redux/store/thunks/notificationsSettings';
+import { editNotificationsSettings, fetchNotificationsSettingssList } from 'src/redux/store/thunks/notificationsSettings';
 import { enqueueSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
@@ -33,20 +30,16 @@ export default function NotificationSetting() {
 
   const fetchDetails = () => {
     dispatch(fetchNotificationsSettingssList()).then((response: any) => {
-      const {
-        pushNotifications,
-        newOrderNotification,
-        subscriptionNotfication,
-        notificationAndAlertsSound,
-      } = response.payload;
+      const { pushNotifications, newOrderNotification, subscriptionNotfication, notificationAndAlertsSound } = response.payload;
       setData({
         pushNotifications,
         newOrderNotification,
         subscriptionNotfication,
-        notificationAndAlertsSound,
-      });
+        notificationAndAlertsSound
+      })
     });
-  };
+  }
+
 
   const saveChanges = () => {
     dispatch(editNotificationsSettings(data)).then((response: any) => {
@@ -56,50 +49,29 @@ export default function NotificationSetting() {
         enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
       }
     });
-  };
+  }
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Box>
         <CustomCrumbs
           heading="Notifications Settings"
-          description="Control everything related to your website notifications and settings."
+          description='Control everything related to your website notifications and settings.'
         />
       </Box>
 
-      <Box
-        sx={{
-          maxWidth: '400px',
-          mt: '30px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '15px',
-        }}
-      >
+      <Box sx={{ maxWidth: '400px', mt: '30px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+
         <Box>
           <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                name="pushNotifications"
-                checked={!!data?.pushNotifications}
-                onChange={(e, value) => setData({ ...data, [e.target.name]: value })}
-              />
-            }
+            control={<Switch color='primary' name="pushNotifications" checked={!!data?.pushNotifications} onChange={(e, value) => setData({ ...data, [e.target.name]: value })} />}
             label="Push Notifications"
             sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
           />
         </Box>
         <Box>
           <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                name="newOrderNotification"
-                checked={!!data?.newOrderNotification}
-                onChange={(e, value) => setData({ ...data, [e.target.name]: value })}
-              />
-            }
+            control={<Switch color='primary' name="newOrderNotification" checked={!!data?.newOrderNotification} onChange={(e, value) => setData({ ...data, [e.target.name]: value })} />}
             label="New Order Notification"
             sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
           />
@@ -107,14 +79,7 @@ export default function NotificationSetting() {
 
         <Box>
           <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                name="subscriptionNotfication"
-                checked={!!data?.subscriptionNotfication}
-                onChange={(e, value) => setData({ ...data, [e.target.name]: value })}
-              />
-            }
+            control={<Switch color='primary' name="subscriptionNotfication" checked={!!data?.subscriptionNotfication} onChange={(e, value) => setData({ ...data, [e.target.name]: value })} />}
             label="Subscription Notification"
             sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
           />
@@ -122,35 +87,27 @@ export default function NotificationSetting() {
 
         <Box>
           <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                name="notificationAndAlertsSound"
-                checked={!!data?.notificationAndAlertsSound}
-                onChange={(e, value) => setData({ ...data, [e.target.name]: value })}
-              />
-            }
+            control={<Switch color='primary' name="notificationAndAlertsSound" checked={!!data?.notificationAndAlertsSound} onChange={(e, value) => setData({ ...data, [e.target.name]: value })} />}
             label="Notification & Alerts Sound"
             sx={{ '& .MuiTypography-root': { fontWeight: 900 } }}
           />
         </Box>
 
-        <Box mt="20px">
+
+
+
+        <Box mt='20px'>
           <Button
             onClick={saveChanges}
-            fullWidth
-            size="large"
-            variant="contained"
-            color="primary"
-            sx={{
+            fullWidth size='large' variant='contained' color='primary' sx={{
               boxShadow: '0px 6px 20px #1BFCB633',
-              borderRadius: '30px',
-            }}
-          >
+              borderRadius: '30px'
+            }}>
             Save
           </Button>
         </Box>
       </Box>
-    </Container>
+
+    </Container >
   );
 }

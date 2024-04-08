@@ -126,14 +126,16 @@ const AddNewTheme: React.FC<DesignMainProps> = () => {
 
         formData.append(`appLanguage[0]`, addData.appLanguage.en ? 'en' : '');
         formData.append('appLanguage[1]', addData.appLanguage.ar ? 'ar' : '');
+        formData.append('defaultLanguage', 'en');
         formData.append(`appDescription[en]`, "description");
         formData.append('appDescription[ar]', "description");
         formData.append(`appName[en]`, addData.appName.en);
         formData.append('appName[ar]', addData.appName.ar);
         formData.append('primaryColor', addData.primaryColor);
-        formData.append('theme', addData.theme);
+        // formData.append('theme', addData.theme);
+        formData.append('theme', 'theme-code');
         formData.append('BusinessType', addData.type);
-        formData.append('BusinessCategory', 'market');
+        formData.append('BusinessCategory', 'Market');
         formData.append('logo', addData.logo);
 
 

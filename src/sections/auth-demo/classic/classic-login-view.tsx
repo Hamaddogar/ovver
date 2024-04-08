@@ -105,7 +105,7 @@ export default function ClassicLoginView() {
         variant="contained"
         loading={isSubmitting}
       >
-        Login 
+        Login
       </LoadingButton>
     </Stack>
   );

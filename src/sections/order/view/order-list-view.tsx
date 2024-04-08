@@ -158,7 +158,7 @@ export default function OrderListView() {
 
   return (
     <>
-      <Container maxWidth={false}>
+      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="List"
           links={[

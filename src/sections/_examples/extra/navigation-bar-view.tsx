@@ -66,7 +66,7 @@ export default function NavigationBarView() {
       <Typography variant="h6"> Nav Vertical </Typography>
 
       <NavSectionVertical
-        data={NAV_LINKS}
+        data={NAV_ITEMS}
         config={config}
         sx={{
           py: 2,
@@ -371,63 +371,6 @@ const NAV_ITEMS = [
             ],
           },
         ],
-      },
-    ],
-  },
-];
-const NAV_LINKS = [
-  {
-    subheader: 'Marketing',
-    items: [
-      {
-        title: 'Landing',
-        path: '#',
-        icon: "carbon:bat"
-      },
-      {
-        title: 'Services',
-        path: '#',
-        icon: "carbon:cyclist"
-      },
-      {
-        title: 'Case Studies',
-        path: '#',
-        icon: "carbon:3d-cursor-alt"
-      },
-      {
-        title: 'Blog',
-        path: '#',
-        icon: "carbon:3d-mpr-toggle"
-      },
-      {
-        title: 'About',
-        path: '#',
-        icon: "carbon:airport-01"
-      },
-      {
-        title: 'Contact',
-        path: '#',
-        icon: "carbon:battery-full"
-      },
-      {
-        title: 'Tours',
-        path: '#',
-        icon: "carbon:basketball"
-      },
-      {
-        title: 'Checkout',
-        path: '#',
-        icon: "carbon:area"
-      },
-    ],
-  },
-  {
-    subheader: 'Travel',
-    items: [
-      {
-        title: 'Level 1',
-        path: '#',
-        icon: "carbon:play"
       },
     ],
   },

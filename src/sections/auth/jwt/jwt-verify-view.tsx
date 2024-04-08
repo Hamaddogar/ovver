@@ -38,7 +38,7 @@ export default function JwtVerifyView() {
 
 
   const registerUserDetails: any = getCookie('register_user_data');
-  const { email, password, fullName, country, countryCode, phoneNumber }: any = registerUserDetails ? JSON.parse(registerUserDetails) : {};
+  const { email, password, firstName, lastName }: any = registerUserDetails ? JSON.parse(registerUserDetails) : {};
 
   const defaultValues = {
     code: '',
@@ -66,7 +66,8 @@ export default function JwtVerifyView() {
         if (success) {
 
           try {
-            const registerRes: any = await register?.(email, password, fullName, country, countryCode, phoneNumber);
+
+            const registerRes: any = await register?.(email, password, firstName, lastName);
             if (registerRes && registerRes.success) {
               clearCookie('register_user_data');
               router.push(PATH_AFTER_LOGIN);

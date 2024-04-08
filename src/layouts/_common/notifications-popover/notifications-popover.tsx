@@ -27,33 +27,30 @@ import Scrollbar from 'src/components/scrollbar';
 import { varHover } from 'src/components/animate';
 //
 import NotificationItem from './notification-item';
-import { useLocales } from 'src/locales';
 
 // ----------------------------------------------------------------------
+
+const TABS = [
+  {
+    value: 'all',
+    label: 'All',
+    count: 22,
+  },
+  {
+    value: 'unread',
+    label: 'Unread',
+    count: 12,
+  },
+  {
+    value: 'archived',
+    label: 'Archived',
+    count: 10,
+  },
+];
 
 // ----------------------------------------------------------------------
 
 export default function NotificationsPopover() {
-  const { t } = useLocales();
-
-  const TABS = [
-    {
-      value: 'all',
-      label: t('common.all'),
-      count: 22,
-    },
-    {
-      value: 'unread',
-      label: t('common.unread'),
-      count: 12,
-    },
-    {
-      value: 'archived',
-      label: t('common.archived'),
-      count: 10,
-    },
-  ];
-
   const drawer = useBoolean();
 
   const smUp = useResponsive('up', 'sm');
@@ -79,14 +76,14 @@ export default function NotificationsPopover() {
 
   const renderHead = (
     <Stack direction="row" alignItems="center" sx={{ py: 2, pl: 2.5, pr: 1, minHeight: 68 }}>
-      <Typography variant="h6" textTransform="capitalize" sx={{ flexGrow: 1 }}>
-        {t('common.notifications')}
+      <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        Notifications
       </Typography>
 
       {!!totalUnRead && (
-        <Tooltip title={t('common.mark_all_as_read')}>
+        <Tooltip title="Mark all as read">
           <IconButton color="primary" onClick={handleMarkAllAsRead}>
-            <Iconify icon="f7:bell-fill" />
+            <Iconify icon="eva:done-all-fill" />
           </IconButton>
         </Tooltip>
       )}
@@ -120,7 +117,6 @@ export default function NotificationsPopover() {
             </Label>
           }
           sx={{
-            textTransform: 'capitalize',
             '&:not(:last-of-type)': {
               mr: 3,
             },
@@ -142,21 +138,18 @@ export default function NotificationsPopover() {
 
   return (
     <>
-      <Tooltip title={t('common.notifications')}>
-        <IconButton
-          component={m.button}
-          whileTap="tap"
-          aria-label={t('common.notifications')}
-          whileHover="hover"
-          variants={varHover(1.05)}
-          color={drawer.value ? 'primary' : 'default'}
-          onClick={drawer.onTrue}
-        >
-          <Badge variant="dot" color="error">
-            <Iconify icon="f7:bell-fill" sx={{ color: 'text.disabled' }} width={25} />
-          </Badge>
-        </IconButton>
-      </Tooltip>
+      <IconButton
+        component={m.button}
+        whileTap="tap"
+        whileHover="hover"
+        variants={varHover(1.05)}
+        color={drawer.value ? 'primary' : 'default'}
+        onClick={drawer.onTrue}
+      >
+        <Badge badgeContent={totalUnRead} color="error">
+          <Iconify icon="solar:bell-bing-bold-duotone" width={24} />
+        </Badge>
+      </IconButton>
 
       <Drawer
         open={drawer.value}
@@ -189,9 +182,9 @@ export default function NotificationsPopover() {
 
         {renderList}
 
-        <Box sx={{ p: 1 }} textTransform="capitalize">
+        <Box sx={{ p: 1 }}>
           <Button fullWidth size="large">
-            {t('common.view_all')}
+            View All
           </Button>
         </Box>
       </Drawer>

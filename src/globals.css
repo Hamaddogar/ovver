@@ -11,6 +11,3 @@
 .css-afhsyo-MuiPaper-root-MuiAccordion-root.Mui-expanded {
   background: #161c24 !important;
 }
-.first-letter-capitalize::first-letter {
-  text-transform: capitalize;
-}

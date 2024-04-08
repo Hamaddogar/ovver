@@ -10,7 +10,6 @@ export const metadata = {
 };
 
 export default function OverviewAppPage() {
-  // TODO: Remove these components later if they are not needed.
   // return <AddNewTheme />;
   // return <SplashScreen />;
   return <OverviewAppView />;

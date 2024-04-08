@@ -35,7 +35,7 @@ export default function ProductSearch({ query, results, onSearch, hrefItem, load
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (query) {
       if (event.key === 'Enter') {
-        const selectItem = results.filter((product) => product.title.localized === query)[0];
+        const selectItem = results.filter((product) => product.name === query)[0];
 
         handleClick(selectItem.id);
       }
@@ -50,7 +50,7 @@ export default function ProductSearch({ query, results, onSearch, hrefItem, load
       popupIcon={null}
       options={results}
       onInputChange={(event, newValue) => onSearch(newValue)}
-      getOptionLabel={(option) => option.title.localized}
+      getOptionLabel={(option) => option.name}
       noOptionsText={<SearchNotFound query={query} sx={{ bgcolor: 'unset' }} />}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       slotProps={{
@@ -90,14 +90,14 @@ export default function ProductSearch({ query, results, onSearch, hrefItem, load
         />
       )}
       renderOption={(props, product, { inputValue }) => {
-        const matches = match(product.title.localized, inputValue);
-        const parts = parse(product.title.localized, matches);
+        const matches = match(product.name, inputValue);
+        const parts = parse(product.name, matches);
 
         return (
           <Box component="li" {...props} onClick={() => handleClick(product.id)} key={product.id}>
             <Avatar
               key={product.id}
-              alt={product.title.localized}
+              alt={product.name}
               src={product.coverUrl}
               variant="rounded"
               sx={{

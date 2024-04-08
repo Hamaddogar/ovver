@@ -24,7 +24,7 @@ export default function InvoiceDetailsView({ id }: Props) {
   const currentInvoice = _invoices.filter((invoice) => invoice.id === id)[0];
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading={currentInvoice?.invoiceNumber}
         links={[

@@ -150,7 +150,7 @@ export default function ProductShopView() {
 
   return (
     <Container
-      maxWidth={false}
+      maxWidth={settings.themeStretch ? false : 'lg'}
       sx={{
         mb: 15,
       }}
@@ -224,7 +224,7 @@ function applyFilter({
   }
 
   if (category !== 'all') {
-    inputData = inputData.filter((product) => product.genre === category);
+    inputData = inputData.filter((product) => product.category === category);
   }
 
   if (colors.length) {
@@ -234,7 +234,7 @@ function applyFilter({
   }
 
   if (min !== 0 || max !== 200) {
-    inputData = inputData.filter((product) => product.sellPrice >= min && product.sellPrice <= max);
+    inputData = inputData.filter((product) => product.price >= min && product.price <= max);
   }
 
   if (rating) {

@@ -42,7 +42,6 @@ const ProductCard = ({
             ...styleWishlistStyling,
             color: 'black',
             padding: '6px',
-
             width: '25px',
             height: '25px',
           }}

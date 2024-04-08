@@ -34,9 +34,9 @@ export default function ProductTableFiltersResult({
     onFilters('stock', newValue);
   };
 
-  const handleRemovePublish = (inputValue: boolean) => {
-    const newValue = !filters.publish_website;
-    onFilters('publish', newValue as any);
+  const handleRemovePublish = (inputValue: string) => {
+    const newValue = filters.publish.filter((item) => item !== inputValue);
+    onFilters('publish', newValue);
   };
 
   return (
@@ -57,16 +57,16 @@ export default function ProductTableFiltersResult({
           </Block>
         )}
 
-        {!!filters.publish_website && (
+        {!!filters.publish.length && (
           <Block label="Publish:">
-            {/* {filters.publish_website.map((item) => ( */}
-            <Chip
-              // key={item}
-              label={filters.publish_website}
-              size="small"
-              onDelete={() => handleRemovePublish(false)}
-            />
-            {/* ))} */}
+            {filters.publish.map((item) => (
+              <Chip
+                key={item}
+                label={item}
+                size="small"
+                onDelete={() => handleRemovePublish(item)}
+              />
+            ))}
           </Block>
         )}
 

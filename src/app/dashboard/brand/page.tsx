@@ -1,13 +1,8 @@
-// sections
+import React from 'react';
+import BrandView from 'src/sections/brand/brand-view';
 
-import { BrandView } from 'src/sections/brand/view';
-
-// ----------------------------------------------------------------------
-
-export const metadata = {
-  title: 'Dashboard: Brands View',
+const page = () => {
+  return <BrandView />;
 };
 
-export default function BrandsViewPage() {
-  return <BrandView />;
-}
+export default page;

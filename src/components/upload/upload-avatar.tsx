@@ -10,7 +10,6 @@ import Image from '../image';
 //
 import { UploadProps } from './types';
 import RejectionFiles from './errors-rejection-files';
-import { useLocales } from 'src/locales';
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +29,6 @@ export default function UploadAvatar({
     },
     ...other,
   });
-  const { t } = useLocales();
 
   const hasFile = !!file;
 
@@ -87,9 +85,7 @@ export default function UploadAvatar({
     >
       <Iconify icon="solar:camera-add-bold" width={32} />
 
-      <Typography variant="caption" textTransform="capitalize">
-        {file ? t('common.update_photo') : t('common.upload_photo')}
-      </Typography>
+      <Typography variant="caption">{file ? 'Update photo' : 'Upload photo'}</Typography>
     </Stack>
   );
 

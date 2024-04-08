@@ -29,44 +29,24 @@ type Props = {
 export default function ProductItem({ product }: Props) {
   const { onAddToCart } = useCheckoutContext();
 
-  const {
-    id,
-    title: { localized: localizedName },
-    coverUrl,
-    sellPrice,
-    colors,
-    available,
-    sizes,
-    priceSale,
-    newLabel,
-    saleLabel,
-  } = product;
+  const { id, name, coverUrl, price, colors, available, sizes, priceSale, newLabel, saleLabel } =
+    product;
 
   const linkTo = paths.product.details(id);
 
   const handleAddCart = async () => {
     const newProduct = {
       id,
-      localizedName,
+      name,
       coverUrl,
       available,
-      sellPrice,
+      price,
       colors: [colors[0]],
       size: sizes[0],
       quantity: 1,
     };
     try {
-      // onAddToCart(newProduct);
-      onAddToCart({
-        id: '',
-        name: '',
-        coverUrl: '',
-        available: 1,
-        price: 1,
-        colors: [''],
-        size: '',
-        quantity: 1,
-      });
+      onAddToCart(newProduct);
     } catch (error) {
       console.error(error);
     }
@@ -119,7 +99,7 @@ export default function ProductItem({ product }: Props) {
 
       <Tooltip title={!available && 'Out of stock'} placement="bottom-end">
         <Image
-          alt={localizedName}
+          alt={name}
           src={coverUrl}
           ratio="1/1"
           sx={{
@@ -137,7 +117,7 @@ export default function ProductItem({ product }: Props) {
   const renderContent = (
     <Stack spacing={2.5} sx={{ p: 3, pt: 2 }}>
       <Link component={RouterLink} href={linkTo} color="inherit" variant="subtitle2" noWrap>
-        {localizedName}
+        {name}
       </Link>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -150,7 +130,7 @@ export default function ProductItem({ product }: Props) {
             </Box>
           )}
 
-          <Box component="span">{fCurrency(sellPrice)}</Box>
+          <Box component="span">{fCurrency(price)}</Box>
         </Stack>
       </Stack>
     </Stack>

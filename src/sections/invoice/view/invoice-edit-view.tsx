@@ -24,7 +24,7 @@ export default function InvoiceEditView({ id }: Props) {
   const currentInvoice = _invoices.find((invoice) => invoice.id === id);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Edit"
         links={[

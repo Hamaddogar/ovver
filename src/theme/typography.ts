@@ -1,5 +1,4 @@
-import { Public_Sans, Barlow, Readex_Pro, Cairo } from 'next/font/google';
-import localFont from 'next/font/local';
+import { Public_Sans, Barlow } from 'next/font/google';
 
 // ----------------------------------------------------------------------
 
@@ -30,55 +29,12 @@ declare module '@mui/material/styles' {
     fontWeightSemiBold: React.CSSProperties['fontWeight'];
   }
 }
-// export const primaryFont = Cairo({
-//   weight: ['300', '400', '500', '600', '700'],
-//   subsets: ['latin'],
-//   display: 'swap',
-//   variable: '--font-arabic',
-//   fallback: ['Helvetica', 'Arial', 'sans-serif'],
-// });
-export const primaryFont = localFont({
-  src: [
-    {
-      path: '../../public/fonts/Avenir/AvenirArabic-Book.otf',
-      weight: '300',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Avenir/AvenirArabic-Light.otf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Avenir/AvenirArabic-Medium.otf',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Avenir/AvenirArabic-Heavy.otf',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Avenir/AvenirArabic-Black.otf',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
+export const primaryFont = Public_Sans({
+  weight: ['400', '500', '600', '700', '800'],
+  subsets: ['latin'],
+  display: 'swap',
+  fallback: ['Helvetica', 'Arial', 'sans-serif'],
 });
-// export const primaryFont = Readex_Pro({
-//   weight: ['300', '400', '500', '600', '700'],
-//   subsets: ['latin'],
-//   display: 'swap',
-//   variable: '--font-primary',
-//   fallback: ['Helvetica', 'Arial', 'sans-serif'],
-// });
-// export const primaryFont = Public_Sans({
-//   weight: ['400', '500', '600', '700', '800'],
-//   subsets: ['latin'],
-//   display: 'swap',
-//   fallback: ['Helvetica', 'Arial', 'sans-serif'],
-// });
 
 export const secondaryFont = Barlow({
   weight: ['900'],

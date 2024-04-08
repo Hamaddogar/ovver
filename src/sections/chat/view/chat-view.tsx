@@ -109,7 +109,7 @@ export default function ChatView() {
   );
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography
         variant="h4"
         sx={{

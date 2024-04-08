@@ -15,7 +15,6 @@ import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // types
 import { IProductTableFilters, IProductTableFilterValue } from 'src/types/product';
-import { Switch } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -119,10 +118,10 @@ export default function ProductTableToolbar({
           }}
         >
           <InputLabel>Publish</InputLabel>
-          <Switch value={filters.publish_website} />
-          {/* <Select
+
+          <Select
             multiple
-            value={filters.publish_website}
+            value={filters.publish}
             onChange={handleFilterPublish}
             input={<OutlinedInput label="Publish" />}
             renderValue={(selected) => selected.map((value) => value).join(', ')}
@@ -138,7 +137,7 @@ export default function ProductTableToolbar({
                 {option.label}
               </MenuItem>
             ))}
-          </Select> */}
+          </Select>
         </FormControl>
 
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>

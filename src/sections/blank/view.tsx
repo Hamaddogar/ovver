@@ -14,7 +14,7 @@ export default function BlankView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography variant="h4"> Blank </Typography>
 
       <Box

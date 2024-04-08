@@ -67,7 +67,7 @@ export default function JobDetailsView({ id }: Props) {
   );
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <JobDetailsToolbar
         backLink={paths.dashboard.job.root}
         editLink={paths.dashboard.job.edit(`${currentJob?.id}`)}

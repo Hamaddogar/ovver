@@ -9,14 +9,13 @@ import { RouterLink } from 'src/routes/components';
 //
 import Iconify from '../../iconify';
 //
-import { NavItemProps, NavConfigProps, CustomNavItemProps } from '../types';
+import { NavItemProps, NavConfigProps } from '../types';
 import { StyledItem, StyledIcon, StyledDotIcon } from './styles';
-import { usePathname } from 'next/navigation';
-import { useLocales } from 'src/locales';
+
 
 // ----------------------------------------------------------------------
 
-type Props = CustomNavItemProps & {
+type Props = NavItemProps & {
   config: NavConfigProps;
 };
 
@@ -30,29 +29,25 @@ export default function NavItem({
   ...other
 }: Props) {
   const { title, path, icon, info, children, disabled, caption, roles, permissions } = item;
-  const pathname = usePathname();
-  const { t, currentLang } = useLocales();
-  const isActive = path === pathname;
+
 
   const [hasCommonRole, setHasCommonRole] = useState<any>(null);
   const [hasCommonPermission, setHasCommonPermission] = useState<any>(null);
 
   useEffect(() => {
+
     const userRoles = config.currentRoles || [];
     const userPermissions = config.currentPermissions || [];
 
     const hasCommonRoleV = userRoles.some((role: string) => roles && roles.includes(role)) || false;
-    const hasCommonPermissionV =
-      (permissions &&
-        permissions.some(
-          (permission: string) =>
-            userPermissions && userPermissions?.permissions?.includes(permission)
-        )) ||
-      false;
+    const hasCommonPermissionV = permissions && permissions.some((permission: string) => userPermissions && userPermissions?.permissions?.includes(permission)) || false;
 
     setHasCommonRole(hasCommonRoleV);
     setHasCommonPermission(hasCommonPermissionV);
-  }, [config, permissions, roles]);
+
+
+  }, [config, permissions, roles])
+
 
   const subItem = depth !== 1;
 
@@ -60,52 +55,44 @@ export default function NavItem({
     <StyledItem
       disableGutters
       disabled={disabled}
-      active={isActive}
+      active={active}
       depth={depth}
       config={config}
       {...other}
     >
       <>
-        {/* {icon && <StyledIcon active={active} size={config.iconSize} {...other}>{icon}</StyledIcon>} */}
-        {icon && (
-          <Iconify
-            icon={`${icon}`}
-            sx={{ marginInlineEnd: 1.5, color: isActive ? 'primary.main' : 'text.secondary' }}
-          />
-        )}
+        {icon && <StyledIcon active={active} size={config.iconSize} {...other}>{icon}</StyledIcon>}
 
         {subItem && (
           <StyledIcon size={config.iconSize}>
-            <StyledDotIcon active={isActive} />
+            <StyledDotIcon active={active} />
           </StyledIcon>
         )}
       </>
 
       {!(config.hiddenLabel && !subItem) && (
-        <Link href={path} style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
-          <ListItemText
-            primary={t(`common.nav.${title}`)}
-            secondary={
-              caption ? (
-                <Tooltip title={caption} placement="top-start">
-                  <span>{caption}</span>
-                </Tooltip>
-              ) : null
-            }
-            primaryTypographyProps={{
-              noWrap: true,
-              typography: 'body2',
-              textTransform: 'capitalize',
-              fontWeight: isActive ? 'fontWeightBold' : 'fontWeightSemiBold',
-            }}
-            secondaryTypographyProps={{
-              noWrap: true,
-              component: 'span',
-              typography: 'caption',
-              color: 'text.disabled',
-            }}
-          />
-        </Link>
+        <ListItemText
+          primary={title}
+          secondary={
+            caption ? (
+              <Tooltip title={caption} placement="top-start">
+                <span>{caption}</span>
+              </Tooltip>
+            ) : null
+          }
+          primaryTypographyProps={{
+            noWrap: true,
+            typography: 'body2',
+            textTransform: 'capitalize',
+            fontWeight: active ? 'fontWeightSemiBold' : 'fontWeightMedium',
+          }}
+          secondaryTypographyProps={{
+            noWrap: true,
+            component: 'span',
+            typography: 'caption',
+            color: 'text.disabled',
+          }}
+        />
       )}
 
       {info && (
@@ -118,20 +105,19 @@ export default function NavItem({
         <Iconify
           width={16}
           icon={open ? 'eva:arrow-ios-downward-fill' : 'eva:arrow-ios-forward-fill'}
-          sx={{
-            ml: 1,
-            flexShrink: 0,
-            transform: currentLang.value === 'ar' && !open ? 'scale(-1)' : '',
-          }}
+          sx={{ ml: 1, flexShrink: 0 }}
         />
       )}
     </StyledItem>
   );
 
+
   // Hidden item by role
   if ((roles && !hasCommonRole) || (permissions && !hasCommonPermission)) {
     return null;
   }
+
+
 
   // if (roles && !roles.includes(`${config.currentRole}`)) {
   //   return null;
@@ -148,7 +134,6 @@ export default function NavItem({
         color="inherit"
         sx={{
           ...(disabled && {
-            color: 'red',
             cursor: 'default',
           }),
         }}

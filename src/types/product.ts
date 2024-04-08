@@ -33,71 +33,23 @@ export type IProductReview = {
 
 export type IProductItem = {
   id: string;
-  _id: string;
   sku: string;
-  title: { [key: string]: string };
-  description: { [key: string]: string };
-  sort: number;
+  name: string;
+  code: string;
+  price: number;
+  taxes: number;
   tags: string[];
   gender: string;
-  images: string[];
-  sellPrice: number;
-  purchasePrice: number;
-  quantity: number;
-  lowQuantity: number;
-  tenantId: string;
-  mainImage: string;
-  video: string;
-  youtubeLink: string;
-  categoryId: string;
-  subcategoryId: string;
-  brandId: string;
-  preparationTime: number;
-  preparationTimeUnit: 'minuits' | 'hours' | 'days'; // TODO: check other
-  ingredients: [string];
-  materials: [string];
-  calories: string; // TODO: should be number?
-  season: [string];
-  style: [string];
-  fit: string;
-  careInstructions: string;
-  format: string;
-  fileSize: string;
-  duration: string;
-  author: string;
-  releaseDate: string;
-  unit: 'KG' | 'G'; //TODO: change
-  weight: number;
-  length: number;
-  width: number;
-  height: number;
-  isStockLimited: boolean;
-  maxQuantityPerUser: number;
-  isFeatured: boolean;
-  isPopular: boolean;
-  isNew: boolean;
-  isRecommended: boolean;
-  sellQuantity: number;
-  purchaseLimit: number;
-  barcode: string;
-  discountType: 'percentage' | 'value'; // TODO: change
-  discountValue: number;
-  occasion: [string];
-  isAvailableOnAllBranhces: boolean;
-  branches: [string];
-  updatedAt: string;
-
-  // OLD VALUES??? might be deleted
-  code: string;
-  taxes: number;
   sizes: string[];
-  publish_app: boolean;
-  publish_website: boolean;
+  publish: string;
   coverUrl: string;
+  images: string[];
   colors: string[];
-  genre: string;
+  quantity: number;
+  category: string;
   available: number;
   totalSold: number;
+  description: string;
   totalRatings: number;
   totalReviews: number;
   inventoryType: string;
@@ -124,9 +76,6 @@ export type IProductTableFilterValue = string | string[];
 
 export type IProductTableFilters = {
   name: string;
-  price: number;
-  quantity: number;
-  publish_app: boolean;
-  publish_website: boolean;
   stock: string[];
+  publish: string[];
 };

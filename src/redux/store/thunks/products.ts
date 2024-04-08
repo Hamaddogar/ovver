@@ -17,14 +17,12 @@ export interface IProductsForm extends IRequest {
 }
 export const fetchProductsList = createAsyncThunk(
   'products/fetchList',
-  // async (params: IRequest, { rejectWithValue }) => {
-  async () => {
+  async (params: IRequest, { rejectWithValue }) => {
     try {
       const response = await getRequest(endpoints.product.list, defaultConfig());
       return response;
     } catch (error) {
-      console.log('errror: ', error);
-      // return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -43,7 +41,7 @@ export const fetchProductsWithParams = createAsyncThunk(
   }
 );
 
-export const fetchOneProduct = createAsyncThunk('products/fetchOne', async (productId: string) => {
+export const fetchOneProduct = createAsyncThunk('products/fetchOne', async (productId: number) => {
   const response = await getRequest(`${endpoints.product.list}/${productId}`, defaultConfig());
 
   return response.data;

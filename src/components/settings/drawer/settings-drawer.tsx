@@ -21,13 +21,12 @@ import LayoutOptions from './layout-options';
 import PresetsOptions from './presets-options';
 import StretchOptions from './stretch-options';
 import FullScreenOption from './fullscreen-option';
-import { useLocales } from 'src/locales';
 
 // ----------------------------------------------------------------------
 
 export default function SettingsDrawer() {
   const theme = useTheme();
-  const { t } = useLocales();
+
   const settings = useSettingsContext();
 
   const labelStyles = {
@@ -44,10 +43,10 @@ export default function SettingsDrawer() {
       sx={{ py: 2, pr: 1, pl: 2.5 }}
     >
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        {t('common.settings')}
+        Settings
       </Typography>
 
-      <Tooltip title={t('common.reset')}>
+      <Tooltip title="Reset">
         <IconButton onClick={settings.onReset}>
           <Badge color="error" variant="dot" invisible={!settings.canReset}>
             <Iconify icon="solar:restart-bold" />
@@ -55,18 +54,16 @@ export default function SettingsDrawer() {
         </IconButton>
       </Tooltip>
 
-      <Tooltip title={t('common.close')}>
-        <IconButton onClick={settings.onClose}>
-          <Iconify icon="mingcute:close-line" />
-        </IconButton>
-      </Tooltip>
+      <IconButton onClick={settings.onClose}>
+        <Iconify icon="mingcute:close-line" />
+      </IconButton>
     </Stack>
   );
 
   const renderMode = (
     <div>
       <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
-        {t('common.mode')}
+        Mode
       </Typography>
 
       <BaseOptions
@@ -78,78 +75,78 @@ export default function SettingsDrawer() {
     </div>
   );
 
-  // const renderContrast = (
-  //   <div>
-  //     <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
-  //       Contrast
-  //     </Typography>
+  const renderContrast = (
+    <div>
+      <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
+        Contrast
+      </Typography>
 
-  //     <BaseOptions
-  //       value={settings.themeContrast}
-  //       onChange={(newValue: string) => settings.onUpdate('themeContrast', newValue)}
-  //       options={['default', 'bold']}
-  //       icons={['contrast', 'contrast_bold']}
-  //     />
-  //   </div>
-  // );
+      <BaseOptions
+        value={settings.themeContrast}
+        onChange={(newValue: string) => settings.onUpdate('themeContrast', newValue)}
+        options={['default', 'bold']}
+        icons={['contrast', 'contrast_bold']}
+      />
+    </div>
+  );
 
-  // const renderDirection = (
-  //   <div>
-  //     <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
-  //       Direction
-  //     </Typography>
+  const renderDirection = (
+    <div>
+      <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
+        Direction
+      </Typography>
 
-  //     <BaseOptions
-  //       value={settings.themeDirection}
-  //       onChange={(newValue: string) => settings.onUpdate('themeDirection', newValue)}
-  //       options={['ltr', 'rtl']}
-  //       icons={['align_left', 'align_right']}
-  //     />
-  //   </div>
-  // );
+      <BaseOptions
+        value={settings.themeDirection}
+        onChange={(newValue: string) => settings.onUpdate('themeDirection', newValue)}
+        options={['ltr', 'rtl']}
+        icons={['align_left', 'align_right']}
+      />
+    </div>
+  );
 
-  // const renderLayout = (
-  //   <div>
-  //     <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
-  //       Layout
-  //     </Typography>
+  const renderLayout = (
+    <div>
+      <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
+        Layout
+      </Typography>
 
-  //     <LayoutOptions
-  //       value={settings.themeLayout}
-  //       onChange={(newValue: string) => settings.onUpdate('themeLayout', newValue)}
-  //       options={['vertical', 'horizontal', 'mini']}
-  //     />
-  //   </div>
-  // );
+      <LayoutOptions
+        value={settings.themeLayout}
+        onChange={(newValue: string) => settings.onUpdate('themeLayout', newValue)}
+        options={['vertical', 'horizontal', 'mini']}
+      />
+    </div>
+  );
 
-  // const renderStretch = (
-  //   <div>
-  //     <Typography
-  //       variant="caption"
-  //       component="div"
-  //       sx={{
-  //         ...labelStyles,
-  //         display: 'inline-flex',
-  //         alignItems: 'center',
-  //       }}
-  //     >
-  //       Stretch
-  //       <Tooltip title="Only available at large resolutions > 1600px (xl)">
-  //         <Iconify icon="eva:info-outline" width={16} sx={{ ml: 0.5 }} />
-  //       </Tooltip>
-  //     </Typography>
+  const renderStretch = (
+    <div>
+      <Typography
+        variant="caption"
+        component="div"
+        sx={{
+          ...labelStyles,
+          display: 'inline-flex',
+          alignItems: 'center',
+        }}
+      >
+        Stretch
+        <Tooltip title="Only available at large resolutions > 1600px (xl)">
+          <Iconify icon="eva:info-outline" width={16} sx={{ ml: 0.5 }} />
+        </Tooltip>
+      </Typography>
 
-  //     <StretchOptions
-  //       value={settings.themeStretch}
-  //       onChange={() => settings.onUpdate('themeStretch', !settings.themeStretch)}
-  //     />
-  //   </div>
-  // );
+      <StretchOptions
+        value={settings.themeStretch}
+        onChange={() => settings.onUpdate('themeStretch', !settings.themeStretch)}
+      />
+    </div>
+  );
 
   const renderPresets = (
     <div>
       <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
-        {t('common.presets')}
+        Presets
       </Typography>
 
       <PresetsOptions
@@ -168,7 +165,6 @@ export default function SettingsDrawer() {
         backdrop: { invisible: true },
       }}
       sx={{
-        textTransform: 'capitalize',
         [`& .${drawerClasses.paper}`]: {
           ...paper({ theme, bgcolor: theme.palette.background.default }),
           width: 280,
@@ -183,13 +179,13 @@ export default function SettingsDrawer() {
         <Stack spacing={3} sx={{ p: 3 }}>
           {renderMode}
 
-          {/* {renderContrast} */}
+          {renderContrast}
 
-          {/* {renderDirection} */}
+          {renderDirection}
 
-          {/* {renderLayout} */}
+          {renderLayout}
 
-          {/* {renderStretch} */}
+          {renderStretch}
 
           {renderPresets}
         </Stack>

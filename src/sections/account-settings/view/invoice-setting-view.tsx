@@ -101,7 +101,7 @@ export default function InvoiceSetting() {
   };
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Box>
         <CustomCrumbs heading="Invoice Settings" />
       </Box>

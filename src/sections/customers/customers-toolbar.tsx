@@ -1,53 +1,45 @@
-// import { useCallback } from 'react';
+import { useCallback } from 'react';
 // @mui
 import Stack from '@mui/material/Stack';
-// import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Box } from '@mui/material';
 // types
-// import { IOrderTableFilters, IOrderTableFilterValue } from 'src/types/order';
+import { IOrderTableFilters, IOrderTableFilterValue } from 'src/types/order';
 // components
-// import Iconify from 'src/components/iconify';
-// import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { SearchBar } from 'src/components/dashboard/search-bar';
-import { useLocales } from 'src/locales';
+import Iconify from 'src/components/iconify';
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  // filters: IOrderTableFilters;
-  // onFilters: (name: string, value: IOrderTableFilterValue) => void;
+  filters: IOrderTableFilters;
+  onFilters: (name: string, value: IOrderTableFilterValue) => void;
   query: string;
   setQuery: any;
-  // sort: string;
-  // onSortChange: Function;
-  // canReset: boolean;
-  // onResetFilters: VoidFunction;
+  canReset: boolean;
+  onResetFilters: VoidFunction;
 };
 
 export default function CustomersTableToolbar({
-  // filters,
-  // onFilters,
-  setQuery,
+  filters,
+  onFilters,
   query,
-  // sort,
-  // onSortChange,
-  // canReset,
-  // onResetFilters,
+  setQuery,
+  canReset,
+  onResetFilters,
 }: Props) {
-  // const popover = usePopover();
-  const { t } = useLocales();
+  const popover = usePopover();
 
-  // const canSortBy = [
-  //   { title: t('customers.custom_sort'), value: 'custom' },
-  //   { title: t('customers.-createdAt'), value: '-createdAt' },
-  //   { title: t('customers.createdAt'), value: 'createdAt' },
-  // ];
-
-  // const handleFilterName = useCallback(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     onFilters('name', event.target.value);
-  //   },
-  //   [onFilters]
-  // );
+  const handleFilterName = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onFilters('name', event.target.value);
+    },
+    [onFilters]
+  );
 
   return (
     <>
@@ -60,47 +52,69 @@ export default function CustomersTableToolbar({
         }}
         sx={{
           p: 2.5,
-          // pr: { xs: 2.5, md: 1 },
-          // pl: { xs: 2.5, md: 1 },
+          pr: { xs: 2.5, md: 1 },
+          pl: { xs: 2.5, md: 1 },
         }}
       >
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
-          {/* ========== SEARCH ========== */}
-          <SearchBar
+          <TextField
+            placeholder="Search by order ID, phone or customer..."
+            fullWidth
+            variant="filled"
             value={query}
-            onChange={setQuery}
-            placeholder={t('customers.search_placeholder')}
+            onChange={(e) => setQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Box component="img" src="/raw/search.svg" sx={{ width: '15px' }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              borderRadius: '16px',
+              '& .MuiFilledInput-root': {
+                borderRadius: '16px',
+              },
+              '& .MuiInputAdornment-root': {
+                marginTop: '0px !important',
+                paddingLeft: '10px',
+              },
+              '& input': {
+                color: '#8898AA',
+                paddingLeft: '10px',
+                fontSize: '14px',
+                padding: '15px 20px 15px 0px !important',
+              },
+            }}
           />
 
-          {/* ========== SORT ========== */}
-          {/* <SortDropdown selectedOption={sort} options={canSortBy} onChange={onSortChange} /> */}
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: 'rgb(15, 19, 73,.04)',
+              borderRadius: '16px',
+              padding: '15px 15px',
+            }}
+          >
+            <Box component="img" src="/raw/sort.svg" />
+          </Button>
 
-          {/* ========== FILTER ========== */}
-          {/* <Tooltip title={t('common.filter')}>
-            <Button
-              variant="soft"
-              style={{
-                backgroundColor: 'background.default',
-              }}
-              sx={{
-                borderRadius: '16px',
-                padding: '15px 15px',
-              }}
-            >
-              <Box component="img" src="/raw/filter.svg" />
-            </Button>
-          </Tooltip> */}
-
-          {/* ========== OPTIONS BUTTON ========== */}
-          {/* <Tooltip title={t('common.options')}>
-            <IconButton onClick={popover.onOpen}>
-              <Iconify icon="eva:more-vertical-fill" />
-            </IconButton>
-          </Tooltip> */}
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: 'rgb(15, 19, 73,.04)',
+              borderRadius: '16px',
+              padding: '15px 15px',
+            }}
+          >
+            <Box component="img" src="/raw/filter.svg" />
+          </Button>
+          <IconButton onClick={popover.onOpen}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
         </Stack>
 
-        {/* ========== RESET ========== */}
-        {/* {canReset && (
+        {canReset && (
           <Button
             color="error"
             sx={{ flexShrink: 0 }}
@@ -109,11 +123,10 @@ export default function CustomersTableToolbar({
           >
             Clear
           </Button>
-        )} */}
+        )}
       </Stack>
 
-      {/* ========== OPTIONS MENU ========== */}
-      {/* <CustomPopover
+      <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
@@ -145,51 +158,7 @@ export default function CustomersTableToolbar({
           <Iconify icon="solar:export-bold" />
           Export
         </MenuItem>
-      </CustomPopover> */}
+      </CustomPopover>
     </>
   );
 }
-
-// {/* ========== SEARCH ========== */}
-//  <TextField
-//             placeholder="Search by order ID, phone or customer..."
-//             fullWidth
-//             variant="filled"
-//             value={query}
-//             onChange={(e) => setQuery(e.target.value)}
-//             InputProps={{
-//               startAdornment: (
-//                 <InputAdornment position="start">
-//                   <Box component="img" src="/raw/search.svg" sx={{ width: '15px' }} />
-//                 </InputAdornment>
-//               ),
-//             }}
-//             sx={{
-//               borderRadius: '16px',
-//               '& .MuiFilledInput-root': {
-//                 borderRadius: '16px',
-//               },
-//               '& .MuiInputAdornment-root': {
-//                 marginTop: '0px !important',
-//                 paddingLeft: '10px',
-//               },
-//               '& input': {
-//                 color: '#8898AA',
-//                 paddingLeft: '10px',
-//                 fontSize: '14px',
-//                 padding: '15px 20px 15px 0px !important',
-//               },
-//             }}
-//           />
-
-// {/* ========== SORT ========== */}
-// <Button
-// variant="contained"
-// sx={{
-//   backgroundColor: 'rgb(15, 19, 73,.04)',
-//   borderRadius: '16px',
-//   padding: '15px 15px',
-// }}
-// >
-// <Box component="img" src="/raw/sort.svg" />
-// </Button>

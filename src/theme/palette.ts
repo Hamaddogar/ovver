@@ -37,14 +37,13 @@ const PRIMARY = {
   lighter: '#C8FAD6',
   light: '#5BE49B',
   main: '#1BFBB6',
-  dark: '#00db98',
+  dark: '#22C55E',
   darker: '#004B50',
-  contrastText: '#0F1349',
-  // contrastText: '#FFFFFF',
+  contrastText: '#FFFFFF',
 };
 
 const SECONDARY = {
-  lighter: '#1BFCB6',
+  lighter: '#EFD6FF',
   light: '#C684FF',
   main: '#8E33FF',
   dark: '#5119B7',
@@ -93,7 +92,6 @@ const COMMON = {
     black: '#000000',
     white: '#FFFFFF',
   },
-
   primary: PRIMARY,
   secondary: SECONDARY,
   info: INFO,
@@ -117,12 +115,10 @@ export function palette(mode: 'light' | 'dark') {
   const light = {
     ...COMMON,
     mode: 'light',
-    main: '#000000',
     text: {
-      primary: '#0F1349',
-      // primary: GREY[800],
-      secondary: GREY[500],
-      disabled: GREY[400],
+      primary: GREY[800],
+      secondary: GREY[600],
+      disabled: GREY[500],
     },
     background: {
       paper: '#FFFFFF',
@@ -138,7 +134,6 @@ export function palette(mode: 'light' | 'dark') {
   const dark = {
     ...COMMON,
     mode: 'dark',
-    main: '#ffffff',
     text: {
       primary: '#FFFFFF',
       secondary: GREY[500],

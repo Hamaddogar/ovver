@@ -19,6 +19,7 @@ import Iconify from 'src/components/iconify/iconify';
 // ----------------------------------------------------------------------
 
 export default function AccountDetails() {
+
   const settings = useSettingsContext();
 
   const [mySubCat, setMySubCat] = React.useState('Online Store');
@@ -27,37 +28,32 @@ export default function AccountDetails() {
     setMySubCat(event.target.value as string);
   };
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <Box>
         <CustomCrumbs
           heading="Website Information"
-          description="Enter your website information and details"
+          description='Enter your website information and details'
         />
       </Box>
 
       <Box sx={{ maxWidth: '400px' }}>
-        <Grid
-          container
-          alignItems="center"
-          rowSpacing="20px"
-          columnSpacing="20px"
-          sx={{ mt: '20px' }}
-        >
-          <Grid item xs={12}>
-            <Typography variant="h6" mb="20px">
+        <Grid container alignItems='center' rowSpacing="20px" columnSpacing="20px" sx={{ mt: '20px' }}>
+
+          <Grid item xs={12} >
+            <Typography variant='h6' mb='20px'>
               Basic Info
             </Typography>
-            <Stack direction="row" alignItems="center" spacing="15px">
-              <input type="file" id="uploadfile" name="uploadfile" style={{ display: 'none' }} />
-              <label htmlFor="uploadfile">
+            <Stack direction='row' alignItems='center' spacing='15px'>
+              <input type='file' id='uploadfile' name='uploadfile' style={{ display: 'none' }} />
+              <label htmlFor='uploadfile' >
                 <Badge
-                  variant="alway"
-                  color="primary"
+                  variant='alway'
+                  color='primary'
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 >
                   <Box
-                    component="img"
-                    src="/raw/shopi.png"
+                    component='img'
+                    src='/raw/shopi.png'
                     sx={{
                       width: '80px',
                       borderRadius: '80px',
@@ -67,197 +63,137 @@ export default function AccountDetails() {
                 </Badge>
               </label>
               <Box>
-                <Typography component="p" variant="button" color="#8688A3">
-                  Edit Business Logo
-                </Typography>
-                <Typography variant="caption" color="#8688A3">
-                  Available extensions PNG, JPG or SVG
-                </Typography>
+                <Typography component='p' variant='button' color='#8688A3'>Edit Business Logo</Typography>
+                <Typography variant='caption' color='#8688A3'>Available extensions PNG, JPG or SVG</Typography>
               </Box>
             </Stack>
           </Grid>
 
           <Grid item xs={12}>
-            <Typography
-              component="p"
-              variant="caption"
-              color="#8688A3"
-              sx={{ ml: '5px', my: '5px' }}
-            >
+            <Typography component='p' variant="caption" color="#8688A3" sx={{ ml: '5px', my: '5px' }} >
               English Name
             </Typography>
-            <TextField fullWidth variant="filled" defaultValue="Shoppi" />
+            <TextField fullWidth variant='filled' defaultValue='Shoppi' />
           </Grid>
 
           <Grid item xs={12}>
-            <Typography
-              component="p"
-              variant="caption"
-              color="#8688A3"
-              sx={{ ml: '5px', mb: '5px' }}
-            >
+            <Typography component='p' variant="caption" color="#8688A3" sx={{ ml: '5px', mb: '5px' }} >
               Arabic Name (Optional)
             </Typography>
-            <TextField fullWidth variant="filled" defaultValue="سووبي" />
+            <TextField fullWidth variant='filled' defaultValue='سووبي' />
           </Grid>
 
-          <Grid item xs={12}>
-            <Typography
-              component="p"
-              variant="caption"
-              color="#8688A3"
-              sx={{ ml: '5px', mb: '5px' }}
-            >
+          <Grid item xs={12} >
+            <Typography component='p' variant="caption" color="#8688A3" sx={{ ml: '5px', mb: '5px' }} >
               Business Type
             </Typography>
             <FormControl fullWidth>
               <Select
-                variant="filled"
+                variant='filled'
                 value={mySubCat}
                 sx={{
                   fontWeight: 900,
                 }}
                 onChange={handleChangeMySubCat}
               >
-                <MenuItem value="Online Store">Online Store</MenuItem>
-                <MenuItem value="Offline Store">Offline Store</MenuItem>
+                <MenuItem value='Online Store'>Online Store</MenuItem>
+                <MenuItem value='Offline Store'>Offline Store</MenuItem>
               </Select>
             </FormControl>
           </Grid>
 
           <Grid item xs={12}>
-            <Typography variant="h6">Social Media Accounts</Typography>
+            <Typography variant='h6'>
+              Social Media Accounts
+            </Typography>
           </Grid>
 
-          <Grid item xs={12}>
-            <Typography
-              component="p"
-              variant="caption"
-              color="#8688A3"
-              sx={{ ml: '5px', mb: '5px' }}
-            >
+          <Grid item xs={12} >
+            <Typography component='p' variant="caption" color="#8688A3" sx={{ ml: '5px', mb: '5px' }} >
               Facebook account
             </Typography>
-            <TextField
-              fullWidth
-              variant="filled"
-              defaultValue="facebook.com/shoppi"
+            <TextField fullWidth variant='filled' defaultValue='facebook.com/shoppi'
               sx={{
                 '& .MuiInputAdornment-root': {
                   marginTop: '0px !important',
-                },
+                }
               }}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">
-                    <Iconify icon="mdi:facebook" />
-                  </InputAdornment>
-                ),
+                startAdornment: <InputAdornment position="end">
+                  <Iconify icon="mdi:facebook" />
+                </InputAdornment>,
               }}
             />
           </Grid>
 
-          <Grid item xs={12}>
-            <Typography
-              component="p"
-              variant="caption"
-              color="#8688A3"
-              sx={{ ml: '5px', mb: '5px' }}
-            >
+          <Grid item xs={12} >
+            <Typography component='p' variant="caption" color="#8688A3" sx={{ ml: '5px', mb: '5px' }} >
               Instagram account
             </Typography>
-            <TextField
-              fullWidth
-              variant="filled"
-              defaultValue="instagram.com/shoppi"
+            <TextField fullWidth variant='filled' defaultValue='instagram.com/shoppi'
               sx={{
                 '& .MuiInputAdornment-root': {
                   marginTop: '0px !important',
-                },
+                }
               }}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">
-                    <Iconify icon="ri:instagram-line" />
-                  </InputAdornment>
-                ),
+                startAdornment: <InputAdornment position="end">
+                  <Iconify icon="ri:instagram-line" />
+                </InputAdornment>,
               }}
             />
           </Grid>
 
-          <Grid item xs={12}>
-            <Typography
-              component="p"
-              variant="caption"
-              color="#8688A3"
-              sx={{ ml: '5px', mb: '5px' }}
-            >
+          <Grid item xs={12} >
+            <Typography component='p' variant="caption" color="#8688A3" sx={{ ml: '5px', mb: '5px' }} >
               Youtube account
             </Typography>
-            <TextField
-              fullWidth
-              variant="filled"
-              defaultValue="youtube.com/shoppi"
+            <TextField fullWidth variant='filled' defaultValue='youtube.com/shoppi'
               sx={{
                 '& .MuiInputAdornment-root': {
                   marginTop: '0px !important',
-                },
+                }
               }}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">
-                    <Iconify icon="mdi:youtube" />
-                  </InputAdornment>
-                ),
+                startAdornment: <InputAdornment position="end">
+                  <Iconify icon="mdi:youtube" />
+                </InputAdornment>,
               }}
             />
           </Grid>
 
-          <Grid item xs={12}>
-            <Typography
-              component="p"
-              variant="caption"
-              color="#8688A3"
-              sx={{ ml: '5px', mb: '5px' }}
-            >
+          <Grid item xs={12} >
+            <Typography component='p' variant="caption" color="#8688A3" sx={{ ml: '5px', mb: '5px' }} >
               Twitter account
             </Typography>
-            <TextField
-              fullWidth
-              variant="filled"
-              defaultValue="twitter.com/shoppi"
+            <TextField fullWidth variant='filled' defaultValue='twitter.com/shoppi'
               sx={{
                 '& .MuiInputAdornment-root': {
                   marginTop: '0px !important',
-                },
+                }
               }}
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">
-                    <Iconify icon="ant-design:twitter-outlined" />
-                  </InputAdornment>
-                ),
+                startAdornment: <InputAdornment position="end">
+                  <Iconify icon="ant-design:twitter-outlined" />
+                </InputAdornment>,
               }}
             />
           </Grid>
 
           <Grid item xs={12}>
-            <Button
-              fullWidth
-              size="large"
-              variant="contained"
-              color="primary"
-              sx={{
-                boxShadow: '0px 6px 20px #1BFCB633',
-                borderRadius: '30px',
-                mt: '20px',
-              }}
-            >
+
+            <Button fullWidth size='large' variant='contained' color='primary' sx={{
+              boxShadow: '0px 6px 20px #1BFCB633',
+              borderRadius: '30px',
+              mt: '20px'
+            }}>
               Save
             </Button>
           </Grid>
+
         </Grid>
       </Box>
-    </Container>
+
+    </Container >
   );
 }

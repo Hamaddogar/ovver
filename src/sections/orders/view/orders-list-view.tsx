@@ -180,8 +180,8 @@ export default function OrdersListView() {
   }, [listStuff]);
   useEffect(() => {
     const sortedList = sort
-      ? [...listStuff].sort(
-          (a: any, b: any) => b?.name.toLowerCase().localeCompare(a?.name.toLowerCase())
+      ? [...listStuff].sort((a: any, b: any) =>
+          b?.name.toLowerCase().localeCompare(a?.name.toLowerCase())
         )
       : listStuff;
     setListItems(sortedList);
@@ -194,8 +194,8 @@ export default function OrdersListView() {
     setListItems(items);
   };
   const [query, setQuery] = useState('');
-  const queryItems = listItems.filter(
-    (item: any) => item?.name?.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+  const queryItems = listItems.filter((item: any) =>
+    item?.name?.toLocaleLowerCase().includes(query.toLocaleLowerCase())
   );
   // ------------------------------------------------------------------
 
@@ -234,7 +234,7 @@ export default function OrdersListView() {
   }, []);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <RoleBasedGuard hasContent permission="GET_ORDERS" sx={{ pt: 3 }}>
         <Grid
           container

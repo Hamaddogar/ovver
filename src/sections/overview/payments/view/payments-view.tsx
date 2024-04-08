@@ -343,7 +343,7 @@ export default function OrdersListView() {
     fetchData();
   }, []);
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <RoleBasedGuard hasContent permission="GET_PAYMENTS">
         <Grid
           container

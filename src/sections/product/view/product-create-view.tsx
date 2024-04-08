@@ -5,37 +5,37 @@ import Container from '@mui/material/Container';
 // routes
 import { paths } from 'src/routes/paths';
 // components
+import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import NewProductForm from '../new/new-product-form';
-import { useLocales } from 'src/locales';
+//
+import ProductNewEditForm from '../product-new-edit-form';
 
 // ----------------------------------------------------------------------
 
 export default function ProductCreateView() {
-  const { t } = useLocales();
+  const settings = useSettingsContext();
+
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading={t('products.create_product.create_product')}
+        heading="Create a new product"
         links={[
           {
-            name: t('common.nav.home'),
+            name: 'Dashboard',
             href: paths.dashboard.root,
           },
           {
-            name: t('products.products'),
-            href: paths.dashboard.products.root,
+            name: 'Product',
+            href: paths.dashboard.product.root,
           },
-          {
-            name: t('products.add_product'),
-          },
+          { name: 'New product' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
-      <NewProductForm />
-      {/* <ProductNewEditForm /> */}
+
+      <ProductNewEditForm />
     </Container>
   );
 }

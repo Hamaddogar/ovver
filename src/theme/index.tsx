@@ -38,7 +38,7 @@ export default function ThemeProvider({ children }: Props) {
 
   const presetsOption = presets(settings.themeColorPresets);
 
-  const contrastOption = contrast(true, settings.themeMode);
+  const contrastOption = contrast(settings.themeContrast === 'bold', settings.themeMode);
 
   const directionOption = direction(settings.themeDirection);
 
@@ -59,7 +59,7 @@ export default function ThemeProvider({ children }: Props) {
         // Base
         baseOption,
         // Direction: remove if not in use
-        // directionOption,
+        directionOption,
         // Dark mode: remove if not in use
         darkModeOption,
         // Presets: remove if not in use

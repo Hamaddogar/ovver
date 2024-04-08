@@ -136,7 +136,7 @@ export default function CalendarView() {
 
   return (
     <>
-      <Container maxWidth={false}>
+      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
         <Stack
           direction="row"
           alignItems="center"
@@ -146,7 +146,7 @@ export default function CalendarView() {
           }}
         >
           <Typography variant="h4">Calendar</Typography>
-          <Box textAlign="right">
+          <Box textAlign='right'>
             <Button
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
@@ -158,8 +158,8 @@ export default function CalendarView() {
             <Linker path={paths.dashboard.tasks.pay}>
               <Button
                 variant="contained"
-                color="primary"
-                sx={{ color: '#1F1F1F' }}
+                color='primary'
+                sx={{ color:'#1F1F1F' }}
                 startIcon={<Iconify icon="mingcute:add-line" />}
                 // onClick={onOpenForm}
               >

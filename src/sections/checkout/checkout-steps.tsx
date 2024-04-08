@@ -48,7 +48,7 @@ export default function CheckoutSteps({ steps, activeStep, sx, ...other }: Props
       {steps.map((label) => (
         <Step key={label}>
           <StepLabel
-            StepIconComponent={StepIcon as any}
+            StepIconComponent={StepIcon}
             sx={{
               [`& .${stepLabelClasses.label}`]: {
                 fontWeight: 'fontWeightSemiBold',

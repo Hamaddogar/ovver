@@ -1,5 +1,4 @@
 // routes
-import { defaultLang } from 'src/locales';
 import { paths } from 'src/routes/paths';
 // utils
 import axios from 'src/utils/axios';
@@ -49,7 +48,7 @@ export const tokenExpired = (exp: number) => {
   clearTimeout(expiredTimer);
 
   expiredTimer = setTimeout(() => {
-    alert('Token expired');
+    console.log('Token expired');
 
     clearCookie('accessToken');
 
@@ -124,10 +123,6 @@ export const setBuilderDomain = (domainURL: string | null) => {
     clearCookie('builder');
   }
 };
-export const getLocale = () => {
-  const locale = localStorage.getItem('i18nextLng') || defaultLang; // get the locale from localStorage
-  return locale;
-};
 export const getBuilderDomain = () => {
-  return getCookie('builder') ?? '';
+  return getCookie('builder');
 };

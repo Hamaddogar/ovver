@@ -5,12 +5,10 @@ import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 //
 import SvgColor from '../../svg-color';
-import { useLocales } from 'src/locales';
 
 // ----------------------------------------------------------------------
 
 export default function FullScreenOption() {
-  const { t } = useLocales();
   const [fullscreen, setFullscreen] = useState(false);
 
   const onToggleFullScreen = useCallback(() => {
@@ -52,7 +50,7 @@ export default function FullScreenOption() {
           sx={{ width: 16, height: 16, mr: 1 }}
         />
 
-        {fullscreen ? t('common.exit_fullscreen') : t('common.fullscreen')}
+        {fullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
       </ButtonBase>
     </Box>
   );

@@ -1,26 +1,39 @@
+/* eslint-disable react/jsx-curly-brace-presence */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
+
 'use client';
-import { useTranslation } from 'react-i18next';
+
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
 import LoadingButton from '@mui/lab/LoadingButton';
+
 // @mui
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { Box, Grid, Stack, Typography, Paper, Alert, Tooltip, IconButton } from '@mui/material';
+import { Box, Grid, Stack, Typography, Paper, Alert } from '@mui/material';
+// import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+// import FormControl from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
 // components
 import { useSettingsContext } from 'src/components/settings';
 import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
+import DetailsNavBar from 'src/sections/orders/DetailsNavBar';
 import Iconify from 'src/components/iconify/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useBoolean } from 'src/hooks/use-boolean';
 import { BottomActions } from 'src/components/bottom-actions';
+import { UploadBox } from 'src/components/upload';
 import { useSnackbar } from 'notistack';
 import { useDispatch, useSelector } from 'react-redux';
+// import { fetchCustomersList, fetchOneCustomer } from '../../../redux/store/thunks/customers';
+import NavigatorBar from 'src/components/NavigatorBar';
 import { RoleBasedGuard } from 'src/auth/guard';
 import { useAuthContext } from 'src/auth/hooks';
 import {
@@ -36,86 +49,53 @@ import {
   fetchSubCategorysList,
   setCategory,
   setSubCategory,
-  sortCategory,
-  sortSubCategory,
 } from '../../../redux/store/thunks/category';
 import type { AppDispatch } from '../../../redux/store/store';
 import { MuiColorInput } from 'mui-color-input';
-import { CustomDrawer } from 'src/components/drawer';
-import { useLocales } from 'src/locales';
-import { FieldLoading, PaperLoading } from 'src/sections/brand/loading';
-import { DraggablePaper } from 'src/components/dashboard';
-import { TableNoData } from 'src/components/table';
-import RHFColorSelector from 'src/components/hook-form/rhf-color-selector';
-import CategoriesDrawer from '../categories-drawer';
-import SubCategoriesDrawer from '../sub-categories-drawer';
+
 // ----------------------------------------------------------------------
-type Props = {
-  brandDrawerOpen: boolean;
-  handleDrawerCloseCommon: Function;
-  editBrandId: string | null;
-  loading: any;
-  brandsData: any;
-  setBrandsData: any;
-  methods: any;
-  onSubmit: any;
-  errorMsg: string;
-  handleBrandData: any;
-  languages: { value: string; label: string }[];
-  notFound: boolean;
-};
+
 export default function CategoriesView() {
-  const [visibleItems, setVisibleItems] = useState<{ [key: string]: number }>({});
-  const { t } = useLocales();
-  const [bgColor, setColor] = useState<any>(null)
   const dispatch = useDispatch<AppDispatch>();
-  const initialPageSize = 5;
-  const [pageSize, setPageSize] = useState<number>(initialPageSize); const [pageNumber, setPageNumber] = useState<number>(1);
+  const pageSize = 5;
+  const [pageNumber, setPageNumber] = useState<number>(1);
   const [categoriesLength, setCategoriesLength] = useState<number>(0);
   const [editCatId, setEditCatId] = useState<any>(null);
   const [editSubCatId, setEditSubCatId] = useState<any>(null);
   const [removeData, setRemoveData] = useState<any>(null);
-  const [subcategoriesFetched, setsubCategoriesFetched] = useState(false)
+
   const { verifyPermission } = useAuthContext();
+
   const settings = useSettingsContext();
+
   const confirm = useBoolean();
+
   const [activeCategory, setActiveCategory] = useState('main');
-  // const [loading, setLoading] = useState(false)
-  const [loadingCategory, setLoadingCategory] = useState(false)
-  const [loadingSub, setLoadingSub] = useState(false)
-  const [categoryDrawer, setCategoryDrawer] = useState<boolean>(false);
-  const [subCategoryDrawer, setSubCategoryDrawer] = useState<boolean>(false);
-  const { error, category, subCategory, loading, count } = useSelector(
+
+  const [categoryDrawer, setCategoryDrawer] = useState(false);
+
+  const [subCategoryDrawer, setSubCategoryDrawer] = useState(false);
+
+  const loadStatus = useSelector((state: any) => state.category.status);
+  const { list, subCatList, error, category, subCategory } = useSelector(
     (state: any) => state.category
   );
+  const listStuff = useSelector((state: any) => state?.category?.list);
+  // const { list, error, category, subCategory } = useSelector((state: any) => state.category);
+  // const subCatList = [];
   const [categoriesData, setCategoriesData] = useState<any>(null);
   const [subCategoriesData, setSubCategoriesData] = useState<any>(null);
-  const [subCatArray, setSubCatArray] = useState([])
-  const [itemList, setItemsList] = useState([])
+  // const [listItems, updateListItems] = useState(listS);
+
   const [errorMsg, setErrorMsg] = useState<any>('');
 
-  useEffect(() => {
-    const initialVisibleItems: { [key: string]: number } = {};
-    subCatArray.forEach((cat: any) => {
-      initialVisibleItems[cat._id] = 2;
-    });
-    setVisibleItems(initialVisibleItems);
-  }, [subCatArray]);
-
-  useEffect(() => {
-    setItemsList(itemList);
-  }, [itemList]);
-
-  useEffect(() => {
-    setSubCatArray(subCatArray);
-  }, [subCatArray]);
   const { enqueueSnackbar } = useSnackbar();
+
   const CategorySchema = Yup.object().shape({
     name: Yup.object().shape({
       en: Yup.string().required('English Name is required'),
       ar: Yup.string().required('Arabic Name is required'),
     }),
-
   });
 
   // Sub Category
@@ -154,6 +134,7 @@ export default function CategoriesView() {
       setErrorMsg(typeof err === 'string' ? err : err.message);
     }
   });
+
   const onSubmitSubCat = subCatMethods.handleSubmit(async (data) => {
     try {
       if (editSubCatId) {
@@ -167,6 +148,7 @@ export default function CategoriesView() {
       setErrorMsg(typeof err === 'string' ? err : err.message);
     }
   });
+
   // reseting removeData value
   useEffect(() => {
     if (!confirm.value) {
@@ -231,158 +213,109 @@ export default function CategoriesView() {
   }, [subCategory]);
 
   // -----------------------------------------------------------------------------------------
-  const handleLoadMore = (categoryId: string, subCatLength: number) => {
-    setVisibleItems((prev) => {
-      const currentCount = prev[categoryId] || 2;
-      const newCount = currentCount === 2 ? subCatLength : 2;
-      return {
-        ...prev,
-        [categoryId]: newCount,
-      };
-    });
-  };
 
   const handleCreateCategory = () => {
-
     const FormValues: any = new FormData();
     Object.keys(categoriesData.name).forEach((key) => {
       const value = categoriesData.name[key];
       FormValues.append(`name[${key}]`, value);
     });
-    if (categoriesData.image && typeof categoriesData.image !== 'string') {
+    if (typeof categoriesData.image !== 'string') {
       FormValues.append('image', categoriesData.image);
     }
-
-    if (categoriesData.icon && typeof categoriesData.icon !== 'string') {
+    if (typeof categoriesData.icon !== 'string') {
       FormValues.append('icon', categoriesData.icon);
     }
-
-    if (categoriesData?.bgColor !== undefined) {
-      FormValues.append('bgColor', String(categoriesData.bgColor));
+    if (typeof categoriesData?.bgColor !== 'string') {
+      FormValues.append('bgColor', categoriesData?.bgColor);
     }
-
 
     dispatch(createCategory(FormValues)).then((response: any) => {
       if (response.meta.requestStatus === 'fulfilled') {
         dispatch(fetchCategorysList({ pageNumber, pageSize })).then((response: any) => {
-          setItemsList(response.payload.data.data)
           setCategoriesLength(response.payload.data.count);
-
-          setLoadingCategory(false)
+          setListItems(response.payload.data.data);
+          // dispatch(fetchSubCategorysList(error));
         });
-        dispatch(fetchSubCategorysList(error))
-          .then((response: any) => {
-            // setSubCategoriesLength(response?.payload?.data?.count)
-            setSubCategoriesData(response?.payload?.data?.data);
-            setSubCatArray(response?.payload?.data?.data)
-          })
         enqueueSnackbar('Successfully Created!', { variant: 'success' });
-        setCategoryDrawer(false)
       } else {
         enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
       }
-
     });
   };
   const handleEditCategory = () => {
-
     const FormValues: any = new FormData();
     Object.keys(categoriesData.name).forEach((key) => {
       const value = categoriesData.name[key];
-      if (key !== 'localized') {
+      if (key !== "localized") {
         FormValues.append(`name[${key}]`, value);
       }
     });
-    if (categoriesData.image && typeof categoriesData.image !== 'string') {
+    if (typeof categoriesData.image !== 'string') {
       FormValues.append('image', categoriesData.image);
     }
-
-    if (categoriesData.icon && typeof categoriesData.icon !== 'string') {
+    if (typeof categoriesData.icon !== 'string') {
       FormValues.append('icon', categoriesData.icon);
     }
 
-    if (categoriesData?.bgColor !== undefined) {
-      FormValues.append('bgColor', String(categoriesData.bgColor));
+    if (typeof categoriesData?.bgColor !== 'string') {
+      FormValues.append('bgColor', categoriesData?.bgColor);
     }
+
 
     dispatch(editCategory({ categoryId: editCatId, data: FormValues })).then((response: any) => {
       if (response.meta.requestStatus === 'fulfilled') {
+        // dispatch(fetchCategorysList({ pageNumber, pageSize }));
         dispatch(fetchCategorysList({ pageNumber, pageSize })).then((response: any) => {
           setCategoriesLength(response.payload.data.count);
-          setItemsList(response.payload.data.data)
-          setCategoryDrawer(false)
-          setLoadingCategory(false)
-        });
-        dispatch(fetchSubCategorysList(error)).then((response: any) => {
-          setSubCatArray(response?.payload?.data?.data)
+          setListItems(response.payload.data.data);
+          // dispatch(fetchSubCategorysList(error));
         });
         enqueueSnackbar('Successfully Updated!', { variant: 'success' });
       } else {
         enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
-
       }
     });
   };
   const handleRemoveCategory = () => {
-    ;
     if (removeData && removeData.type === 'category') {
       dispatch(deleteCategory(removeData.id)).then((response: any) => {
         if (response.meta.requestStatus === 'fulfilled') {
-          dispatch(fetchCategorysList({ pageNumber, pageSize })).then((response: any) => {
-            setLoadingCategory(false);
-            setItemsList(response.payload.data.data)
-            setCategoriesLength(response.payload.data.count)
-            enqueueSnackbar('Category Successfully Deleted!', { variant: 'success' });
-            confirm.onFalse();
-          });
-          dispatch(fetchSubCategorysList(error))
-            .then((response: any) => {
-              // setSubCategoriesLength(response?.payload?.data?.count)
-              setSubCategoriesData(response?.payload?.data?.data);
-              setSubCatArray(response?.payload?.data?.data)
+          dispatch(fetchCategorysList({ pageNumber, pageSize }));
 
-            })
+          enqueueSnackbar('Successfully Deleted!', { variant: 'success' });
+          confirm.onFalse();
         } else {
           enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
-          setLoadingCategory(false);
         }
       });
     } else if (removeData && removeData.type === 'subcategory') {
       dispatch(deleteSubCategory(removeData.id)).then((response: any) => {
         if (response.meta.requestStatus === 'fulfilled') {
-          dispatch(fetchSubCategorysList(error)).then((res: any) => {
-            setSubCatArray(res?.payload?.data?.data)
-            setLoadingCategory(false);
-            enqueueSnackbar('Subcategory Successfully Deleted!', { variant: 'success' });
-            confirm.onFalse();
-          });
-          dispatch(fetchCategorysList({ pageNumber, pageSize })).then((response: any) => {
-            setLoadingCategory(false);
-            setItemsList(response.payload.data.data)
-            setCategoriesLength(response.payload.data.count)
-            confirm.onFalse();
-          });
-
+          dispatch(fetchSubCategorysList(error));
+          // dispatch(fetchSubCategorysList(error)).then((res) =>
+          //   setSubCategoriesData(res?.payload?.data?.data)
+          // );
+          enqueueSnackbar('Successfully Deleted!', { variant: 'success' });
+          confirm.onFalse();
         } else {
           enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
-          ;
-          setLoadingCategory(false);
         }
       });
     }
   };
   // ---------------------------------------------Sub Categories--------------------------------------------
-  const handleCreateSubCategory = () => {
 
+  const handleCreateSubCategory = () => {
     const FormValues: any = new FormData();
     Object.keys(subCategoriesData.name).forEach((key) => {
       const value = subCategoriesData.name[key];
       FormValues.append(`name[${key}]`, value);
     });
-    if (subCategoriesData.image && typeof subCategoriesData.image !== 'string') {
+    if (typeof subCategoriesData.image !== 'string') {
       FormValues.append('image', subCategoriesData.image);
     }
-    if (subCategoriesData.icon && typeof subCategoriesData.icon !== 'string') {
+    if (typeof subCategoriesData.icon !== 'string') {
       FormValues.append('icon', subCategoriesData.icon);
     }
     if (subCategoriesData?.category) {
@@ -390,34 +323,26 @@ export default function CategoriesView() {
     }
 
     if (subCategoriesData?.bgColor) {
-      FormValues.append('bgColor', String(subCategoriesData.bgColor));
+      FormValues.append('bgColor', subCategoriesData.bgColor);
     }
     dispatch(createSubCategory(FormValues)).then((response: any) => {
       if (response.meta.requestStatus === 'fulfilled') {
         setSubCategoriesData(null);
-        dispatch(fetchSubCategorysList(error)).then((response: any) => {
-          setsubCategoriesFetched(true)
-          setSubCatArray(response?.payload?.data?.data)
-        });
-        dispatch(fetchCategorysList({ pageNumber, pageSize })).then((res) => {
-          setItemsList(res?.payload?.data.data)
-
-        });
+        dispatch(fetchSubCategorysList(error));
+        // dispatch(fetchSubCategorysList(error)).then((res) =>
+        //   setSubCategoriesData(res?.payload?.data?.data)
+        // );
         enqueueSnackbar('Successfully Created!', { variant: 'success' });
-        setSubCategoryDrawer(false)
-
       } else {
         enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
-
       }
     });
   };
   const handleEditSubCategory = () => {
-
     const FormValues: any = new FormData();
     Object.keys(subCategoriesData.name).forEach((key) => {
       const value = subCategoriesData.name[key];
-      if (key !== 'localized') {
+      if (key !== "localized") {
         FormValues.append(`name[${key}]`, value);
       }
     });
@@ -436,17 +361,13 @@ export default function CategoriesView() {
     dispatch(editSubCategory({ subcategoryId: editSubCatId, data: FormValues })).then(
       (response: any) => {
         if (response.meta.requestStatus === 'fulfilled') {
-          dispatch(fetchSubCategorysList(error)).then((res: any) => {
-            setSubCategoryDrawer(false)
-            setLoadingSub(false)
-            setSubCatArray(res?.payload?.data?.data)
-
-          });
-
+          // dispatch(fetchSubCategorysList(error)).then((res) =>
+          //   setSubCategoriesData(res?.payload?.data?.data)
+          // );
+          dispatch(fetchSubCategorysList(error));
           enqueueSnackbar('Successfully Updated!', { variant: 'success' });
         } else {
           enqueueSnackbar(`Error! ${response.error.message}`, { variant: 'error' });
-
         }
       }
     );
@@ -471,18 +392,18 @@ export default function CategoriesView() {
       setSubCategoriesData({ ...subCategoriesData, image: files[0] });
     }
   };
-  // const removeSubCatImage = () => {
-  //   setSubCategoriesData((current: any) => {
-  //     const { image, ...rest } = current;
-  //     return rest;
-  //   });
-  // };
-  // const removeSubCatLogo = () => {
-  //   setSubCategoriesData((current: any) => {
-  //     const { icon, ...rest } = current;
-  //     return rest;
-  //   });
-  // };
+  const removeSubCatImage = () => {
+    setSubCategoriesData((current: any) => {
+      const { image, ...rest } = current;
+      return rest;
+    });
+  };
+  const removeSubCatLogo = () => {
+    setSubCategoriesData((current: any) => {
+      const { icon, ...rest } = current;
+      return rest;
+    });
+  };
 
   // ------------------------------------------------------------------------------------------
   const handleCategoryData = (e: any) => {
@@ -514,19 +435,18 @@ export default function CategoriesView() {
       setSubCategoriesData({ ...subCategoriesData, icon: files[0] });
     }
   };
-  // const removeImage = () => {
-  //   setCategoriesData((current: any) => {
-  //     const { image, ...rest } = current;
-  //     return rest;
-  //   });
-  // };
-  // const removeLogo = () => {
-  //   setCategoriesData((current: any) => {
-  //     const { icon, ...rest } = current;
-  //     return rest;
-  //   });
-
-  // };
+  const removeImage = () => {
+    setCategoriesData((current: any) => {
+      const { image, ...rest } = current;
+      return rest;
+    });
+  };
+  const removeLogo = () => {
+    setCategoriesData((current: any) => {
+      const { icon, ...rest } = current;
+      return rest;
+    });
+  };
 
   // ----------------------------------------------------------------------------------------
   const handleChangeCategory =
@@ -553,54 +473,53 @@ export default function CategoriesView() {
           setSubCategoryDrawer((pv) => !pv);
           setEditSubCatId(id);
           if (id) {
-
-            dispatch(fetchOneSubCategory(id)).then((res: any) => {
-              const data = res.payload.bgColor;
-              setColor(data)
-
-            });
+            dispatch(fetchOneSubCategory(id));
           } else {
             setSubCategoriesData({});
-            setColor(null)
             dispatch(setSubCategory({}));
           }
         }
       };
-  const handleDrawerCloseCommon = () => () => {
-    setCategoryDrawer(false);
-  };
-  const handleDrawerSubCloseCommon = () => () => {
-    setSubCategoryDrawer(false);
-  };
+  const handleDrawerCloseCommon =
+    (state: string) => (event: React.SyntheticEvent | React.KeyboardEvent) => {
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
 
+      if (state === 'cat') setCategoryDrawer(false);
+      else if (state === 'sub') setSubCategoryDrawer(false);
+    };
 
+  const [listItems, setListItems] = useState([]);
   useEffect(() => {
-    setLoadingCategory(true); // Start loading
-    dispatch(fetchCategorysList({ pageNumber, pageSize }))
-      .then((response: any) => {
+    if (loadStatus === 'idle') {
+      dispatch(fetchCategorysList({ pageNumber, pageSize })).then((response: any) => {
         setCategoriesLength(response.payload.data.count);
-        setItemsList(response.payload.data.data)
-
-        setLoadingCategory(false);
-      })
-      .catch((error: any) => {
-        console.error("Error fetching categories:", error);
-        setLoadingCategory(false);
+        setListItems(response.payload.data.data);
+        dispatch(fetchSubCategorysList(error));
       });
-  }, [pageNumber, pageSize, dispatch]);
+    }
+  }, [loadStatus, dispatch, pageNumber]);
+  // useEffect(() => {
+  //   if (loadStatus === 'idle') {
+  //     dispatch(fetchCategorysList({ pageNumber, pageSize })).then((response: any) => {
+  //       setCategoriesLength(response.payload.data.count);
+  //       setListItems(response.payload.data.data);
+  //       // dispatch(fetchSubCategorysList(error));
+  //     });
+  //   }
+  // }, []);
 
-
-  const handleOnDragEnd = async (result: any) => {
-    const draggedCategory: any = itemList?.[result.source.index];
-    await dispatch(
-      sortCategory({ categodyId: draggedCategory?._id, data: { sortIndex: result.destination.index + 1 } })
-    ).then((res) => {
-      if (!result.destination) return;
-      const items = Array.from(itemList);
-      const [reorderedItem] = items.splice(result.source.index, 1);
-      items.splice(result.destination.index, 0, reorderedItem);
-      setItemsList(items)
-    });
+  const handleOnDragEnd = (result: any) => {
+    if (!result.destination) return;
+    const items = Array.from(listItems);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setListItems(items);
   };
 
   // ----------------------------- permissions -----------------------------
@@ -632,46 +551,21 @@ export default function CategoriesView() {
     fetchData();
   }, []);
   useEffect(() => {
-    setLoadingSub(true); // Start subloading
-
-    dispatch(fetchSubCategorysList(error))
-      .then((response: any) => {
-        // setSubCategoriesLength(response?.payload?.data?.count)
-        setSubCategoriesData(response?.payload?.data?.data);
-        setSubCatArray(response?.payload?.data?.data)
-        setLoadingSub(false); // Stop subloading after fetching
-      })
-      .catch((error: any) => {
-        console.error("Error fetching subcategories:", error);
-        setLoadingSub(false); // Stop subloading in case of an error
-      });
+    // dispatch(fetchSubCategorysList(error)).then((res) => setSubCategoriesData(res?.payload?.data?.data));
+    dispatch(fetchSubCategorysList(error));
   }, []);
-  const subcategoryCount = subCatArray?.map((cat: any, indx: any) => {
-    return subCatArray?.flatMap((item: any) =>
-      item.subcategories.filter((subItem: any) => subItem.category === cat?._id)
-    ).length;
-  });
-  const totalSubcategories = subcategoryCount.reduce((acc: any, count: any) => acc + count, 0);
-
   return (
-    <Container maxWidth={false}  >
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <RoleBasedGuard returnBoolean hasContent permission="GET_CATEGORYS">
         <Grid
           container
           justifyContent="space-between"
           alignItems={{ xs: 'flex-start', md: 'center' }}
-          sx={{
-            width: {
-              lg: categoryDrawer || subCategoryDrawer === true ? "calc(100% - 380px)" : "100%",
-              md: categoryDrawer || subCategoryDrawer === true ? "calc(100% - 380px)" : "100%",
-
-            }
-          }}
         >
           <Grid item xs={12} md="auto">
             <CustomCrumbs
-              heading={t("categories.Categories")}
-              description={t("categories.Doyouwantanyhelp")}
+              heading="Categories"
+              description="Do you want any help or custom request?"
               crums={false}
             />
           </Grid>
@@ -706,7 +600,7 @@ export default function CategoriesView() {
                 }
               >
                 {' '}
-                {t("categories.Categories")}{' '}
+                Categories{' '}
               </Button>
               <Button
                 onClick={handleChangeCategory('sub')}
@@ -730,7 +624,7 @@ export default function CategoriesView() {
                 }
               >
                 {' '}
-                {t("categories.Subcategories")}{' '}
+                Subcategories{' '}
               </Button>
             </Stack>
           </Grid>
@@ -741,11 +635,9 @@ export default function CategoriesView() {
 
           {activeCategory === 'main' && (
             <>
-              <Grid item xs={12} sm={6}
-
-              >
+              <Grid item xs={12} sm={6}>
                 <Typography component="h5" variant="h5">
-                  {t("categories.Youhave")} {categoriesLength} {t("categories.Categories")}
+                  You have {categoriesLength} categories
                 </Typography>
               </Grid>
               <RoleBasedGuard permission="CREATE_CATEGORY">
@@ -767,171 +659,146 @@ export default function CategoriesView() {
                         color="primary"
                         onClick={toggleDrawerCommon('cat')}
                       >
-                        {t("categories.AddNewCategory")}{' '}
+                        Add New Category{' '}
                       </Button>
                     </Stack>
                   </BottomActions>
                 </Grid>
               </RoleBasedGuard>
               <Box sx={{ minHeight: '60vh', width: '100%' }}>
-                {loadingCategory === true ? (
-                  <>
-                    <PaperLoading />
-                    <PaperLoading />
-                    <PaperLoading />
-                  </>
-                ) : (
-                  categoriesLength > 0 ? (
-                    <DragDropContext onDragEnd={handleOnDragEnd}>
-                      <Droppable droppableId="items">
-                        {(provided) => (
-                          <Grid
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            item
-                            xs={12}
-                            container
-                            sx={{ mt: '20px' }}
-                            spacing={2}
-                          >
-
-                            {
-                              // Start
-                              itemList?.map((category: any, indx: number) => (
-                                <DraggablePaper key={indx} index={indx}
-                                  actions={
-                                    <>
-                                      {allowAction.remove && (
-                                        <Tooltip title={t('brand.delete_btn')}>
-                                          <IconButton
-                                            onClick={() => {
-                                              setRemoveData({
-                                                type: 'category',
-                                                id: category._id,
-                                              });
-                                              confirm.onTrue();
-                                            }}
-                                          >
-                                            <Iconify color="text.secondary" icon="lucide:trash-2" width={25} />
-                                          </IconButton>
-                                        </Tooltip>
-                                      )}
-                                      {allowAction.edit && (
-                                        <Tooltip title={t('brand.edit')}>
-                                          <IconButton>
-                                            <Iconify
-                                              color="text.secondary"
-                                              icon="lucide:edit"
-                                              onClick={toggleDrawerCommon('cat', category._id)}
-                                              width={25}
-                                            />
-                                          </IconButton>
-                                        </Tooltip>
-                                      )}
-                                    </>
-                                  }
-                                >
+                {listItems?.length > 0 && (
+                  <DragDropContext onDragEnd={handleOnDragEnd}>
+                    <Droppable droppableId="items">
+                      {(provided) => (
+                        <Grid
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          item
+                          xs={12}
+                          container
+                          sx={{ mt: '20px' }}
+                          spacing={2}
+                        >
+                          {
+                            // Start
+                            listItems.map((category: any, indx: number) => (
+                              <Draggable key={indx} index={indx} draggableId={indx.toString()}>
+                                {(provided) => (
                                   <Grid
+                                    {...provided.draggableProps}
                                     ref={provided.innerRef}
                                     item
                                     xs={12}
                                   >
-                                    <Grid
-                                      container
-                                      item
-                                      alignItems="center"
-                                      justifyContent="space-between"
-                                      rowGap={3}
-                                      sx={{ py: { xs: 1.5 } }}
+                                    <Paper
+                                      elevation={4}
+                                      sx={{
+                                        border: '2px solid #FFFFFF',
+                                        '&:hover': { border: '2px solid #1BFCB6' },
+                                      }}
                                     >
-                                      <Grid item xs="auto">
-                                        <Box
-                                          sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '15px',
-                                          }}
-                                        >
-
-                                          {category?.image ? (
-                                            <Box
-                                              component="img"
-                                              src={category.image}
-                                              alt=" "
-                                              width="60px"
-                                            />
-                                          ) : (
-                                            <Box
-                                              component="div"
-                                              width="60px"
-                                              height="60px"
-                                              display={'flex'}
-                                              alignItems={'center'}
-                                              justifyContent={'center'}
-                                            >
-                                              <Iconify
-                                                icon="uil:images"
-                                                width="40px"
-                                                height="40px"
+                                      <Grid
+                                        container
+                                        item
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        rowGap={3}
+                                        sx={{ px: 3, py: { xs: 1.5 } }}
+                                      >
+                                        <Grid item xs="auto">
+                                          <Box
+                                            sx={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              gap: '15px',
+                                            }}
+                                          >
+                                            <div {...provided.dragHandleProps}>
+                                              <Iconify icon="ci:drag-vertical" />
+                                            </div>
+                                            {category?.image ? (
+                                              <Box
+                                                component="img"
+                                                src={category.image}
+                                                alt=" "
+                                                width="60px"
                                               />
+                                            ) : (
+                                              <Box
+                                                component="div"
+                                                width="60px"
+                                                height="60px"
+                                                display={'flex'}
+                                                alignItems={'center'}
+                                                justifyContent={'center'}
+                                              >
+                                                <Iconify
+                                                  icon="uil:images"
+                                                  width="40px"
+                                                  height="40px"
+                                                />
+                                              </Box>
+                                            )}
+                                            <Box display="flex" gap="0px" flexDirection="column">
+                                              <Typography
+                                                component="p"
+                                                variant="subtitle2"
+                                                sx={{ fontSize: '.9rem', fontWeight: 800 }}
+                                              >
+                                                {' '}
+                                                {category?.name?.en || category.name}{' '}
+                                              </Typography>
+                                              <Typography
+                                                component="p"
+                                                noWrap
+                                                variant="subtitle2"
+                                                sx={{
+                                                  opacity: 0.7,
+                                                  fontSize: '.9rem',
+                                                  maxWidth: { xs: '120px', md: '218px' },
+                                                }}
+                                              >
+                                                {/* {category.tcategpries} subcategories -   {category.tproduct} products */}
+                                                {0} subcategories - {0} products
+                                              </Typography>
                                             </Box>
-                                          )}
-                                          <Box display="flex" gap="0px" flexDirection="column">
-                                            <Typography
-                                              component="p"
-                                              variant="subtitle2"
-                                              sx={{ fontSize: '.9rem', fontWeight: 800 }}
-                                            >
-                                              {' '}
-                                              {category?.name?.en || category.name}{' '}
-                                            </Typography>
-                                            <Typography
-                                              component="p"
-                                              noWrap
-                                              variant="subtitle2"
-                                              sx={{
-                                                opacity: 0.7,
-                                                fontSize: '.9rem',
-                                                maxWidth: { xs: '120px', md: '218px' },
-                                              }}
-                                            >
-                                              {category?.subcategoriesNumber}  {t("categories.Subcategories")} - {category?.productsNumber} {t("categories.products")}
-                                            </Typography>
                                           </Box>
-                                        </Box>
+                                        </Grid>
+
+                                        <Grid item xs="auto" textAlign="right">
+                                          {allowAction.remove && (
+                                            <Iconify
+                                              icon="carbon:delete"
+                                              onClick={() => {
+                                                setRemoveData({
+                                                  type: 'category',
+                                                  id: category._id,
+                                                });
+                                                confirm.onTrue();
+                                              }}
+                                            />
+                                          )}{' '}
+                                          &nbsp; &nbsp; &nbsp;
+                                          {allowAction.edit && (
+                                            <Iconify
+                                              icon="bx:edit"
+                                              onClick={toggleDrawerCommon('cat', category._id)}
+                                            />
+                                          )}
+                                        </Grid>
                                       </Grid>
-                                    </Grid>
+                                    </Paper>
                                   </Grid>
-                                </DraggablePaper>
-                              )
-
-                              )
-                            }
-                            {provided.placeholder}
-                          </Grid>
-                        )}
-                      </Droppable>
-                    </DragDropContext>
-                  ) :
-                    <>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center"
-                        }}
-                      >
-                        <TableNoData notFound={categoriesLength === 0}
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center"
-                          }}
-                        />
-                      </Box>
-                    </>
+                                )}
+                              </Draggable>
+                            ))
+                          }
+                          {provided.placeholder}
+                        </Grid>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
                 )}
-
               </Box>
               <Stack
                 sx={{
@@ -941,17 +808,12 @@ export default function CategoriesView() {
                   justifyContent: 'center',
                 }}
               >
-                {Math.ceil(categoriesLength / pageSize) !== 1 && categoriesLength > 5 && (
-
-                  <Button
-                    variant="soft"
-                    sx={{ px: 3, marginInlineStart: 'auto', textTransform: 'capitalize', marginTop: "20px" }}
-                    onClick={() => {
-                      setPageSize((prev) => prev + initialPageSize);
-                    }}
-                  >
-                    {t('common.load_more')}
-                  </Button>
+                {Math.ceil(categoriesLength / pageSize) !== 1 && (
+                  <NavigatorBar
+                    setPageNumber={setPageNumber}
+                    pageSize={pageSize}
+                    itemsLength={categoriesLength}
+                  />
                 )}
               </Stack>
             </>
@@ -961,7 +823,7 @@ export default function CategoriesView() {
             <>
               <Grid item xs={12} sm={6}>
                 <Typography component="h5" variant="h5">
-                  {t("categories.Youhave")} {subcategoryCount.reduce((acc: any, count: any) => acc + count, 0)} {t("categories.Subcategories")}{' '}
+                  You have {subCatList.length} subcategories{' '}
                 </Typography>
               </Grid>
 
@@ -972,289 +834,734 @@ export default function CategoriesView() {
                     alignItems="center"
                     justifyContent={{ xs: 'flex-start', sm: 'flex-end' }}
                     spacing="10px"
-                    sx={{ width: '100%', maxWidth: { xs: '100%', sm: '100%' } }}
+                    sx={{ width: '100%', maxWidth: { xs: '100%', sm: '187px' } }}
                   >
                     <Button
                       startIcon="+"
-                      // fullWidth
-                      sx={{
-                        borderRadius: '30px', color: '#0F1349', whiteSpace: "nowrap",
-                        padding: "6px 20px 6px 20px"
-                      }}
+                      fullWidth
+                      sx={{ borderRadius: '30px', color: '#0F1349' }}
                       component="button"
                       variant="contained"
                       color="primary"
                       onClick={toggleDrawerCommon('sub')}
                     >
-                      {t("categories.AddNewSubcategory")}{' '}
+                      Add New Subcategory{' '}
                     </Button>
                   </Stack>
                 </BottomActions>
               </Grid>
-
-              {loadingSub === true ? (
-                <>
-                  <PaperLoading />
-                  <PaperLoading />
-                  <PaperLoading />
-                </>
-              ) : (
-                totalSubcategories > 0 ? (
-                  <Grid item xs={12} container spacing={2}>
-                    {subCatArray?.map((cat: any, indx: any) => {
-                      const subCat = subCatArray?.flatMap((item: any) =>
-                        item.subcategories?.filter((subItem: any) => subItem.category === cat?._id)
-                      );
-                      const categoryId = cat?._id;
-                      const subCatLength = subCat.length;
-                      const visibleItemCount = visibleItems[categoryId] || 0;
-                      const showLoadMoreButton = subCatLength > 2;
-
-                      return (
-                        <React.Fragment key={indx}>
-                          {subCat.length > 0 && (
-                            <Grid item xs={12} sx={{ mt: '20px' }}>
-                              <Typography
-                                component="p"
-                                variant="subtitle2"
-                                sx={{ fontSize: '1rem', fontWeight: 800 }}
-                              >
-                                {' '}
-                                {cat?.name?.en || cat?.name || ''}{' '}
-                              </Typography>
-                              <Typography
-                                component="p"
-                                noWrap
-                                variant="subtitle2"
-                                sx={{
-                                  opacity: 0.7,
-                                  fontSize: '.9rem',
-                                  maxWidth: { xs: '120px', md: '218px' },
-                                }}
-                              >
-                                {subCat.length} subcategories
-                              </Typography>
-                            </Grid>
-                          )}
-
-                          <DragDropContext onDragEnd={handleOnDragEnd}>
-                            <Droppable droppableId="items">
-                              {(provided) => (
-                                <Grid
-
-
-                                  item
-                                  xs={12}
-                                  container
-                                  sx={{ mt: '20px' }}
-                                  spacing={2}
-                                >
-                                  {subCat.slice(0, visibleItemCount).map((subCatObject: any, subIndex: any) => (
-
-                                    <DraggablePaper key={subIndex} index={subIndex}
-                                      actions={
-                                        <>
-                                          {allowAction.remove && (
-                                            <Tooltip title={t('brand.delete_btn')}>
-                                              <IconButton
-                                                onClick={() => {
-                                                  setRemoveData({ type: 'subcategory', id: subCatObject._id });
-                                                  confirm.onTrue();
-                                                }}
-                                              >
-                                                <Iconify color="text.secondary" icon="lucide:trash-2" width={25} />
-                                              </IconButton>
-                                            </Tooltip>
-                                          )}
-                                          {allowAction.edit && (
-                                            <Tooltip title={t('brand.edit')}>
-                                              <IconButton>
-                                                <Iconify
-                                                  color="text.secondary"
-                                                  icon="lucide:edit"
-                                                  onClick={toggleDrawerCommon('sub', subCatObject._id)}
-                                                  width={25}
-                                                />
-                                              </IconButton>
-                                            </Tooltip>
-                                          )}
-                                        </>
-                                      }
-                                    >
-                                      <Grid item xs={12}>
-                                        <Grid
-                                          container
-                                          item
-                                          alignItems="center"
-                                          justifyContent="space-between"
-                                          rowGap={3}
-                                          sx={{ py: { xs: 1.5 } }}
-                                        >
-                                          <Grid item xs="auto">
-                                            <Box
-                                              sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '15px',
-                                              }}
-                                            >
-                                              {subCatObject?.image ? (
-                                                <Box
-                                                  component="img"
-                                                  src={subCatObject.image}
-                                                  alt=" "
-                                                  width="60px"
-                                                />
-                                              ) : (
-                                                <Box
-                                                  component="div"
-                                                  width="60px"
-                                                  height="60px"
-                                                  display={'flex'}
-                                                  alignItems={'center'}
-                                                  justifyContent={'center'}
-                                                >
-                                                  <Iconify
-                                                    icon="uil:images"
-                                                    width="40px"
-                                                    height="40px"
-                                                  />
-                                                </Box>
-                                              )}
-
-                                              <Box display="flex" gap="0px" flexDirection="column">
-                                                <Typography
-                                                  component="p"
-                                                  variant="subtitle2"
-                                                  sx={{ fontSize: '.9rem', fontWeight: 800 }}
-                                                >
-                                                  {' '}
-                                                  {subCatObject?.name?.en || subCatObject?.name}{' '}
-                                                </Typography>
-                                                <Typography
-                                                  component="p"
-                                                  noWrap
-                                                  variant="subtitle2"
-                                                  sx={{
-                                                    opacity: 0.7,
-                                                    fontSize: '.9rem',
-                                                    maxWidth: { xs: '120px', md: '218px' },
-                                                  }}
-                                                >
-                                                  {subCatObject?.productsNumber} {t("categories.products")}
-                                                </Typography>
-                                              </Box>
-                                            </Box>
-                                          </Grid>
-                                        </Grid>
-                                      </Grid>
-                                    </DraggablePaper>
-
-                                  ))}
-
-                                  {showLoadMoreButton && (
-
-                                    <Button
-                                      variant="soft"
-                                      sx={{ px: 3, marginInlineStart: 'auto', textTransform: 'capitalize', marginTop: "20px" }}
-                                      onClick={() => handleLoadMore(categoryId, subCatLength)}
-                                    >
-
-                                      {visibleItemCount === 2 ? 'Show More' : 'Show Less'}
-                                    </Button>
-
-                                  )}
-                                </Grid>
-
-                              )}
-                            </Droppable>
-                          </DragDropContext>
-                        </React.Fragment>
-                      );
-                    })}
-                  </Grid>
-                ) : (
-                  <Box
+              {/* {subCategoriesData && subCategoriesData?.map((subCatObject: any, index: any) => (
+                <Grid key={index} sx={{ mt: '20px' }} item xs={12}>
+                  <Paper
+                    elevation={4}
                     sx={{
-                      display: "flex !important",
-                      margin: "0 auto"
+                      border: '2px solid #FFFFFF',
+                      '&:hover': { border: '2px solid #1BFCB6' },
                     }}
                   >
-                    {subcategoryCount.reduce((acc: any, count: any) => acc + count, 0) === 0 &&
-                      <TableNoData
-                        notFound={true}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                      />
-
-                    }
-
-                  </Box>
-                )
+                    <Grid
+                      container
+                      item
+                      alignItems="center"
+                      justifyContent="space-between"
+                      rowGap={3}
+                      sx={{ px: 3, py: { xs: 1.5 } }}
+                    >
+                      <Grid item xs="auto">
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '15px',
+                          }}
+                        >
+                          <Iconify icon="ci:drag-vertical" />
+                          <Box component="img" src={subCatObject?.image} alt=" " width="60px" />
+                          <Box display="flex" gap="0px" flexDirection="column">
+                            <Typography
+                              component="p"
+                              variant="subtitle2"
+                              sx={{ fontSize: '.9rem', fontWeight: 800 }}
+                            >
+                              {' '}
+                              {subCatObject?.name?.en || subCatObject?.name}{' '}
+                            </Typography>
+                            <Typography
+                              component="p"
+                              noWrap
+                              variant="subtitle2"
+                              sx={{
+                                opacity: 0.7,
+                                fontSize: '.9rem',
+                                maxWidth: { xs: '120px', md: '218px' },
+                              }}
+                            >
+                              {0} subcategories - {0} products
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Grid>
+                      <Grid item xs="auto" textAlign="right">
+                        <Iconify
+                          icon="carbon:delete"
+                          onClick={() => {
+                            setRemoveData({ type: 'subcategory', id: subCatObject._id });
+                            confirm.onTrue();
+                          }}
+                        />{' '}
+                        &nbsp; &nbsp; &nbsp;
+                        <Iconify
+                          icon="bx:edit"
+                          onClick={toggleDrawerCommon('sub', subCatObject._id)}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </Grid>
+              ))} */}
+              {list?.length > 0 && (
+                <Grid item xs={12} container spacing={2}>
+                  {list?.map((cat: any, indx: any) => {
+                    const subCat = subCatList?.filter(
+                      (item: any) => item?.category === cat?._id
+                    );
+                    return (
+                      <React.Fragment key={indx}>
+                        <Grid item xs={12} sx={{ mt: '20px' }}>
+                          <Typography
+                            component="p"
+                            variant="subtitle2"
+                            sx={{ fontSize: '1rem', fontWeight: 800 }}
+                          >
+                            {' '}
+                            {cat?.name?.en || cat?.name || ''}{' '}
+                          </Typography>
+                          <Typography
+                            component="p"
+                            noWrap
+                            variant="subtitle2"
+                            sx={{
+                              opacity: 0.7,
+                              fontSize: '.9rem',
+                              maxWidth: { xs: '120px', md: '218px' },
+                            }}
+                          >
+                            {subCat.length} subcategories
+                          </Typography>
+                        </Grid>
+                        {subCat.map((subCatObject: any, index: any) => (
+                          <Grid key={index} item xs={12}>
+                            <Paper
+                              elevation={4}
+                              sx={{
+                                border: '2px solid #FFFFFF',
+                                '&:hover': { border: '2px solid #1BFCB6' },
+                              }}
+                            >
+                              <Grid
+                                container
+                                item
+                                alignItems="center"
+                                justifyContent="space-between"
+                                rowGap={3}
+                                sx={{ px: 3, py: { xs: 1.5 } }}
+                              >
+                                <Grid item xs="auto">
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '15px',
+                                    }}
+                                  >
+                                    <Iconify icon="ci:drag-vertical" />
+                                    <Box
+                                      component="img"
+                                      src={subCatObject.image}
+                                      alt=" "
+                                      width="60px"
+                                    />
+                                    <Box display="flex" gap="0px" flexDirection="column">
+                                      <Typography
+                                        component="p"
+                                        variant="subtitle2"
+                                        sx={{ fontSize: '.9rem', fontWeight: 800 }}
+                                      >
+                                        {' '}
+                                        {subCatObject?.name?.en || subCatObject?.name}{' '}
+                                      </Typography>
+                                      <Typography
+                                        component="p"
+                                        noWrap
+                                        variant="subtitle2"
+                                        sx={{
+                                          opacity: 0.7,
+                                          fontSize: '.9rem',
+                                          maxWidth: { xs: '120px', md: '218px' },
+                                        }}
+                                      >
+                                        {0} subcategories - {0} products
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                </Grid>
+                                <Grid item xs="auto" textAlign="right">
+                                  <Iconify
+                                    icon="carbon:delete"
+                                    onClick={() => {
+                                      setRemoveData({ type: 'subcategory', id: subCatObject._id });
+                                      confirm.onTrue();
+                                    }}
+                                  />{' '}
+                                  &nbsp; &nbsp; &nbsp;
+                                  <Iconify
+                                    icon="bx:edit"
+                                    onClick={toggleDrawerCommon('sub', subCatObject._id)}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </Paper>
+                          </Grid>
+                        ))}
+                      </React.Fragment>
+                    );
+                  })}
+                </Grid>
               )}
-
             </>
           )}
         </Grid>
 
         {/* add and edit Item */}
-        <CategoriesDrawer
-          categoryDrawerOpen={categoryDrawer}
-          handleDrawerCloseCommon={handleDrawerCloseCommon}
-          loading={loading}
-          methods={methods}
-          onSubmit={onSubmit}
-          errorMsg={errorMsg}
-          handleCategoriesData={handleCategoryData}
-          setCategoriesData={setCategoriesData}
-          categoriesData={categoriesData}
-          handleCategoryImage={handleCategoryImage}
-          handleCategoryLogo={handleCategoryLogo}
-          editCategoryId={editCatId}
-        />
-        <SubCategoriesDrawer
-          subcategoryDrawerOpen={subCategoryDrawer}
-          handleDrawerCloseCommon={handleDrawerSubCloseCommon}
-          setSubCategoriesData={setSubCategoriesData}
-          editSubCategoryId={editSubCatId}
-          loading={loading}
-          SubcategoriesData={subCategoriesData}
-          subCatArray={subCatArray}
-          bgColor={bgColor}
-          setColor={setColor}
-          onClick={() => subCatMethods.handleSubmit(onSubmitSubCat as any)()}
-          methods={subCatMethods}
-          onSubmit={onSubmitSubCat}
-          handleSubCategoriesData={handleSubCategoryData}
-          handleSubCategoryImage={handleSubCategoryImage}
-          handleSubCategoryLogo={handleSubCategoryLogo}
-          errorMsg={errorMsg}
-          handleChangeMySubCat={handleChangeMySubCat}
-        />
+        <DetailsNavBar
+          open={categoryDrawer}
+          onClose={handleDrawerCloseCommon('cat')}
+          title={editCatId ? 'Edit Category' : 'Add New Category'}
+          actions={
+            <Stack alignItems="center" justifyContent="center" spacing="10px">
+              <LoadingButton
+                fullWidth
+                variant="soft"
+                color="success"
+                size="large"
+                sx={{ borderRadius: '30px' }}
+                loading={isSubmitting}
+                onClick={() => methods.handleSubmit(onSubmit as any)()}
+              >
+                {editCatId ? 'Update' : 'Save'}
+              </LoadingButton>
+            </Stack>
+          }
+        >
+          <FormProvider methods={methods} onSubmit={onSubmit}>
+            <Divider flexItem />
+            {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+            <Box width="100%">
+              <Typography
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Category Name (English)
+              </Typography>
+              <RHFTextField
+                fullWidth
+                variant="filled"
+                value={categoriesData?.name?.en || ''}
+                settingStateValue={handleCategoryData}
+                name="name.en"
+              />
+
+              <Typography
+                mt="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Category Name (Arabic)
+              </Typography>
+              <RHFTextField
+                fullWidth
+                variant="filled"
+                value={categoriesData?.name?.ar || ''}
+                settingStateValue={handleCategoryData}
+                name="name.ar"
+              />
+              <Typography
+                mt="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Background Color (optional)
+              </Typography>
+              {/* <RHFTextField
+                fullWidth
+                variant="filled"
+                value={categoriesData?.bgColor || ''}
+                settingStateValue={handleCategoryData}
+                name="bgColor"
+              /> */}
+              <MuiColorInput sx={{ width: "100%", margin: "auto", '& .css-1rn6l8w-MuiInputAdornment-root.MuiInputAdornment-positionStart.css-1rn6l8w-MuiInputAdornment-root:not(.MuiInputAdornment-hiddenLabel)': { margin: 0 } }} variant="filled"
+                value={categoriesData?.bgColor || ''}
+                // fullWidth
+                // onChange={event => isColorValid(event) ? setAppBar({ ...appBar, color: event }) : null}
+                onChange={event => setCategoriesData({ ...categoriesData, bgColor: event })}
+              />
+
+              <Typography
+                mt="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Logo
+              </Typography>
+              <Stack direction="row" spacing="10px">
+                {categoriesData?.icon ? (
+                  <Box width={'100%'} display={'flex'}>
+                    <Box
+                      display={'flex'}
+                      m={1}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      width={'80px'}
+                      height={'80px'}
+                    >
+                      <Box
+                        component="img"
+                        borderRadius={'5px'}
+                        src={
+                          typeof categoriesData.icon === 'string'
+                            ? categoriesData.icon
+                            : URL.createObjectURL(categoriesData.icon)
+                        }
+                        alt=""
+                      />
+                    </Box>
+                    <Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Box
+                          onClick={removeLogo}
+                          sx={{
+                            backgroundColor: 'rgb(134, 136, 163,.09)',
+                            padding: '10px 11px 7px 11px',
+                            borderRadius: '36px',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <Iconify icon="ic:round-delete" style={{ color: '#8688A3' }} />
+                        </Box>
+                      </Box>
+                      <Typography
+                        mt="0px"
+                        component="p"
+                        variant="subtitle2"
+                        sx={{ opacity: 0.7, fontSize: '.9rem' }}
+                      >
+                        Maximum size is 5mb
+                      </Typography>
+
+                      <Typography
+                        mt="0px"
+                        component="p"
+                        variant="subtitle2"
+                        sx={{ opacity: 0.7, fontSize: '.8rem' }}
+                      >
+                        You can use these extensions PNG or JPG
+                      </Typography>
+                    </Box>
+                  </Box>
+                ) : (
+                  <UploadBox
+                    onDrop={handleCategoryLogo}
+                    maxFiles={1}
+                    maxSize={5242880}
+                    accept={{
+                      'image/jpeg': [],
+                      'image/png': [],
+                    }}
+                    placeholder={
+                      <Stack spacing={0.5} alignItems="center">
+                        <Iconify icon="eva:cloud-upload-fill" width={40} />
+                        <Typography variant="body2">Upload Logo</Typography>
+                      </Stack>
+                    }
+                    sx={{ flexGrow: 1, height: 'auto', py: 2.5, mb: 3 }}
+                  />
+                )}
+              </Stack>
+
+              <Stack direction="row" spacing="10px">
+                {categoriesData?.image ? (
+                  <Box width={'100%'} display={'flex'}>
+                    <Box
+                      display={'flex'}
+                      m={1}
+                      justifyContent={'center'}
+                      alignItems={'center'}
+                      width={'80px'}
+                      height={'80px'}
+                    >
+                      <Box
+                        component="img"
+                        borderRadius={'5px'}
+                        src={
+                          typeof categoriesData.image === 'string'
+                            ? categoriesData.image
+                            : URL.createObjectURL(categoriesData.image)
+                        }
+                        alt=""
+                      />
+                    </Box>
+                    <Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Box
+                          onClick={removeImage}
+                          sx={{
+                            backgroundColor: 'rgb(134, 136, 163,.09)',
+                            padding: '10px 11px 7px 11px',
+                            borderRadius: '36px',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <Iconify icon="ic:round-delete" style={{ color: '#8688A3' }} />
+                        </Box>
+                      </Box>
+                      <Typography
+                        mt="0px"
+                        component="p"
+                        variant="subtitle2"
+                        sx={{ opacity: 0.7, fontSize: '.9rem' }}
+                      >
+                        Maximum size is 5mb
+                      </Typography>
+
+                      <Typography
+                        mt="0px"
+                        component="p"
+                        variant="subtitle2"
+                        sx={{ opacity: 0.7, fontSize: '.8rem' }}
+                      >
+                        You can use these extensions PNG or JPG
+                      </Typography>
+                    </Box>
+                  </Box>
+                ) : (
+                  <UploadBox
+                    onDrop={handleCategoryImage}
+                    maxFiles={1}
+                    maxSize={5242880}
+                    accept={{
+                      'image/jpeg': [],
+                      'image/png': [],
+                    }}
+                    placeholder={
+                      <Stack spacing={0.5} alignItems="center">
+                        <Iconify icon="eva:cloud-upload-fill" width={40} />
+                        <Typography variant="body2">Upload file</Typography>
+                      </Stack>
+                    }
+                    sx={{ flexGrow: 1, height: 'auto', py: 2.5, mb: 3 }}
+                  />
+                )}
+              </Stack>
+            </Box>
+          </FormProvider>
+        </DetailsNavBar>
+
+        {/* subcategory Item */}
+        <DetailsNavBar
+          open={subCategoryDrawer}
+          onClose={handleDrawerCloseCommon('sub')}
+          title={editSubCatId ? 'Edit Subcategory' : 'Add New Subcategory'}
+          actions={
+            <Stack alignItems="center" justifyContent="center" spacing="10px">
+              <LoadingButton
+                fullWidth
+                variant="soft"
+                color="success"
+                size="large"
+                // onClick={editSubCatId ? handleEditSubCategory : handleCreateSubCategory}
+                loading={subCatMethods.formState.isSubmitting}
+                onClick={() => subCatMethods.handleSubmit(onSubmitSubCat as any)()}
+                sx={{ borderRadius: '30px' }}
+              >
+                {editSubCatId ? 'Update' : 'Save'}
+              </LoadingButton>
+            </Stack>
+          }
+        >
+          <FormProvider methods={subCatMethods} onSubmit={onSubmitSubCat}>
+            <Divider flexItem />
+            {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+
+            <Box width="100%">
+              <Typography
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Subcategory Name (English)
+              </Typography>
+              {/* <TextField fullWidth variant='filled' value={subCategoriesData?.name?.en || ""} onChange={handleSubCategoryData} name="name.en" /> */}
+              <RHFTextField
+                fullWidth
+                variant="filled"
+                value={subCategoriesData?.name?.en || ''}
+                settingStateValue={handleSubCategoryData}
+                name="name.en"
+              />
+
+              <Typography
+                mt="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Subcategory Name (Arabic)
+              </Typography>
+              {/* <TextField fullWidth variant='filled' defaultValue='الهواتف الذكية' name='itemname' /> */}
+              <RHFTextField
+                fullWidth
+                variant="filled"
+                value={subCategoriesData?.name?.ar || ''}
+                settingStateValue={handleSubCategoryData}
+                name="name.ar"
+              />
+
+              <Typography
+                mt="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Category
+              </Typography>
+              {/* <FormControl fullWidth>
+              <Select
+                variant='filled'
+                name='category'
+                value={subCategoriesData?.category || null}
+                onChange={handleChangeMySubCat}
+              >
+                {list.length > 0 && list.map((item: any, i: any) => <MenuItem key={i} value={item._id}>{item.name || ""}</MenuItem>)}
+              </Select>
+            </FormControl> */}
+              <RHFSelect
+                fullWidth
+                variant="filled"
+                name="category"
+                value={subCategoriesData?.category || ''}
+                settingStateValue={handleChangeMySubCat}
+              >
+                {list.length > 0 &&
+                  list.map((item: any, i: any) => (
+                    <MenuItem key={i} value={item._id}>
+                      {item?.name?.en || item?.name || ''}
+                    </MenuItem>
+                  ))}
+              </RHFSelect>
+              <Typography
+                mt="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Background Color (optional)
+              </Typography>
+              <RHFTextField
+                fullWidth
+                variant="filled"
+                value={categoriesData?.bgColor || ''}
+                settingStateValue={handleCategoryData}
+                name="bgColor"
+              />
+
+              <Typography
+                mt="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Logo
+              </Typography>
+              <Stack direction="row" spacing="10px">
+                {subCategoriesData?.icon ? (
+                  <Box
+                    sx={{
+                      width: '140px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '10px',
+                      flexDirection: 'column',
+                      position: 'relative',
+                      border: '2px dashed rgb(134, 136, 163,.5)',
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      borderRadius={'5px'}
+                      src={
+                        typeof subCategoriesData.icon === 'string'
+                          ? subCategoriesData.icon
+                          : URL.createObjectURL(subCategoriesData.icon)
+                      }
+                      alt="subCategory"
+                    />
+                    <Box
+                      onClick={removeSubCatLogo}
+                      sx={{
+                        backgroundColor: 'rgb(134, 136, 163,.09)',
+                        padding: '10px 11px 7px 11px',
+                        borderRadius: '36px',
+                        cursor: 'pointer',
+                        position: 'absolute',
+                        top: '0px',
+                        right: '0px',
+                      }}
+                    >
+                      <Iconify icon="ic:round-delete" style={{ color: '#8688A3' }} />
+                    </Box>
+                  </Box>
+                ) : (
+                  <UploadBox
+                    onDrop={handleSubCategoryLogo}
+                    maxFiles={1}
+                    maxSize={5242880}
+                    accept={{
+                      'image/jpeg': [],
+                      'image/png': [],
+                    }}
+                    placeholder={
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '10px',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <Iconify icon="uil:upload" style={{ color: '#8688A3' }} />
+                        <span style={{ color: '#8688A3', fontSize: '.7rem' }}>Upload Image</span>
+                      </Box>
+                    }
+                    sx={{ flexGrow: 1, height: 'auto', py: 2.5, mb: 3 }}
+                  />
+                )}
+              </Stack>
+
+              <Typography
+                my="20px"
+                component="p"
+                noWrap
+                variant="subtitle2"
+                sx={{ opacity: 0.7, fontSize: '.9rem', maxWidth: { xs: '120px', md: '218px' } }}
+              >
+                Category Image
+              </Typography>
+              <Stack direction="row" spacing="10px" alignItems="center">
+                {subCategoriesData?.image ? (
+                  <Box
+                    sx={{
+                      width: '140px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '10px',
+                      flexDirection: 'column',
+                      position: 'relative',
+                      border: '2px dashed rgb(134, 136, 163,.5)',
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      borderRadius={'5px'}
+                      src={
+                        typeof subCategoriesData.image === 'string'
+                          ? subCategoriesData.image
+                          : URL.createObjectURL(subCategoriesData.image)
+                      }
+                      alt="subCategory"
+                    />
+                    <Box
+                      onClick={removeSubCatImage}
+                      sx={{
+                        backgroundColor: 'rgb(134, 136, 163,.09)',
+                        padding: '10px 11px 7px 11px',
+                        borderRadius: '36px',
+                        cursor: 'pointer',
+                        position: 'absolute',
+                        top: '0px',
+                        right: '0px',
+                      }}
+                    >
+                      <Iconify icon="ic:round-delete" style={{ color: '#8688A3' }} />
+                    </Box>
+                  </Box>
+                ) : (
+                  <UploadBox
+                    onDrop={handleSubCategoryImage}
+                    maxFiles={1}
+                    maxSize={5242880}
+                    accept={{
+                      'image/jpeg': [],
+                      'image/png': [],
+                    }}
+                    placeholder={
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '10px',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <Iconify icon="uil:upload" style={{ color: '#8688A3' }} />
+                        <span style={{ color: '#8688A3', fontSize: '.7rem' }}>Upload Image</span>
+                      </Box>
+                    }
+                    sx={{ flexGrow: 1, height: 'auto', py: 2.5, mb: 3 }}
+                  />
+                )}
+              </Stack>
+            </Box>
+          </FormProvider>
+        </DetailsNavBar>
 
         <ConfirmDialog
           open={confirm.value}
           onClose={confirm.onFalse}
           noCancel={false}
           title="Delete"
-          content={<>{t("categories.wantdeleteitems")}</>}
+          content={<>Are you sure want to delete items?</>}
           action={
-
-            <Stack alignItems="center" justifyContent="center" spacing="10px">
-              <LoadingButton
-                fullWidth
-                variant="soft"
-                color="error"
-                size="large"
-                sx={{ borderRadius: '30px' }}
-                loading={loading}
-                onClick={handleRemoveCategory}
-              >
-                {t("categories.Delete")}
-              </LoadingButton>
-            </Stack>
+            <Button
+              fullWidth
+              color="error"
+              variant="soft"
+              size="large"
+              onClick={handleRemoveCategory}
+              sx={{ borderRadius: '30px' }}
+            >
+              Delete
+            </Button>
           }
         />
       </RoleBasedGuard>

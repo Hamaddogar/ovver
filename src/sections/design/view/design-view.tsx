@@ -166,7 +166,7 @@ const DesignMain: React.FC<DesignMainProps> = () => {
 
   return (
     <>
-      <Container maxWidth={false} sx={{ mt: 3 }}>
+      <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ mt: 3 }}>
         <RoleBasedGuard hasContent permission="READ_BUILDER">
           <Grid
             container
@@ -216,7 +216,7 @@ const DesignMain: React.FC<DesignMainProps> = () => {
                         container
                         spacing={2}
                       >
-                        {listItems.map((builderObj: any, indx: any) => (
+                        {listItems && listItems.map((builderObj: any, indx: any) => (
                           <Draggable key={indx} index={indx} draggableId={indx.toString()}>
                             {(provided) => (
                               <Grid
@@ -235,7 +235,7 @@ const DesignMain: React.FC<DesignMainProps> = () => {
                                     rowGap={3}
                                     p={3}
                                     minHeight="80px"
-                                    // sx={voucher.status ? stylesActive : stylesDisabled}
+                                  // sx={voucher.status ? stylesActive : stylesDisabled}
                                   >
                                     <Grid
                                       item
@@ -246,10 +246,10 @@ const DesignMain: React.FC<DesignMainProps> = () => {
                                       <div {...provided.dragHandleProps}>
                                         <Iconify icon="ci:drag-vertical" />
                                       </div>
-                                      {builderObj?.appLogo ? (
+                                      {builderObj?.logo ? (
                                         <Box
                                           component="img"
-                                          src={builderObj.appLogo}
+                                          src={builderObj.logo}
                                           alt=" "
                                           width="60px"
                                         />
@@ -294,7 +294,7 @@ const DesignMain: React.FC<DesignMainProps> = () => {
                                         variant="subtitle2"
                                         sx={{ fontSize: '.8rem' }}
                                       >
-                                        {builderObj.BusinessCategory}{' '}
+                                        {builderObj?.BusinessCategory?.name?.localized || "--"}
                                         {/* <span style={{ fontSize: '.7rem' }}>({builderObj.isPublishWebSite})</span>{' '} */}
                                       </Typography>
                                     </Grid>
@@ -328,6 +328,7 @@ const DesignMain: React.FC<DesignMainProps> = () => {
                                         </Box>
                                       )} */}
                                         <Link
+
                                           target="_blank"
                                           href={`https://${builderObj?.domain}`}
                                         >
@@ -340,7 +341,7 @@ const DesignMain: React.FC<DesignMainProps> = () => {
                                         {/* {allowAction.edit && ( */}
                                         <Link
                                           href={paths.dashboard.design.theme(
-                                            builderObj?.BusinessCategory,
+                                            builderObj?.BusinessCategory?.name?.localized || "",
                                             builderObj?.websiteTheme,
                                             `https://${builderObj?.domain}`,
                                             builderObj?._id

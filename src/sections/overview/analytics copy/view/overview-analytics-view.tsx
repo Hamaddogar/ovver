@@ -30,7 +30,7 @@ export default function OverviewAnalyticsView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Typography
         variant="h4"
         sx={{

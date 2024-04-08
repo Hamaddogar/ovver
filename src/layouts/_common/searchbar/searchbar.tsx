@@ -40,7 +40,7 @@ function Searchbar() {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { navData } = useNavData();
+  const navData = useNavData();
 
   const handleClose = useCallback(() => {
     search.onFalse();

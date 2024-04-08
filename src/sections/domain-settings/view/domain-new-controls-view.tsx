@@ -15,32 +15,31 @@ import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
 
 // ----------------------------------------------------------------------
 
+
 export default function NewDomainControls() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false} sx={{ pt: 2 }}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ pt: 2 }}>
+
       <Box pb={3}>
-        <CustomCrumbs
-          heading="Domain Settings"
-          description="Control and link your website domain"
+        <CustomCrumbs heading="Domain Settings"
+          description='Control and link your website domain'
           crums={false}
         />
       </Box>
 
-      <Paper
-        sx={{
-          boxShadow: '0px 0px 20px #00000014',
-          p: '25px',
-          borderRadius: '16px',
-        }}
-      >
+      <Paper sx={{
+        boxShadow: '0px 0px 20px #00000014',
+        p: '25px',
+        borderRadius: '16px'
+      }}>
         <Stack
-          justifyContent={{ xs: 'center', md: 'space-between' }}
+          justifyContent={{ xs: 'center', md: "space-between" }}
           alignItems="center"
           flexDirection={{ xs: 'column', md: 'row' }}
           spacing="10px"
-          rowGap="20px"
+          rowGap='20px'
           sx={{
             height: { md: 1 },
             borderRadius: 2,
@@ -48,19 +47,16 @@ export default function NewDomainControls() {
           }}
         >
           <Stack
-            direction="row"
+            direction='row'
             component="span"
             justifyContent="center"
-            alignItems="center"
+            alignItems='center'
             columnGap="7px"
           >
-            <Box
-              component="img"
-              src="/raw/shopi.png"
-              alt=""
-              sx={{ width: '100%', maxWidth: '80px', borderRadius: '80px' }}
-            />
-            <Stack flexGrow={1}>
+            <Box component="img" src="/raw/shopi.png" alt='' sx={{ width: '100%', maxWidth: '80px', borderRadius: '80px' }} />
+            <Stack
+              flexGrow={1}
+            >
               <Typography variant="h6" sx={{ whiteSpace: 'pre-line' }}>
                 Shoppi.com
               </Typography>
@@ -82,74 +78,90 @@ export default function NewDomainControls() {
             </Stack>
           </Stack>
 
-          <Stack direction="row" spacing="20px" justifyContent="center">
-            {[
-              {
-                title: 'Copy Link',
-                img: '/raw/link.svg',
-              },
-              {
-                title: 'Delete',
-                img: '/raw/trash-can-solid.svg',
-              },
-              {
-                title: 'Edit',
-                img: '/raw/edit-pen.svg',
-              },
-            ].map((item, indx) => (
-              <Stack key={indx} component="span" justifyContent="center">
+
+
+
+
+          <Stack
+            direction='row'
+            spacing="20px"
+            justifyContent="center"
+          >
+
+            {
+              [
+                {
+                  title: "Copy Link",
+                  img: "/raw/link.svg"
+                },
+                {
+                  title: "Delete",
+                  img: "/raw/trash-can-solid.svg"
+                },
+                {
+                  title: "Edit",
+                  img: "/raw/edit-pen.svg"
+                },
+              ].map((item, indx) => <Stack
+                key={indx}
+                component="span"
+                justifyContent="center">
                 <Avatar
                   variant="rounded"
                   sx={{
                     width: 50,
                     height: 50,
                     bgcolor: 'background.neutral',
-                    borderRadius: 50,
+                    borderRadius: 50
                   }}
                 >
                   <Box component="img" src={item.img} sx={{ width: 20 }} />
                 </Avatar>
-                <Typography
-                  variant="caption"
+                <Typography variant="caption"
                   sx={{
                     mt: 1,
                     opacity: 0.8,
                     textTransform: 'capitalize',
-                    textAlign: 'center',
-                  }}
-                >
+                    textAlign: 'center'
+                  }}>
                   {item.title}
                 </Typography>
-              </Stack>
-            ))}
+              </Stack>)
+            }
+
           </Stack>
         </Stack>
       </Paper>
 
-      <Paper
-        sx={{
-          boxShadow: '0px 0px 20px #00000014',
-          px: '30px',
-          py: '25px',
-          borderRadius: '16px',
-          mt: '20px',
-        }}
-      >
+      <Paper sx={{
+        boxShadow: '0px 0px 20px #00000014',
+        px: '30px',
+        py: '25px',
+        borderRadius: '16px',
+        mt: '20px'
+      }}>
         <Stack
-          minHeight="76px"
-          justifyContent={{ xs: 'center', md: 'space-between' }}
+          minHeight='76px'
+          justifyContent={{ xs: 'center', md: "space-between" }}
           alignItems="center"
           flexDirection={{ xs: 'column', md: 'row' }}
           spacing="10px"
-          rowGap="20px"
+          rowGap='20px'
           sx={{
             height: { md: 1 },
             borderRadius: 2,
             position: 'relative',
           }}
         >
-          <Stack direction="row" component="span" justifyContent="center" alignItems="center">
-            <Stack flexGrow={1}>
+          <Stack
+            direction='row'
+            component="span"
+            justifyContent="center"
+            alignItems='center'
+          >
+            <Stack
+              flexGrow={1}
+            >
               <Typography variant="h6" sx={{ whiteSpace: 'pre-line', fontWeight: 800 }}>
                 Publish Website
               </Typography>
@@ -168,7 +180,7 @@ export default function NewDomainControls() {
 
           <Box>
             <FormControlLabel
-              control={<Switch color="primary" defaultChecked />}
+              control={<Switch color='primary' defaultChecked />}
               label="Published now"
               labelPlacement="start"
               sx={{ fontWeight: 900 }}
@@ -176,6 +188,6 @@ export default function NewDomainControls() {
           </Box>
         </Stack>
       </Paper>
-    </Container>
+    </Container >
   );
 }

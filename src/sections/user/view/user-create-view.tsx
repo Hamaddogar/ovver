@@ -16,7 +16,7 @@ export default function UserCreateView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Create a new user"
         links={[

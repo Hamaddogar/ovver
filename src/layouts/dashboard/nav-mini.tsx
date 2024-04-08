@@ -18,7 +18,7 @@ import { NavToggleButton } from '../_common';
 export default function NavMini() {
   const { user } = useMockedUser();
 
-  const { navData } = useNavData();
+  const navData = useNavData();
 
   return (
     <Box

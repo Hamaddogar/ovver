@@ -4,7 +4,7 @@
 import { AuthGuard } from 'src/auth/guard';
 // components
 import DashboardLayout from 'src/layouts/dashboard';
-import ReduxProvider from 'src/redux/reduxProvider';
+import ReduxProvider from "../../redux/reduxProvider";
 import { useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter } from 'next/navigation';
@@ -18,6 +18,7 @@ type Props = {
 };
 
 const Layout = ({ children }: Props) => {
+
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [builderExist, setBuilderExist] = useState(false);
@@ -52,10 +53,16 @@ const Layout = ({ children }: Props) => {
         {loading ? (
           <SplashScreen />
         ) : (
-          <>{builderExist ? <DashboardLayout>{children}</DashboardLayout> : null}</>
+          <>
+            {builderExist ? (
+              <DashboardLayout>
+                {children}
+              </DashboardLayout>
+            ) : null}
+          </>
         )}
       </AuthGuard>
-    </ReduxProvider>
+    </ReduxProvider >
   );
-};
+}
 export default Layout;

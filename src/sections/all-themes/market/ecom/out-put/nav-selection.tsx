@@ -24,13 +24,36 @@ import { socketClient } from 'src/sections/all-themes/utils/helper-functions';
 import LogoDealer, { VisuallyHiddenInput } from './logo-part';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'src/redux/store/store';
-import { saveLogo } from 'src/redux/store/thunks/builder';
+import { saveLogo, updateBasicAppbar, updateWebsiteLogo } from 'src/redux/store/thunks/builder';
 import Sketch from '@uiw/react-color-sketch';
 import './style.css';
 import NavbarTheme from 'src/sections/all-themes/component/NavbarTheme';
 import { sections } from 'src/sections/all-themes/component/response';
+import { LoadingScreen } from 'src/components/loading-screen';
+import HeaderSection from './header-section';
 // ----------------------------------------------------------------------
-
+const customPresets = [
+  '#FF5733', // Reddish Orange
+  '#33FF57', // Greenish Yellow
+  '#3366FF', // Vivid Blue
+  '#FF33FF', // Electric Purple
+  '#33FFFF', // Cyan
+  '#FF3366', // Pink
+  '#6633FF', // Blue Purple
+  '#FF9900', // Orange
+  '#00FF99', // Spring Green
+  '#9966FF', // Royal Purple
+  '#99FF33', // Lime Green
+  '#FF66CC', // Pastel Pink
+  '#66FF33', // Bright Lime
+  '#FF6600', // Bright Orange
+  '#FF99CC', // Light Pink
+  '#3399FF', // Sky Blue
+  '#FFCC00', // Gold
+  '#33CC66', // Jade
+  '#33FF57', // Greenish Yellow
+  '#3366FF', // Vivid Blue
+];
 const TABS = [
   {
     value: 'Layout',
@@ -45,6 +68,61 @@ const TABS = [
     label: 'Components',
   },
 ];
+
+const dataCart = [
+  {
+    name: 'Cart 1',
+    checked: false,
+    icon: '/raw/cart3.svg',
+    value: '1',
+  },
+  {
+    name: 'Cart 2',
+    checked: true,
+    icon: '/raw/cart1.svg',
+    value: '2',
+  },
+  {
+    name: 'Cart 3',
+    checked: false,
+    icon: '/raw/cart2.svg',
+    value: '3',
+  },
+  {
+    name: 'Cart 4',
+    checked: false,
+    icon: '/raw/cart4.svg',
+    value: '4',
+  },
+];
+const dataLeftHeader = [
+  {
+    name: 'Menu 1',
+    checked: false,
+    icon: 'heroicons-outline:menu-alt-2',
+    value: '1',
+  },
+  {
+    name: 'Menu 2',
+    checked: true,
+    icon: 'material-symbols:menu',
+    value: '2',
+  },
+  {
+    name: 'Menu 3',
+    checked: false,
+    icon: 'carbon:menu',
+    value: '3',
+  },
+  {
+    name: 'Menu 4',
+    checked: false,
+    icon: 'system-uicons:menu-vertical',
+    value: '4',
+  },
+];
+
+
 interface NavProps {
   themeConfig: {
     navLogoPosition: string;
@@ -52,6 +130,7 @@ interface NavProps {
   handleThemeConfig: (key: string, value: any) => void; // Adjust 'value' type as needed
   mobile?: boolean;
   builder_Id: any;
+  url?: any;
 }
 
 export default function NavDealer({
@@ -59,12 +138,65 @@ export default function NavDealer({
   handleThemeConfig,
   mobile = false,
   builder_Id,
+  url,
 }: NavProps) {
+
+
+  const socket = socketClient();
   const [navbarState, setNavbarState] = useState(sections);
   const [currentTab, setCurrentTab] = useState('Layout');
   const [appBar, setAppBar] = useState<any>({});
   const [mainAppBar, setMainAppBar] = useState<any>({});
-  const socket = socketClient();
+  const [loader, setLoader] = useState<any>(false);
+
+
+  const [language, setLanguage] = useState(true);
+
+  const [cartLogo, setCartLogo] = useState('/raw/cart3.svg');
+
+  const [headerLogo, setHeaderLogo] = useState('heroicons-outline:menu-alt-2');
+
+  const [containerBackgroundColor, setContainerBackgrounColor] = useState(false);
+
+  const [searchBackgroundColor, setSearchBackgroundColor] = useState(false);
+
+  const [isMenu, setIsMenu] = useState(false);
+
+  const [menuColors, setMenuColors] = useState({ textBackgroundColor: false, hoverColor: false });
+  // Navbar
+  const [generalIcons, setGeneralIcons] = useState(navbarState[0].generalIcons);
+  const [appBarSearch, setAppBarSearch] = useState(navbarState[0].appBar.search);
+  // console.log(generalIcons);
+  const [appBarLogo, setAppBarLogo] = useState(navbarState[0]?.websiteLogo);
+
+  const [appBarContainer, setAppBarContainer] = useState(navbarState[0].appBar.container);
+
+  const [centerMenu, setCenterMenu] = useState(navbarState[0]?.appBar?.menu);
+
+
+  const [menus, setMenus] = useState([
+    {
+      link: '',
+      name: '',
+    },
+  ]);
+
+  useEffect(() => {
+    // const menuesList = menus.filter((menuObj: any) => menuObj.link !== '' && menuObj.name !== '');
+    // if (menuesList.length > 0) {
+    //   sendSocketMsg(menuesList);
+    // }
+  }, [menus]);
+
+  useEffect(() => {
+    socket?.connect()
+    return () => {
+      socket?.disconnect();
+    }
+  }, [socket])
+
+
+
   const dispatch = useDispatch<AppDispatch>();
 
   const debounce = (func: any, delay: any) => {
@@ -77,15 +209,7 @@ export default function NavDealer({
     };
   };
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on(`${builder_Id}:cmd`, (data) => {
-  //       console.log("response");
 
-  //       console.log(JSON.stringify(data.result));
-  //     });
-  //   }
-  // }, [builder_Id])
 
   const handleChangeEvent = (
     key: string,
@@ -119,11 +243,10 @@ export default function NavDealer({
       value: valueToShare,
     };
 
-    console.log('data', data);
-
-    if (socket) {
-      socket.emit('website:cmd', data);
-    }
+    // console.log('data', data);
+    // if (socket) {
+    //   socket.emit('website:cmd', data);
+    // }
   };
 
   const isColorValid = (color: string) =>
@@ -133,28 +256,7 @@ export default function NavDealer({
   const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: string) => {
     setCurrentTab(newValue);
   }, []);
-  const customPresets = [
-    '#FF5733', // Reddish Orange
-    '#33FF57', // Greenish Yellow
-    '#3366FF', // Vivid Blue
-    '#FF33FF', // Electric Purple
-    '#33FFFF', // Cyan
-    '#FF3366', // Pink
-    '#6633FF', // Blue Purple
-    '#FF9900', // Orange
-    '#00FF99', // Spring Green
-    '#9966FF', // Royal Purple
-    '#99FF33', // Lime Green
-    '#FF66CC', // Pastel Pink
-    '#66FF33', // Bright Lime
-    '#FF6600', // Bright Orange
-    '#FF99CC', // Light Pink
-    '#3399FF', // Sky Blue
-    '#FFCC00', // Gold
-    '#33CC66', // Jade
-    '#33FF57', // Greenish Yellow
-    '#3366FF', // Vivid Blue
-  ];
+
   const handleImageChange64 = (key: string) => (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
@@ -186,23 +288,9 @@ export default function NavDealer({
     const formDataToSend = new FormData();
     formDataToSend.append('image', file);
 
-    dispatch(saveLogo({ builderId: builder_Id, data: formDataToSend })).then((response: any) => {
-      // console.log("response", response);
-    });
+    dispatch(saveLogo({ builderId: builder_Id, data: formDataToSend }));
   };
-  const [menus, setMenus] = useState([
-    {
-      link: '',
-      name: '',
-    },
-  ]);
 
-  useEffect(() => {
-    const menuesList = menus.filter((menuObj: any) => menuObj.link !== '' && menuObj.name !== '');
-    if (menuesList.length > 0) {
-      sendSocketMsg(menuesList);
-    }
-  }, [menus]);
 
   const sendSocketMsg = debounce((menuesList: any) => {
     const targetHeader = 'home.sections.appBar.menu.';
@@ -216,21 +304,10 @@ export default function NavDealer({
     if (socket) {
       socket.emit('website:cmd', data);
     }
-  }, 1500);
+  }, 500);
 
-  const [containerBackgroundColor, setContainerBackgrounColor] = useState(false);
-  const [searchBackgroundColor, setSearchBackgroundColor] = useState(false);
-  const [isMenu, setIsMenu] = useState(false);
-  const [menuColors, setMenuColors] = useState({ textBackgroundColor: false, hoverColor: false });
-  // Navbar
-  const [generalIcons, setGeneralIcons] = useState(navbarState[0].generalIcons);
-  const [appBarSearch, setAppBarSearch] = useState(navbarState[0].appBar.search);
-  // console.log(generalIcons);
-  const [appBarLogo, setAppBarLogo] = useState(navbarState[0]?.websiteLogo);
 
-  const [appBarContainer, setAppBarContainer] = useState(navbarState[0].appBar.container);
 
-  const [centerMenu, setCenterMenu] = useState(navbarState[0]?.appBar?.menu);
   const handleChangeMenu = (event: any, target: any, index: any) => {
     const updatedMenus = menus.map((menuItem, i) => {
       if (i === index) {
@@ -241,9 +318,156 @@ export default function NavDealer({
     setMenus(updatedMenus);
     setCenterMenu((prev: any) => ({ ...prev, menuItems: updatedMenus }));
   };
-  console.log(centerMenu);
+
+  const childFunction = () => {
+    console.log('appBar', appBar);
+
+    setLoader(true);
+    const menu = appBar.menu;
+    const search = appBar.search;
+    const container = appBar.container;
+
+    const menuesList = menus.filter((menuObj: any) => menuObj.link !== '' && menuObj.name !== '');
+
+    const payloadData = {
+      cartIcon: cartLogo || "",
+      languageIcon: "languageIcon",
+      menuIcon: headerLogo || "",
+      languageIconStatus: true,
+      menu: {
+        style: {
+          // size: "20px",
+          // fontStyle: "sans",
+          color: menu?.color,
+          backgroundColor: menu?.backgroundColor,
+          hoverColor: menu?.hoverColor,
+        },
+        menuItems: menuesList && menuesList.length > 0 ? menuesList : [],
+      },
+      search: {
+        status: search?.status,
+        input: search?.input,
+        position: search?.position,
+        // textBg: "gray",
+        textColor: search?.textColor,
+        // borderColor: "black",
+        borderWidth: search?.borderWidth?.toString(),
+        // mobileView: {
+        //   status: true,
+        //   width: "100%",
+        //   height: "100"
+        // }
+      },
+      container: {
+        show: container?.show,
+        isShadow: container?.isShadow,
+        // startColor: "red",
+        // finalColor: "pink",
+        // width: "100%",
+        // height: "150",
+        backgroundColor: container?.backgroundColor,
+        backgroundColorDark: 'black',
+        borderBottomWidth: container?.borderBottomWidth,
+        borderBottomColor: container?.borderBottomColor,
+        borderBottomColorDark: 'blue',
+        isCenterTitle: false,
+        containerViewStyle: {
+          marginBottom: 5,
+        },
+      },
+    };
+
+
+    // setLoader(false);
+
+
+
+    const logoPayload = {
+      position: appBarLogo?.position,
+      status: appBarLogo?.status || 'true',
+      logo: appBarLogo?.file,
+      text: {
+        size: "md",
+        isBold: true,
+        color: appBarLogo?.textColor,
+        colorDark: "#333",
+        backgroundColor: appBarLogo?.textBg,
+        numberOfLines: 3,
+        style: [""]
+      },
+      logoObj: {
+        text: appBarLogo?.text,
+        status: appBarLogo?.status,
+        position: appBarLogo?.position,
+        textBg: appBarLogo?.textBg,
+        textColor: appBarLogo?.textColor,
+        borderColor: appBarLogo?.borderColor,
+        borderWidth: appBarLogo?.borderWidth,
+        width: appBarLogo?.width || "50px",
+        height: appBarLogo?.height || "auto"
+      }
+    }
+
+
+
+    setTimeout(() => {
+      try {
+        dispatch(
+          updateBasicAppbar({
+            builderId: builder_Id,
+            url: url,
+            data: { data: JSON.stringify(payloadData) }
+          })
+        ).then((response: any) => {
+          console.log('response', response);
+          setLoader(false);
+        }).catch((er) => {
+          console.log("err", er);
+
+        })
+
+        // setting up logo object
+        const formdata = new FormData();
+        formdata.append('text', JSON.stringify(logoPayload.text));
+        formdata.append('logoObj', JSON.stringify(logoPayload.logoObj));
+        formdata.append('position', logoPayload?.position);
+        formdata.append('status', JSON.stringify(logoPayload?.status || "true"));
+        if (logoPayload.logo) {
+          formdata.append('logo', logoPayload.logo);
+        }
+
+        dispatch(
+          updateWebsiteLogo({
+            builderId: builder_Id,
+            url: url,
+            data: formdata
+          })
+        ).then((response: any) => {
+          console.log('response', response);
+          setLoader(false);
+        }).catch((er) => {
+          console.log("err", er);
+
+        })
+      } catch (error) {
+        console.log(error);
+
+      }
+    }, 1000);
+
+
+  };
+
   return (
     <div>
+      {loader && <LoadingScreen />}
+      <HeaderSection
+        name={'App Bar'}
+        cancel={{ key: 'cart', value: '/raw/cart1.svg' }}
+        handleCancelBtn={() => { }}
+        handleThemeConfig={() => { }}
+        closer={() => childFunction()}
+      />
       <Stack
         spacing={1}
         sx={{
@@ -259,14 +483,19 @@ export default function NavDealer({
           },
         }}
       >
-        <NavbarTheme
-          centerMenu={centerMenu}
-          appBarContainer={appBarContainer}
-          appBarLogo={appBarLogo}
-          appBarSearch={appBarSearch}
-          generalIcons={generalIcons}
-          navbarState={navbarState}
-        />
+        <Stack border={5} borderColor={'#5cb85c'}>
+          <NavbarTheme
+            language={language}
+            headerLogo={headerLogo}
+            cartLogo={cartLogo}
+            centerMenu={centerMenu}
+            appBarContainer={appBarContainer}
+            appBarLogo={appBarLogo}
+            appBarSearch={appBarSearch}
+            generalIcons={generalIcons}
+            navbarState={navbarState}
+          />
+        </Stack>
         <Accordion
           sx={{
             width: '100%',
@@ -684,16 +913,15 @@ export default function NavDealer({
                           onChange={(event: any) => {
                             isColorValid(event?.hex)
                               ? handleChangeEvent('color', event?.hex, 'menu', 'style')
-                              : null
+                              : null;
                             setCenterMenu((prev) => ({
                               ...prev,
                               style: {
                                 ...prev.style,
                                 color: event.hex,
                               },
-                            }))
-                          }
-                          }
+                            }));
+                          }}
                           presetColors={customPresets}
                           style={{ width: '100%' }}
                         />
@@ -738,16 +966,15 @@ export default function NavDealer({
                             onChange={(event: any) => {
                               isColorValid(event?.hex)
                                 ? handleChangeEvent('backgroundColor', event?.hex, 'menu', 'style')
-                                : null
+                                : null;
                               setCenterMenu((prev) => ({
                                 ...prev,
                                 style: {
                                   ...prev.style,
                                   backgroundColor: event.hex,
                                 },
-                              }))
-                            }
-                            }
+                              }));
+                            }}
                             presetColors={customPresets}
                             style={{ width: '100%' }}
                           />
@@ -790,16 +1017,15 @@ export default function NavDealer({
                             onChange={(event: any) => {
                               isColorValid(event?.hex)
                                 ? handleChangeEvent('hoverColor', event?.hex, 'menu', 'style')
-                                : null
+                                : null;
                               setCenterMenu((prev) => ({
                                 ...prev,
                                 style: {
                                   ...prev.style,
                                   hoverColor: event.hex,
                                 },
-                              }))
-                            }
-                            }
+                              }));
+                            }}
                             presetColors={customPresets}
                             style={{ width: '100%' }}
                           />
@@ -1171,6 +1397,182 @@ export default function NavDealer({
                 </Box> */}
               </Stack>
             </Box>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion sx={{ width: '100%' }}>
+          <AccordionSummary
+            sx={{ width: '100%', display: 'flex', alignItems: 'baseline' }}
+            expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+          >
+            <Box sx={{ width: '100%' }}>
+              <Typography variant="subtitle1">Cart</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {' '}
+            <div>
+              {mobile ? (
+                <Box pt="20px">
+                  <RadioGroup
+                    aria-labelledby="cart-buttons-group-label"
+                    // defaultValue={themeConfig.cart}
+                    onChange={(event) => setCartLogo(event.target.value)}
+                    name="cart-buttons-group"
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '20px',
+                    }}
+                  >
+                    {dataCart.map((cart, indx) => (
+                      <FormControlLabel
+                        key={indx}
+                        value={cart.icon}
+                        control={<Radio checked={cart.icon === cartLogo} size="medium" />}
+                        label={
+                          <Stack direction="row" alignItems="center" spacing="20px" ml="15px">
+                            <Stack
+                              direction="row"
+                              justifyContent="space-between">
+                              <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                sx={{
+                                  width: '60px',
+                                  height: '60px',
+                                  borderRadius: '12px',
+                                  backgroundColor: '#8688A3',
+                                }}
+                              >
+                                <Box component="img" src={cart.icon} />
+                              </Stack>
+                              <Typography variant="button">{cart.name}</Typography>
+                            </Stack>
+                          </Stack>
+                        }
+                      />
+                    ))}
+                  </RadioGroup>
+                </Box>
+              ) : (
+                <Box pt="20px">
+                  <RadioGroup
+                    aria-labelledby="cart-buttons-group-label"
+                    // defaultValue={themeConfig.cart}
+                    onChange={(event) => setCartLogo(event.target.value)}
+                    name="cart-buttons-group"
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '20px',
+                    }}
+                  >
+                    {dataCart.map((cart, indx) => (
+                      <FormControlLabel
+                        key={indx}
+                        value={cart.icon}
+                        control={<Radio checked={cart.icon === cartLogo} size="medium" />}
+                        label={
+                          <Stack direction="row" alignItems="center" spacing="20px" ml="15px">
+                            <Stack
+                              alignItems="center"
+                              justifyContent="center"
+                              sx={{
+                                width: '60px',
+                                height: '60px',
+                                borderRadius: '12px',
+                                backgroundColor: '#8688A3',
+                              }}
+                            >
+                              <Box component="img" src={cart.icon} />
+                            </Stack>
+                            <Typography variant="button">{cart.name}</Typography>
+                          </Stack>
+                        }
+                      />
+                    ))}
+                  </RadioGroup>
+                </Box>
+              )}
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion sx={{ width: '100%' }}>
+          <AccordionSummary
+            sx={{ width: '100%', display: 'flex', alignItems: 'baseline' }}
+            expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+          >
+            <Box sx={{ width: '100%' }}>
+              <Typography variant="subtitle1">Left Header</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {' '}
+            <RadioGroup
+              aria-labelledby="cart-buttons-group-label"
+              // defaultValue={themeConfig.cart}
+              onChange={(event) => setHeaderLogo(event.target.value)}
+              name="cart-buttons-group"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px',
+              }}
+            >
+              {dataLeftHeader.map((cart, indx) => (
+                <FormControlLabel
+                  key={indx}
+                  value={cart.icon}
+                  control={<Radio checked={cart.icon === headerLogo} size="medium" />}
+                  label={
+                    <Stack direction="row" alignItems="center" spacing="20px" ml="15px">
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                          width: '60px',
+                          height: '60px',
+                          borderRadius: '12px',
+                          backgroundColor: '#8688A3',
+                        }}
+                      >
+                        <Iconify style={{ color: 'black' }} icon={cart.icon} />
+                      </Stack>
+                      <Typography variant="button">{cart.name}</Typography>
+                    </Stack>
+                  }
+                />
+              ))}
+            </RadioGroup>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion sx={{ width: '100%' }}>
+          <AccordionSummary
+            sx={{ width: '100%', display: 'flex', alignItems: 'baseline' }}
+            expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+          >
+            <Box sx={{ width: '100%' }}>
+              <Typography variant="subtitle1">Language</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {' '}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              width={'100%'}
+            >
+              <Typography variant="caption" sx={{ fontWeight: 900 }}>
+                Show
+              </Typography>
+              <Switch
+                checked={language}
+                onChange={(event: any, value: any) => setLanguage(value)}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            </Stack>
           </AccordionDetails>
         </Accordion>
       </Stack>

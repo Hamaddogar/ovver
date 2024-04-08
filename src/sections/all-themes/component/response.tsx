@@ -13,10 +13,11 @@ export const sections = [
       width: '40px',
       height: '40px',
       borderRadius: '10%',
+      file: null
     },
     generalIcons: {
       color: 'black',
-      border: '1px solid',
+      border: 'none',
       padding: '6px', //updated
       borderRadius: '8px',
       backgroundColor: 'transparent',
@@ -88,7 +89,7 @@ export const sections = [
         height: '50px',
         backgroundColor: 'white',
         textPosition: 'center',
-        Slider: [],
+        slider: [],
       },
     },
 

@@ -8,8 +8,6 @@ import Badge, { badgeClasses } from '@mui/material/Badge';
 import Iconify from 'src/components/iconify';
 import { varHover } from 'src/components/animate';
 import { useSettingsContext } from 'src/components/settings';
-import { useLocales } from 'src/locales';
-import { Tooltip } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -18,8 +16,6 @@ type Props = {
 };
 
 export default function SettingsButton({ sx }: Props) {
-  const { t } = useLocales();
-
   const settings = useSettingsContext();
 
   return (
@@ -35,23 +31,31 @@ export default function SettingsButton({ sx }: Props) {
         ...sx,
       }}
     >
-      <Box>
-        <Tooltip title={t('common.settings')}>
-          <IconButton
-            // component={m.button}
-            // whileTap="tap"
-            // whileHover="hover"
-            // variants={varHover(1.05)}
-            aria-label={t('common.settings')}
-            onClick={settings.onToggle}
-            sx={{
-              width: 40,
-              height: 40,
-            }}
-          >
-            <Iconify icon="mdi:gear" width={25} sx={{ color: 'text.disabled' }} />
-          </IconButton>
-        </Tooltip>
+      <Box
+        component={m.div}
+        animate={{
+          rotate: [0, settings.open ? 0 : 360],
+        }}
+        transition={{
+          duration: 12,
+          ease: 'linear',
+          repeat: Infinity,
+        }}
+      >
+        <IconButton
+          component={m.button}
+          whileTap="tap"
+          whileHover="hover"
+          variants={varHover(1.05)}
+          aria-label="settings"
+          onClick={settings.onToggle}
+          sx={{
+            width: 40,
+            height: 40,
+          }}
+        >
+          <Iconify icon="solar:settings-bold-duotone" width={24} />
+        </IconButton>
       </Box>
     </Badge>
   );

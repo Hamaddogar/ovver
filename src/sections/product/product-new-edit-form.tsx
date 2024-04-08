@@ -59,40 +59,40 @@ export default function ProductNewEditForm({ currentProduct }: Props) {
   const [includeTaxes, setIncludeTaxes] = useState(false);
 
   const NewProductSchema = Yup.object().shape({
-    title: Yup.string().required('Name is required') as any,
-    images: Yup.array().min(1, 'Images is required') as any,
-    tags: Yup.array().min(2, 'Must have at least 2 tags') as any,
-    category: Yup.string().required('Category is required') as any,
-    sellPrice: Yup.number().moreThan(0, 'Price should not be $0.00') as any,
-    description: Yup.string().required('Description is required') as any,
+    name: Yup.string().required('Name is required'),
+    images: Yup.array().min(1, 'Images is required'),
+    tags: Yup.array().min(2, 'Must have at least 2 tags'),
+    category: Yup.string().required('Category is required'),
+    price: Yup.number().moreThan(0, 'Price should not be $0.00'),
+    description: Yup.string().required('Description is required'),
     // not required
-    taxes: Yup.number() as any,
+    taxes: Yup.number(),
     newLabel: Yup.object().shape({
       enabled: Yup.boolean(),
       content: Yup.string(),
-    }) as any,
+    }),
     saleLabel: Yup.object().shape({
       enabled: Yup.boolean(),
       content: Yup.string(),
-    }) as any,
+    }),
   });
 
   const defaultValues = useMemo(
     () => ({
-      title: (currentProduct?.title?.localized as any) || ('' as any),
-      description: (currentProduct?.description?.loaclized as any) || ('' as any),
-      // subDescription: currentProduct?.subDescription || '',
+      name: currentProduct?.name || '',
+      description: currentProduct?.description || '',
+      subDescription: currentProduct?.subDescription || '',
       images: currentProduct?.images || [],
       //
       code: currentProduct?.code || '',
       sku: currentProduct?.sku || '',
-      sellPrice: currentProduct?.sellPrice || 0,
+      price: currentProduct?.price || 0,
       quantity: currentProduct?.quantity || 0,
       priceSale: currentProduct?.priceSale || 0,
       tags: currentProduct?.tags || [],
       taxes: currentProduct?.taxes || 0,
       gender: currentProduct?.gender || '',
-      category: currentProduct?.genre || '',
+      category: currentProduct?.category || '',
       colors: currentProduct?.colors || [],
       sizes: currentProduct?.sizes || [],
       newLabel: currentProduct?.newLabel || { enabled: false, content: '' },
@@ -135,7 +135,7 @@ export default function ProductNewEditForm({ currentProduct }: Props) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       reset();
       enqueueSnackbar(currentProduct ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.products.root);
+      router.push(paths.dashboard.product.root);
       console.info('DATA', data);
     } catch (error) {
       console.error(error);
@@ -152,14 +152,14 @@ export default function ProductNewEditForm({ currentProduct }: Props) {
         })
       );
 
-      setValue('images', [...files, ...newFiles] as any, { shouldValidate: true });
+      setValue('images', [...files, ...newFiles], { shouldValidate: true });
     },
     [setValue, values.images]
   );
 
   const handleRemoveFile = useCallback(
     (inputFile: File | string) => {
-      const filtered = values.images && values.images?.filter((file: any) => file !== inputFile);
+      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
       setValue('images', filtered);
     },
     [setValue, values.images]

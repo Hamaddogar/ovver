@@ -30,11 +30,6 @@ export const fetchAnalyticsOrder = createAsyncThunk('analytics/fetchOrder', asyn
 
   return response;
 });
-export const fetchAnalyticsOrderModules = createAsyncThunk('analytics/fetchAnalyticsOrderModules', async () => {
-  const response = await getRequest(endpoints.analytic.modules, defaultConfig());
-
-  return response;
-});
 export const fetchBestSellingItems = createAsyncThunk(
   'analytics/fetchBestSellingItem',
   async () => {
@@ -51,7 +46,6 @@ export const fetchBestSellingCategories = createAsyncThunk(
     return response;
   }
 );
-
 export const fetchBestSellingBranches = createAsyncThunk(
   'analytics/fetchBestSellingBranches',
   async () => {

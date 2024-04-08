@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Image, Input, Span } from './subcomponents';
 import { useMediaQuery } from '@mui/material';
 import { sections } from './response';
+import Iconify from 'src/components/iconify';
 const NavbarTheme = ({
   navbarState,
   generalIcons,
@@ -16,6 +17,9 @@ const NavbarTheme = ({
   appBarLogo,
   appBarContainer,
   centerMenu,
+  cartLogo,
+  headerLogo,
+  language,
 }: any) => {
   const [isHovered, setIsHovered] = useState(false);
   const matches = useMediaQuery('(max-width:600px)');
@@ -142,6 +146,7 @@ const NavbarTheme = ({
   //         ...sections?.general?.generalIcons,
   //       });
   //     }
+  // /Hassaan
 
   //     // Logo
   //     if (
@@ -222,15 +227,13 @@ const NavbarTheme = ({
           {appBarLeftDetails?.find((item) => item?.key == 'mobile_home_app_bar_show_icon_drawer')
             ?.show && (
               <div>
-                <Image
+                <Iconify
                   style={{
                     ...generalIcons,
+                    minWidth: '50px!important',
+                    minHeight: "50px!important"
                   }}
-                  src={
-                    appBarLeftDetails?.find(
-                      (item) => item?.key == 'mobile_home_app_bar_show_icon_drawer'
-                    )?.icon || ''
-                  }
+                  icon={headerLogo}
                 />
               </div>
             )}
@@ -242,8 +245,7 @@ const NavbarTheme = ({
                   ? {
                     textBg: 'transparent !important',
                     color: appBarSearch?.textColor,
-                    border: `${appBarSearch?.borderWidth?.toString()}px solid ${appBarSearch?.borderColor
-                      }`,
+                    border: `${appBarSearch?.borderWidth?.toString()}px solid ${appBarSearch?.borderColor}`,
 
                     background: 'transparent',
                     display: appBarSearch?.status ? 'flex' : 'none',
@@ -269,12 +271,14 @@ const NavbarTheme = ({
           <div className="flex items-center">
             {appBarLogo?.status && appBarLogo?.position === 'left' && (
               <div className="flex items-center">
-                <Image
-                  // Style of left Section
-                  style={appBarLogo}
-                  // Image link
-                  src={appBarLogo?.logo}
-                />
+                {appBarLogo?.logo && (
+                  <Image
+                    // Style of left Section
+                    style={appBarLogo}
+                    // Image link
+                    src={appBarLogo?.logo}
+                  />
+                )}
 
                 <Span
                   style={{ color: appBarLogo?.textColor, backgroundColor: appBarLogo?.textBg }}
@@ -309,12 +313,14 @@ const NavbarTheme = ({
           )}
           {appBarLogo?.status && appBarLogo?.position === 'center' && (
             <div className="flex items-center">
-              <Image
-                // Style of centered Section
-                style={appBarLogo}
-                // Image link
-                src={appBarLogo?.logo}
-              />
+              {appBarLogo?.logo && (
+                <Image
+                  // Style of centered Section
+                  style={appBarLogo}
+                  // Image link
+                  src={appBarLogo?.logo}
+                />
+              )}
 
               {appBarLogo?.text && (
                 <Span
@@ -338,8 +344,7 @@ const NavbarTheme = ({
                     display: appBarSearch?.status ? 'flex' : 'none',
                     border:
                       appBarSearch?.borderColor !== 'empty value'
-                        ? `${appBarSearch?.borderWidth?.toString()}px solid ${appBarSearch?.borderColor
-                        }`
+                        ? `${appBarSearch?.borderWidth?.toString()}px solid ${appBarSearch?.borderColor}`
                         : 'none',
                   }
                   : generalIcons
@@ -357,12 +362,14 @@ const NavbarTheme = ({
         >
           {appBarLogo?.status && appBarLogo?.position === 'right' && (
             <div className="flex items-center">
-              <Image
-                // Style of centered Section
-                style={appBarLogo}
-                // Image link
-                src={appBarLogo?.logo}
-              />
+              {appBarLogo?.logo && (
+                <Image
+                  // Style of centered Section
+                  style={appBarLogo}
+                  // Image link
+                  src={appBarLogo?.logo}
+                />
+              )}
 
               {appBarLogo?.text && (
                 <Span
@@ -381,8 +388,7 @@ const NavbarTheme = ({
                   ? {
                     textBg: 'transparent !important',
                     color: appBarSearch?.textColor,
-                    border: `${appBarSearch?.borderWidth?.toString()}px solid ${appBarSearch?.borderColor
-                      }`,
+                    border: `${appBarSearch?.borderWidth?.toString()}px solid ${appBarSearch?.borderColor}`,
                     background: 'transparent',
                     display: appBarSearch?.status ? 'flex' : 'none',
                   }
@@ -391,8 +397,9 @@ const NavbarTheme = ({
               location="right"
             />
           )}
-          {appBarRightDetails?.find((item) => item?.key == 'mobile_home_app_bar_show_icon_lang')
-            ?.show && (
+          {language &&
+            appBarRightDetails?.find((item) => item?.key == 'mobile_home_app_bar_show_icon_lang')
+              ?.show && (
               <Image
                 style={{
                   ...generalIcons,
@@ -411,11 +418,7 @@ const NavbarTheme = ({
                 style={{
                   ...generalIcons,
                 }}
-                src={
-                  appBarRightDetails?.find(
-                    (item) => item?.key == 'mobile_home_app_bar_show_icon_cart'
-                  )?.icon || ''
-                }
+                src={cartLogo}
               />
             )}
         </div>

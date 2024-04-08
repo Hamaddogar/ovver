@@ -97,7 +97,7 @@ export default function ProductShopDetailsView({ id }: Props) {
             name: 'Shop',
             href: paths.product.root,
           },
-          { name: product?.title?.localized },
+          { name: product?.name },
         ]}
         sx={{ mb: 5 }}
       />
@@ -165,7 +165,7 @@ export default function ProductShopDetailsView({ id }: Props) {
         </Tabs>
 
         {currentTab === 'description' && (
-          <ProductDetailsDescription description={product?.description?.localized} />
+          <ProductDetailsDescription description={product?.description} />
         )}
 
         {currentTab === 'reviews' && (
@@ -182,7 +182,7 @@ export default function ProductShopDetailsView({ id }: Props) {
 
   return (
     <Container
-      maxWidth={false}
+      maxWidth={settings.themeStretch ? false : 'lg'}
       sx={{
         mt: 5,
         mb: 15,

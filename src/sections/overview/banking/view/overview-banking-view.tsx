@@ -27,7 +27,7 @@ export default function OverviewBankingView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
         <Grid xs={12} md={7}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>

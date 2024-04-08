@@ -43,33 +43,3 @@ export type NavSectionProps = StackProps & {
   }[];
   config?: NavConfigProps;
 };
-
-//
-//
-
-export type CustomNavItemProps = ListItemButtonProps & {
-  item: CustomNavListProps;
-  depth: number;
-  open?: boolean;
-  active: boolean;
-  externalLink?: boolean;
-};
-export type CustomNavListProps = {
-  title: string;
-  path: string;
-  icon?: string;
-  info?: React.ReactElement;
-  caption?: string;
-  disabled?: boolean;
-  roles?: string[];
-  permissions?: string[];
-  children?: any;
-};
-
-export type CustomNavSectionProps = StackProps & {
-  data: {
-    subheader: string;
-    items: CustomNavListProps[];
-  }[];
-  config?: NavConfigProps;
-};

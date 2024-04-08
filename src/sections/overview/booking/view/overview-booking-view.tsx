@@ -35,7 +35,7 @@ export default function OverviewBookingView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={SPACING} disableEqualOverflow>
         <Grid xs={12} md={4}>
           <BookingWidgetSummary

@@ -11,18 +11,12 @@ import { MotionContainer, varFade } from 'src/components/animate';
 import Carousel, { CarouselDots, CarouselArrows, useCarousel } from 'src/components/carousel';
 
 // ----------------------------------------------------------------------
-type ItemNameProps = {
-  en: string;
-  ar: string;
-  localized: string;
-
-};
 
 type ItemProps = {
   id: string;
-  name: ItemNameProps;
-  image: string;
-  productsNumber: number;
+  title: string;
+  coverUrl: string;
+  description: string;
 };
 
 interface Props extends CardProps {
@@ -30,11 +24,9 @@ interface Props extends CardProps {
 }
 
 export default function AppFeatured({ list, ...other }: Props) {
-
   const carousel = useCarousel({
     speed: 800,
     autoplay: true,
-    
     ...CarouselDots({
       sx: {
         top: 16,
@@ -72,23 +64,20 @@ type CarouselItemProps = {
 function CarouselItem({ item, active }: CarouselItemProps) {
   const theme = useTheme();
 
-  const { image, name,productsNumber } = item;
+  const { coverUrl, title, description } = item;
 
   const renderImg = (
     <Image
-      alt='test'
-      src={image}
-      overlay={`linear-gradient(to bottom, ${alpha(theme.palette.grey[200], 0)} 0%, ${
+      alt={title}
+      src={coverUrl}
+      overlay={`linear-gradient(to bottom, ${alpha(theme.palette.grey[900], 0)} 0%, ${
         theme.palette.grey[900]
-      } 85%)`}
+      } 75%)`}
       sx={{
         width: 1,
         height: {
-          xs: 200, // Adjust the height for extra-small screens
-          sm: 250, // Adjust the height for small screens
-          md: 300, // Adjust the height for medium screens
-          lg: 350, // Adjust the height for large screens
-          xl: 400, // Adjust the height for extra-large screens
+          xs: 280,
+          xl: 320,
         },
       }}
     />
@@ -110,16 +99,21 @@ function CarouselItem({ item, active }: CarouselItemProps) {
       >
         <m.div variants={varFade().inRight}>
           <Typography variant="overline" sx={{ color: 'primary.light' }}>
-          {name?.en}
- 
+            Featured App
           </Typography>
         </m.div>
 
-      
+        <m.div variants={varFade().inRight}>
+          <Link color="inherit" underline="none">
+            <Typography variant="h5" noWrap>
+              {title}
+            </Typography>
+          </Link>
+        </m.div>
 
         <m.div variants={varFade().inRight}>
           <Typography variant="body2" noWrap>
-        {productsNumber} productsNumber
+            {description}
           </Typography>
         </m.div>
       </Stack>

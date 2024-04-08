@@ -6,7 +6,6 @@ import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 // utils
 import { Paper } from '@mui/material';
-import { useLocales } from 'src/locales';
 // components
 
 // ----------------------------------------------------------------------
@@ -48,7 +47,6 @@ export default function AppOrders({
   country,
   ...rest
 }: Props) {
-  const { t } = useLocales();
   return (
     <Paper elevation={elevation}>
       <Card
@@ -69,7 +67,7 @@ export default function AppOrders({
             {idNo}
           </Typography>
           <Typography variant="body2" sx={{ opacity: 0.8 }}>
-           {datetime}
+            {datetime}
           </Typography>
           <Typography
             variant="h6"
@@ -77,13 +75,13 @@ export default function AppOrders({
             display="flex"
             alignItems="center"
           >
-            {/* <Box component="img" src="/raw/flag.png" alt="flag" /> &nbsp; &nbsp; <span>{name}</span> */}
+            <Box component="img" src="/raw/flag.png" alt="flag" /> &nbsp; &nbsp; <span>{name}</span>
           </Typography>
         </Box>
         <Box display="flex" gap="7px" flexDirection="column" sx={{ textAlign: 'right' }}>
           <Chip size="small" sx={{ backgroundColor: chipColor(status) }} label={status} />
           <Typography variant="body2" sx={{ opacity: 0.8 }}>
-            {itemCount}   {t('home.count')}
+            {itemCount} items
           </Typography>
           <Typography
             component="div"
@@ -93,8 +91,8 @@ export default function AppOrders({
             alignItems="center"
             justifyContent="flex-end"
           >
-            <span>{amount} </span>
-            <span>  {t('home.price')}</span>
+            <span>{amount}</span>
+            <span>KWD</span>
           </Typography>
         </Box>
       </Card>

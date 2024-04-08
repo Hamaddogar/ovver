@@ -411,7 +411,7 @@ export default function RolesView() {
 
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <RoleBasedGuard hasContent permission="GET_ROLES">
         <Grid
           container

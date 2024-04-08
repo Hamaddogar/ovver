@@ -1,12 +1,10 @@
 // @mui
 import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-// import Link from '@mui/material/Link';
+import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { IconButton } from '@mui/material';
 // auth
 import { useAuthContext } from 'src/auth/hooks';
 // routes
@@ -18,21 +16,6 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { bgGradient } from 'src/theme/css';
 // components
 import Logo from 'src/components/logo';
-import Slider from 'react-slick';
-import ToggleBtn from 'src/app/components/mui/toggleBtn/page';
-// images and styles
-import zakiLogo from '../../../public/logo.png'
-import sliderImg1 from '../../../public/sliderImg1.png'
-import sliderImg2 from '../../../public/sliderImg2.png'
-import sliderImg3 from '../../../public/sliderImg3.png'
-import sliderImg4 from '../../../public/sliderImg4.png'
-import Image, { StaticImageData } from 'next/image';
-import styles from './auth.module.css'
-import './auth.module.css'
-// next 
-import Link from 'next/link';
-import { useSettingsContext } from 'src/components/settings';
-import { usePathname } from 'next/navigation';
 
 // ----------------------------------------------------------------------
 
@@ -69,147 +52,153 @@ type Props = {
   children: React.ReactNode;
 };
 
-const LoginSlider = () => {
-  const slides = [
-    { title: 'Websites', imageSrc: sliderImg1 },
-    { title: 'Marketing', imageSrc: sliderImg2 },
-    { title: 'Mobile App', imageSrc: sliderImg3 },
-    { title: 'Invoices', imageSrc: sliderImg4 },
-  ];
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    autoplay: true,
-    slide: 'div',
-    autoplaySpeed: 3000,
-    appendDots: (dots: React.ReactNode) => (
-      <div
-        style={{
-          left: '-200px',
-          bottom: '-80px',
-        }}
-      >
-        <ul style={{ margin: "0px" }} className={styles.dotsButton}> {dots} </ul>
-      </div>
-    ),
-
-  };
-  return (
-    <div className="slidecontainer" style={{
-      width: '100%',
-    }}>
-      <Slider {...settings} >
-        {
-          slides.map((slide: { title: string, imageSrc: StaticImageData }) => (
-            <div className={styles.slide}>
-              <div className={styles.slideItem}>
-                <h4 className={styles.slogan}>Get access <br />
-                  for managing your<br /><span className={styles.title}>{slide.title}</span></h4>
-                <Image src={zakiLogo} alt='zaki logo' width={60} height={60} className={styles.logo} />
-              </div>
-              <Image src={slide.imageSrc} alt='slider logo' className={styles.slideImg} width={300} height={200} />
-            </div>
-          ))
-        }
-      </Slider>
-    </div >
-  );
-}
 export default function AuthClassicLayout({ children, image, title }: Props) {
+  const { method } = useAuthContext();
 
-  const pathName = usePathname()
-  console.log(pathName, '===')
-  const upLg = useResponsive('up', 'lg');
+  const theme = useTheme();
 
   const upMd = useResponsive('up', 'md');
 
-  // const renderLogo = (
-  //   <Logo
-  //     sx={{
-  //       zIndex: 9,
-  //       position: 'absolute',
-  //       m: { xs: 2, md: 5 },
-  //     }}
-  //   />
-  // );
+  const renderLogo = (
+    <Logo
+      sx={{
+        zIndex: 9,
+        position: 'absolute',
+        m: { xs: 2, md: 5 },
+      }}
+    />
+  );
 
   const renderContent = (
     <Stack
-      flexGrow={1}
       sx={{
         width: 1,
         background: 'url(/login-ellipse.png)',
         backgroundPosition: 'left',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'repeat-x',
+        backgroundSize: '700px',
+        backgroundRepeat: 'no-repeat',
         backgroundColor: 'white',
         mx: 'auto',
         display: 'flex',
         flexDirection: 'column',
+
         justifyContent: 'center',
-        maxWidth: '100%',
+
+        maxWidth: 600,
         px: { xs: 2, md: 8 },
         py: { xs: 15, md: 30 },
       }}
     >
-      <>
-        {/* <ToggleBtn /> */}
-        {children}
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10%' }}>
-          <IconButton
-            aria-label="go back"
-            href='/'
-            size="medium"
-            sx={{
-              color: 'secondary.lighter',
-              backgroundColor: '#0F1546',
-              '&:hover': {
-                backgroundColor: 'secondary.lighter',
-                color: '#0F1546'
-              },
-            }}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Link href={pathName === '/auth/jwt/check-user' ? paths.dashboard.root : paths.auth.jwt.checkUser} passHref style={{
-            textDecoration: 'none'
-          }}>
-            <Typography
-              variant="body1"
-              component="a"
-              color='#0F1546'
-
-              sx={{
-                cursor: 'pointer',
-                ml: 1,
-
-              }}
-            >
-              Go back to home
-            </Typography>
-          </Link>
-        </div>
-      </>
+      {children}
     </Stack>
   );
+  //   <video
+  //   style={{ width: '100%', height: '100%', top: '0px', right: '0px' }}
+  //   id="video-background"
+  //   autoPlay
+  //   muted
+  //   loop
+  // >
+  //   <source
+  //     style={{ minWidth: '100%', objectFit: 'cover' }}
+  //     src="/bg-video.mp4"
+  //     type="video/mp4"
+  //   />
+  // </video>
 
   const renderSection = (
     <Stack
       flexGrow={1}
       alignItems="center"
-      flexDirection={'row'}
-      className={styles.section}
+      justifyContent="center"
+      spacing={10}
       sx={{
-        display: upMd ? 'flex' : 'none',
-        width: upLg ? '70%' : '50%',
-        height: '100%'
+        background: 'url(/new-gif.gif)',
+        backgroundSize: '100%',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'left',
+        width: upMd ? '70%' : '100%',
       }}
     >
-      <LoginSlider />
+      {/* Stuff To Keep */}
+      {/* <Stack width={'70%'} spacing={2}>
+        <Box
+          sx={{
+            marginTop: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '-6px',
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Stack>
+              <Typography
+                fontSize={30}
+                sx={{ maxWidth: 300, fontSize: '20px', textAlign: 'start' }}
+              >
+                Get access
+              </Typography>
+              <Typography fontSize={30} sx={{ maxWidth: 300, textAlign: 'start' }}>
+                for managing your
+              </Typography>
+            </Stack>
+            <Box component="img" sx={{ width: '60px', cursor: 'pointer' }} src="/logo.png" />
+          </Box>
+          <Typography
+            variant="h1"
+            sx={{ maxWidth: 300, color: '#75F7BB', textAlign: 'start', paddingTop: '20px' }}
+          >
+            {/* {title || 'Hi, Welcome back'} */}
+      {/* Websites
+          </Typography>
+        </Box> */}
+
+      {/* <Box
+          sx={{
+            minWidth: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        > */}
+      {/* <Box
+            component="img"
+            alt="auth"
+            alignItems={'center'}
+            justifyContent={'center'}
+            src={'/laptop.png'}
+            sx={{
+              maxWidth: 420,
+              display: 'flex',
+
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          />
+        </Box> */}
+
+      {/* <Stack alignItems={'center'} justifyContent={'center'} direction="row" spacing={2}>
+          {METHODS.map((option) => (
+            <Tooltip key={option.label} title={option.label}>
+              <Link component={RouterLink} href={option.path}>
+                <Box
+                  component="img"
+                  alt={option.label}
+                  src={option.icon}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    ...(method !== option.id && {
+                      filter: 'grayscale(100%)',
+                    }),
+                  }}
+                />
+              </Link>
+            </Tooltip>
+          ))}
+        </Stack> */}
+      {/* </Stack> */}
     </Stack>
   );
 
@@ -219,11 +208,9 @@ export default function AuthClassicLayout({ children, image, title }: Props) {
       direction={upMd ? 'row-reverse' : 'column-reverse'}
       sx={{
         height: '100vh',
-        overflow: 'hidden'
       }}
     >
-
-      {/* {renderLogo} */}
+      {renderLogo}
 
       {renderSection}
 

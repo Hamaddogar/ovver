@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { m } from 'framer-motion';
 // @mui
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
@@ -6,8 +7,8 @@ import IconButton from '@mui/material/IconButton';
 import { useLocales } from 'src/locales';
 // components
 import Iconify from 'src/components/iconify';
+import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { Tooltip, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -26,29 +27,22 @@ export default function LanguagePopover() {
 
   return (
     <>
-      <Tooltip title={locales.t('common.language')}>
-        <IconButton
-          onClick={popover.onOpen}
-          sx={{
-            borderRadius: '10000px',
-            bgcolor: 'background.neutral',
-            px: 1.4,
-          }}
-        >
-          <Iconify icon="ic:sharp-language" sx={{ color: 'text.secondary' }} />
-          <Typography
-            sx={{
-              color: 'text.primary',
-              px: 1,
-              fontWeight: '500',
-              display: { xs: 'none', md: 'block' },
-            }}
-          >
-            {locales.currentLang.label}
-          </Typography>
-          <Iconify icon="mingcute:down-fill" sx={{ color: 'text.secondary' }} />
-        </IconButton>
-      </Tooltip>
+      <IconButton
+        component={m.button}
+        whileTap="tap"
+        whileHover="hover"
+        variants={varHover(1.05)}
+        onClick={popover.onOpen}
+        sx={{
+          width: 40,
+          height: 40,
+          ...(popover.open && {
+            bgcolor: 'action.selected',
+          }),
+        }}
+      >
+        <Iconify icon={locales.currentLang.icon} sx={{ borderRadius: 0.65, width: 28 }} />
+      </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 160 }}>
         {locales.allLangs.map((option) => (

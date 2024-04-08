@@ -169,7 +169,7 @@ export default function FileManagerView() {
 
   return (
     <>
-      <Container maxWidth={false}>
+      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="h4">File Manager</Typography>
           <Button

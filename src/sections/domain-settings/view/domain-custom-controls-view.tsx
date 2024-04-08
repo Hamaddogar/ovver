@@ -10,15 +10,7 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 // theme
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  FormControlLabel,
-  Paper,
-  Switch,
-} from '@mui/material';
+import { Button, Card, CardActions, CardContent, FormControlLabel, Paper, Switch } from '@mui/material';
 import CustomCrumbs from 'src/components/custom-crumbs/custom-crumbs';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/store/store';
@@ -29,53 +21,50 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 
+
 // ----------------------------------------------------------------------
 
 export default function CustomDomainControls() {
-  const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data);
+  const selectedDomain = useSelector((state: RootState) => state.selectedDomain.data)
   const settings = useSettingsContext();
-  const [checkDomain, response] = useDomainCheckerMutation<any>();
-  const lastDomain = useGetLastDomainQuery(selectedDomain?._id);
+  const [checkDomain, response] = useDomainCheckerMutation<any>()
+  const lastDomain = useGetLastDomainQuery(selectedDomain?._id)
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (response.isSuccess) {
-      enqueueSnackbar('successfullay Refreshed', { variant: 'success' });
+      enqueueSnackbar('successfullay Refreshed', { variant: 'success' })
     }
     if (response.isError) {
-      enqueueSnackbar('This domain is not a valid domain or not registered yet.', {
-        variant: 'error',
-      });
+      enqueueSnackbar('This domain is not a valid domain or not registered yet.', { variant: 'error' })
     }
-  }, [response]);
+  }, [response])
 
   const handleRefresh = async () => {
     await checkDomain({
-      builderId: selectedDomain._id,
-    }).unwrap();
-  };
+      builderId: selectedDomain._id
+    }).unwrap()
+  }
   return (
-    <Container maxWidth={false} sx={{ pt: 2 }}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'} sx={{ pt: 2 }}>
+
       <Box pb={3}>
-        <CustomCrumbs
-          heading="Domain Settings"
-          description="Control and link your website domain"
+        <CustomCrumbs heading="Domain Settings"
+          description='Control and link your website domain'
           crums={false}
         />
       </Box>
 
-      <Paper
-        sx={{
-          boxShadow: '0px 0px 20px #00000014',
-          p: '25px',
-          borderRadius: '16px',
-        }}
-      >
+      <Paper sx={{
+        boxShadow: '0px 0px 20px #00000014',
+        p: '25px',
+        borderRadius: '16px'
+      }}>
         <Stack
-          justifyContent={{ xs: 'center', md: 'space-between' }}
+          justifyContent={{ xs: 'center', md: "space-between" }}
           alignItems="center"
           flexDirection={{ xs: 'column', md: 'row' }}
           spacing="10px"
-          rowGap="20px"
+          rowGap='20px'
           sx={{
             height: { md: 1 },
             borderRadius: 2,
@@ -83,19 +72,16 @@ export default function CustomDomainControls() {
           }}
         >
           <Stack
-            direction="row"
+            direction='row'
             component="span"
             justifyContent="center"
-            alignItems="center"
+            alignItems='center'
             columnGap="7px"
           >
-            <Box
-              component="img"
-              src="/raw/shopi.png"
-              alt=""
-              sx={{ width: '100%', maxWidth: '80px', borderRadius: '80px' }}
-            />
-            <Stack flexGrow={1}>
+            <Box component="img" src="/raw/shopi.png" alt='' sx={{ width: '100%', maxWidth: '80px', borderRadius: '80px' }} />
+            <Stack
+              flexGrow={1}
+            >
               <Typography variant="h6" sx={{ whiteSpace: 'pre-line' }}>
                 Shoppi.com
               </Typography>
@@ -112,74 +98,90 @@ export default function CustomDomainControls() {
             </Stack>
           </Stack>
 
-          <Stack direction="row" spacing="20px" justifyContent="center">
-            {[
-              {
-                title: 'Copy Link',
-                img: '/raw/link.svg',
-              },
-              {
-                title: 'Delete',
-                img: '/raw/trash-can-solid.svg',
-              },
-              {
-                title: 'Edit',
-                img: '/raw/edit-pen.svg',
-              },
-            ].map((item, indx) => (
-              <Stack key={indx} component="span" justifyContent="center">
+
+
+
+
+          <Stack
+            direction='row'
+            spacing="20px"
+            justifyContent="center"
+          >
+
+            {
+              [
+                {
+                  title: "Copy Link",
+                  img: "/raw/link.svg"
+                },
+                {
+                  title: "Delete",
+                  img: "/raw/trash-can-solid.svg"
+                },
+                {
+                  title: "Edit",
+                  img: "/raw/edit-pen.svg"
+                },
+              ].map((item, indx) => <Stack
+                key={indx}
+                component="span"
+                justifyContent="center">
                 <Avatar
                   variant="rounded"
                   sx={{
                     width: 50,
                     height: 50,
                     bgcolor: 'background.neutral',
-                    borderRadius: 50,
+                    borderRadius: 50
                   }}
                 >
                   <Box component="img" src={item.img} sx={{ width: 20 }} />
                 </Avatar>
-                <Typography
-                  variant="caption"
+                <Typography variant="caption"
                   sx={{
                     mt: 1,
                     opacity: 0.8,
                     textTransform: 'capitalize',
-                    textAlign: 'center',
-                  }}
-                >
+                    textAlign: 'center'
+                  }}>
                   {item.title}
                 </Typography>
-              </Stack>
-            ))}
+              </Stack>)
+            }
+
           </Stack>
         </Stack>
       </Paper>
 
-      <Paper
-        sx={{
-          boxShadow: '0px 0px 20px #00000014',
-          px: '30px',
-          py: '25px',
-          borderRadius: '16px',
-          mt: '20px',
-        }}
-      >
+      <Paper sx={{
+        boxShadow: '0px 0px 20px #00000014',
+        px: '30px',
+        py: '25px',
+        borderRadius: '16px',
+        mt: '20px'
+      }}>
         <Stack
-          minHeight="76px"
-          justifyContent={{ xs: 'center', md: 'space-between' }}
+          minHeight='76px'
+          justifyContent={{ xs: 'center', md: "space-between" }}
           alignItems="center"
           flexDirection={{ xs: 'column', md: 'row' }}
           spacing="10px"
-          rowGap="20px"
+          rowGap='20px'
           sx={{
             height: { md: 1 },
             borderRadius: 2,
             position: 'relative',
           }}
         >
-          <Stack direction="row" component="span" justifyContent="center" alignItems="center">
-            <Stack flexGrow={1}>
+          <Stack
+            direction='row'
+            component="span"
+            justifyContent="center"
+            alignItems='center'
+          >
+            <Stack
+              flexGrow={1}
+            >
               <Typography variant="h6" sx={{ whiteSpace: 'pre-line' }}>
                 Publish Website
               </Typography>
@@ -198,22 +200,20 @@ export default function CustomDomainControls() {
 
           <Box>
             <FormControlLabel
-              control={<Switch color="primary" defaultChecked />}
+              control={<Switch color='primary' defaultChecked />}
               label="Published now"
               labelPlacement="start"
             />
           </Box>
         </Stack>
       </Paper>
-      <Card
-        sx={{
-          borderRadius: '16px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          my: '16px',
-          flexWrap: 'wrap',
-        }}
-      >
+      <Card sx={{
+        borderRadius: '16px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        my: '16px',
+        flexWrap: 'wrap'
+      }}>
         <CardContent>
           <Typography variant="h5" component="div">
             {lastDomain?.data?.data.newDomain}
@@ -224,8 +224,7 @@ export default function CustomDomainControls() {
             </Link>
           </Typography>
           <Typography variant="body2">
-            Good news! Your DNS records are set up correctly, but it can take some time for them to
-            propagate globally.
+            Good news! Your DNS records are set up correctly, but it can take some time for them to propagate globally.
             <Link href="" underline="hover">
               Learn More
             </Link>
@@ -238,6 +237,6 @@ export default function CustomDomainControls() {
           <Button size="medium">Edit</Button>
         </CardActions>
       </Card>
-    </Container>
+    </Container >
   );
 }

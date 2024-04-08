@@ -15,9 +15,9 @@ interface Props<
   label?: string;
   placeholder?: string;
   helperText?: React.ReactNode;
-  settingStateValue?: any;
-  defaultValue?: any;
-  variant?: any;
+  settingStateValue?: any,
+  variant?: any
+
 }
 
 export default function RHFAutocomplete<
@@ -31,7 +31,6 @@ export default function RHFAutocomplete<
   placeholder,
   helperText,
   settingStateValue,
-  defaultValue,
   variant,
   ...other
 }: Omit<Props<T, Multiple, DisableClearable, FreeSolo>, 'renderInput'>) {
@@ -46,9 +45,7 @@ export default function RHFAutocomplete<
           {...field}
           onChange={(event, newValue) => {
             setValue(name, newValue, { shouldValidate: true });
-            if (settingStateValue) {
-              settingStateValue(event, newValue);
-            }
+            settingStateValue(event, newValue)
           }}
           renderInput={(params) => (
             <TextField
@@ -58,7 +55,7 @@ export default function RHFAutocomplete<
               error={!!error}
               helperText={error ? error?.message : helperText}
               variant={variant || 'standard'}
-              sx={{ '& .MuiFilledInput-root': { py: '10px' } }}
+              sx={{ '& .MuiFilledInput-root': { py: "10px" } }}
             />
           )}
           {...other}

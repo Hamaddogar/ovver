@@ -24,16 +24,16 @@ export default function ProductEditView({ id }: Props) {
   const { product: currentProduct } = useGetProduct(id);
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Edit"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           {
             name: 'Product',
-            href: paths.dashboard.products.root,
+            href: paths.dashboard.product.root,
           },
-          { name: currentProduct?.title?.loaclized },
+          { name: currentProduct?.name },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },

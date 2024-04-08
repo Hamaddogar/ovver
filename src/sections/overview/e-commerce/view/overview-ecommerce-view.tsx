@@ -39,7 +39,7 @@ export default function OverviewEcommerceView() {
   const settings = useSettingsContext();
 
   return (
-    <Container maxWidth={false}>
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
         <Grid xs={12} md={8}>
           <EcommerceWelcome

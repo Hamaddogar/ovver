@@ -14,15 +14,12 @@ import Carousel, { CarouselArrows, useCarousel } from 'src/components/carousel';
 
 // ----------------------------------------------------------------------
 
-type itemName = {
-  en:string
-};
 type Props = {
   data: {
     id: string;
-    name: itemName;
-    image: string;
-    description?: string;
+    title: string;
+    coverUrl: string;
+    description: string;
   }[];
 };
 
@@ -76,16 +73,16 @@ export default function CarouselCenterMode({ data }: Props) {
 
 type CarouselItemProps = {
   item: {
-    name: itemName;
-    description?: string;
-    image: string;
+    title: string;
+    description: string;
+    coverUrl: string;
   };
 };
 
 function CarouselItem({ item }: CarouselItemProps) {
   const theme = useTheme();
 
-  const { image, name } = item;
+  const { coverUrl, title } = item;
 
   return (
     <Paper
@@ -95,7 +92,7 @@ function CarouselItem({ item }: CarouselItemProps) {
         position: 'relative',
       }}
     >
-      <Image alt='test' src={image} ratio="3/4" />
+      <Image alt={title} src={coverUrl} ratio="3/4" />
 
       <CardContent
         sx={{
@@ -113,7 +110,7 @@ function CarouselItem({ item }: CarouselItemProps) {
         }}
       >
         <TextMaxLine variant="h4" sx={{ mb: 2 }}>
-          {name?.en}
+          {title}
         </TextMaxLine>
 
         <Link

@@ -16,12 +16,13 @@ import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
 import { NavSectionVertical } from 'src/components/nav-section';
 //
-import { HEADER, NAV } from '../config-layout';
+import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
 import {
   NavToggleButton,
   // NavUpgrade
 } from '../_common';
+
 
 // ----------------------------------------------------------------------
 
@@ -38,16 +39,19 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
   useEffect(() => {
     if (user) {
-      setCurrentRole(user?.roles);
+      setCurrentRole(user?.roles)
       setCurrentPermission(user?.permissions);
     }
-  }, [user]);
+  }, [user])
+
+
+
 
   const pathname = usePathname();
 
   const lgUp = useResponsive('up', 'lg');
 
-  const { navData, navLinks } = useNavData();
+  const navData = useNavData();
 
   useEffect(() => {
     if (openNav) {
@@ -59,8 +63,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
   const renderContent = (
     <Scrollbar
       sx={{
-        bgcolor: 'background.paper',
-        pt: 1.5,
         height: 1,
         '& .simplebar-content': {
           height: 1,
@@ -69,11 +71,10 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
         },
       }}
     >
-      {/* <Logo sx={{ mt: 3, ml: 4, mb: 1 }} /> */}
+      <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
 
       <NavSectionVertical
-        // data={navData}
-        data={navLinks}
+        data={navData}
         config={{
           // currentRole: user?.role || 'admin',
           // currentRoles: user?.roles || [],
@@ -95,17 +96,15 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       sx={{
         flexShrink: { lg: 0 },
         width: { lg: NAV.W_VERTICAL },
-        bgcolor: 'background.paper',
       }}
     >
-      {/* <NavToggleButton /> */}
+      <NavToggleButton />
 
       {lgUp ? (
         <Stack
           sx={{
             height: 1,
             position: 'fixed',
-            paddingTop: `${HEADER.H_DESKTOP_OFFSET}px`,
             width: NAV.W_VERTICAL,
             // borderRight: (theme) => `dashed 1px ${theme.palette.divider}`,
             boxShadow: '0px -6px 40px #00000014',
@@ -120,7 +119,6 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
           PaperProps={{
             sx: {
               width: NAV.W_VERTICAL,
-              bgcolor: 'Background.paper',
             },
           }}
         >

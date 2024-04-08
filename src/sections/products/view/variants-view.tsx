@@ -570,7 +570,7 @@ export default function OrdersListView() {
     };
 
     return (
-        <Container maxWidth={false}>
+        <Container maxWidth={settings.themeStretch ? false : 'lg'}>
             <Grid
                 container
                 justifyContent="space-between"
